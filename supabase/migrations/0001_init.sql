@@ -230,3 +230,12 @@ create policy "admin update tables" on tables for update
 
 create policy "admin delete tables" on tables for delete
   using (is_admin_of(restaurant_id));
+
+-- ============================================================
+-- Realtime
+-- ============================================================
+-- Necesario para que el estado del pedido se actualice solo en /m/[tableId]
+-- y para que cocina/salón (fases siguientes) vean pedidos y llamados sin
+-- recargar la página.
+alter publication supabase_realtime add table orders;
+alter publication supabase_realtime add table waiter_calls;

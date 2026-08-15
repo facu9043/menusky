@@ -1,3 +1,5 @@
+import type { RestaurantTheme } from "@/lib/theme/types";
+
 export interface OptionChoiceData {
   id: string;
   name: string;
@@ -31,6 +33,7 @@ export interface RestaurantData {
   id: string;
   name: string;
   logoUrl: string | null;
+  theme: RestaurantTheme | null;
 }
 
 export interface TableData {

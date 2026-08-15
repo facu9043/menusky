@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import type { TableMenuData, CategoryData, MenuItemData } from "@/lib/types/menu";
+import type { RestaurantTheme } from "@/lib/theme/types";
 
 type MenuItemRow = {
   id: string;
@@ -37,7 +38,12 @@ type TableRow = {
   label: string;
   qr_token: string;
   restaurant_id: string;
-  restaurants: { id: string; name: string; logo_url: string | null } | null;
+  restaurants: {
+    id: string;
+    name: string;
+    logo_url: string | null;
+    theme: RestaurantTheme | null;
+  } | null;
 };
 
 const sortBy = <T extends { sort_order: number }>(rows: T[]) =>
@@ -51,7 +57,7 @@ export const getTableMenu = cache(
 
     const { data: table } = await supabase
       .from("tables")
-      .select("id, label, qr_token, restaurant_id, restaurants(id, name, logo_url)")
+      .select("id, label, qr_token, restaurant_id, restaurants(id, name, logo_url, theme)")
       .eq("qr_token", qrToken)
       .returns<TableRow[]>()
       .maybeSingle();
@@ -105,6 +111,7 @@ export const getTableMenu = cache(
         id: table.restaurants.id,
         name: table.restaurants.name,
         logoUrl: table.restaurants.logo_url,
+        theme: table.restaurants.theme,
       },
       table: { id: table.id, label: table.label, qrToken: table.qr_token },
       categories,

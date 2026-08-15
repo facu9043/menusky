@@ -39,6 +39,8 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-waiter-foreground: var(--waiter-foreground);
+  --color-waiter: var(--waiter);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -59,6 +61,8 @@
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
+  --waiter: var(--primary);
+  --waiter-foreground: var(--primary-foreground);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
@@ -83,25 +87,32 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* .dark: usado por los paneles de staff (cocina/salón/admin) como su
+   estética fija tipo "consola" — no tiene que ver con el theme del
+   restaurante. El único color de marca que entra ahí es --primary, que
+   StaffShell sobreescribe puntualmente con el accentPrimary de cada
+   restaurante (ver components/staff/StaffShell.tsx). */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: #111318;
+  --foreground: #F2F2F0;
+  --card: #181B22;
+  --card-foreground: #F2F2F0;
+  --popover: #181B22;
+  --popover-foreground: #F2F2F0;
+  --primary: #F2F2F0;
+  --primary-foreground: #111318;
+  --secondary: #1C1F26;
+  --secondary-foreground: #F2F2F0;
+  --waiter: var(--primary);
+  --waiter-foreground: var(--primary-foreground);
+  --muted: #1C1F26;
+  --muted-foreground: #8A8D96;
+  --accent: #1C1F26;
+  --accent-foreground: #F2F2F0;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: rgba(255, 255, 255, 0.2);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);

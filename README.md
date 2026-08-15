@@ -59,7 +59,11 @@ supabase/
 
    1. El contenido de [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql)
       (crea las tablas, índices, funciones de autorización y políticas RLS).
-   2. El contenido de [`supabase/seed.sql`](supabase/seed.sql) (carga el
+   2. El contenido de [`supabase/migrations/0002_restaurant_theme.sql`](supabase/migrations/0002_restaurant_theme.sql)
+      (columna `theme` en `restaurants`, para la paleta de colores por restaurante).
+   3. El contenido de [`supabase/migrations/0003_menu_photos_storage.sql`](supabase/migrations/0003_menu_photos_storage.sql)
+      (bucket de Storage `menu-photos` para subir fotos de platos desde el admin).
+   4. El contenido de [`supabase/seed.sql`](supabase/seed.sql) (carga el
       restaurante de prueba "El Buen Sabor" con 3 categorías, 6 platos y
       algunas opciones/extras).
 
@@ -124,6 +128,18 @@ usuario admin:
    );
    ```
 
+## Decisiones de alcance (MVP)
+
+Un par de simplificaciones deliberadas para mantener la v1 enfocada en que
+pedido + cocina + llamar al mozo funcionen perfecto:
+
+- **QR de mesas**: se descargan como imagen PNG (`/api/qr/[qrToken]`), no
+  como PDF. Para imprimir alcanza con abrir el PNG e imprimirlo desde el
+  navegador.
+- **Reordenar categorías/platos**: el campo `sort_order` existe en la base
+  pero no hay controles en el panel para reordenar arrastrando — quedan en
+  el orden en que se crearon.
+
 ## Despliegue
 
 Pensado para **Vercel** (frontend) + **Supabase** (base de datos, auth y
@@ -139,8 +155,13 @@ realtime):
 ## Estado del desarrollo
 
 - [x] Modelo de datos + RLS + seed de prueba
-- [ ] Vista del cliente (carta + carrito)
-- [ ] Creación de pedidos + llamado al mozo
-- [ ] Panel de cocina (KDS) en tiempo real
-- [ ] Panel de salón/mozos
-- [ ] Panel de administración
+- [x] Vista del cliente (carta + carrito)
+- [x] Creación de pedidos + llamado al mozo
+- [x] Panel de cocina (KDS) en tiempo real
+- [x] Panel de salón/mozos
+- [x] Panel de administración
+- [x] Temas de color por restaurante (4 predefinidos + editor personalizado en `/admin/apariencia`)
+- [x] Panel de staff (cocina/salón/admin) con diseño propio tipo consola + acento de marca
+- [x] Aviso de pedido/llamado pendiente en la navegación del staff
+- [x] Cuenta acumulada del día por mesa (aproximada, no reemplaza caja)
+- [x] Subida de fotos de platos a Supabase Storage

@@ -20,7 +20,9 @@ export function MenuBrowser({ categories }: { categories: CategoryData[] }) {
             id={`categoria-${category.id}`}
             className="scroll-mt-16"
           >
-            <h2 className="mb-3 text-lg font-semibold">{category.name}</h2>
+            <h2 className="mb-3 font-[family-name:var(--font-menu-display)] text-xl font-semibold">
+              {category.name}
+            </h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {category.items.map((item) => (
                 <MenuItemCard

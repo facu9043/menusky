@@ -11,8 +11,16 @@ export function MenuItemCard({
 }) {
   return (
     <Card
+      role="button"
+      tabIndex={0}
       onClick={onSelect}
-      className="flex flex-row items-stretch gap-3 p-3 cursor-pointer hover:border-primary/50 transition-colors"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect();
+        }
+      }}
+      className="flex flex-row items-stretch gap-3 p-3 cursor-pointer hover:border-primary/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       {item.photoUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -27,14 +35,16 @@ export function MenuItemCard({
       )}
       <div className="flex flex-1 flex-col justify-between min-w-0">
         <div>
-          <h3 className="font-medium leading-tight truncate">{item.name}</h3>
+          <h3 className="font-[family-name:var(--font-menu-display)] font-semibold leading-tight truncate">
+            {item.name}
+          </h3>
           {item.description && (
             <p className="text-sm text-muted-foreground line-clamp-2 mt-0.5">
               {item.description}
             </p>
           )}
         </div>
-        <span className="text-sm font-semibold mt-1">
+        <span className="text-sm font-semibold text-primary mt-1">
           {formatPrice(item.price)}
         </span>
       </div>

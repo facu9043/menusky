@@ -130,7 +130,9 @@ function MenuItemDetailForm({
         />
       )}
       <SheetHeader>
-        <SheetTitle className="text-lg">{item.name}</SheetTitle>
+        <SheetTitle className="font-[family-name:var(--font-menu-display)] text-lg">
+          {item.name}
+        </SheetTitle>
         {item.description && (
           <SheetDescription>{item.description}</SheetDescription>
         )}

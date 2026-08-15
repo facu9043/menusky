@@ -25,7 +25,7 @@ export function MenuCategoryTabs({ categories }: { categories: CategoryData[] })
             className={cn(
               "shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
               active === category.id
-                ? "bg-primary text-primary-foreground"
+                ? "bg-secondary text-secondary-foreground"
                 : "bg-muted text-muted-foreground hover:text-foreground"
             )}
           >

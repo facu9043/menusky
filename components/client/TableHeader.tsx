@@ -23,7 +23,9 @@ export function TableHeader({
         </div>
       )}
       <div className="min-w-0 flex-1">
-        <h1 className="truncate font-semibold leading-tight">{restaurant.name}</h1>
+        <h1 className="truncate font-[family-name:var(--font-menu-display)] text-lg font-semibold leading-tight">
+          {restaurant.name}
+        </h1>
       </div>
       <Badge variant="secondary">{table.label}</Badge>
     </header>

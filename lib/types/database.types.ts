@@ -2,6 +2,9 @@
 // Cuando tengas el proyecto de Supabase creado y linkeado, podés regenerarlos con:
 //   npx supabase gen types typescript --project-id <tu-project-id> > lib/types/database.types.ts
 
+import type { CartSelectedOption } from "@/lib/types/cart";
+import type { RestaurantTheme } from "@/lib/theme/types";
+
 export type OrderStatus =
   | "received"
   | "in_kitchen"
@@ -15,12 +18,6 @@ export type StaffRole = "admin" | "waiter" | "kitchen";
 
 export type OptionSelectionType = "single" | "multiple";
 
-export interface SelectedOption {
-  group: string;
-  choice: string;
-  extra_price: number;
-}
-
 export interface Database {
   public: {
     Tables: {
@@ -31,12 +28,14 @@ export interface Database {
           logo_url: string | null;
           phone: string | null;
           address: string | null;
+          theme: RestaurantTheme | null;
           created_at: string;
         };
         Insert: Partial<Database["public"]["Tables"]["restaurants"]["Row"]> & {
           name: string;
         };
         Update: Partial<Database["public"]["Tables"]["restaurants"]["Row"]>;
+        Relationships: [];
       };
       tables: {
         Row: {
@@ -52,6 +51,7 @@ export interface Database {
           qr_token: string;
         };
         Update: Partial<Database["public"]["Tables"]["tables"]["Row"]>;
+        Relationships: [];
       };
       categories: {
         Row: {
@@ -66,6 +66,7 @@ export interface Database {
           name: string;
         };
         Update: Partial<Database["public"]["Tables"]["categories"]["Row"]>;
+        Relationships: [];
       };
       menu_items: {
         Row: {
@@ -85,6 +86,7 @@ export interface Database {
           price: number;
         };
         Update: Partial<Database["public"]["Tables"]["menu_items"]["Row"]>;
+        Relationships: [];
       };
       item_option_groups: {
         Row: {
@@ -105,6 +107,7 @@ export interface Database {
         Update: Partial<
           Database["public"]["Tables"]["item_option_groups"]["Row"]
         >;
+        Relationships: [];
       };
       item_option_choices: {
         Row: {
@@ -123,6 +126,7 @@ export interface Database {
         Update: Partial<
           Database["public"]["Tables"]["item_option_choices"]["Row"]
         >;
+        Relationships: [];
       };
       staff_users: {
         Row: {
@@ -140,6 +144,7 @@ export interface Database {
           role: StaffRole;
         };
         Update: Partial<Database["public"]["Tables"]["staff_users"]["Row"]>;
+        Relationships: [];
       };
       orders: {
         Row: {
@@ -156,6 +161,7 @@ export interface Database {
           restaurant_id: string;
         };
         Update: Partial<Database["public"]["Tables"]["orders"]["Row"]>;
+        Relationships: [];
       };
       order_items: {
         Row: {
@@ -163,7 +169,7 @@ export interface Database {
           order_id: string;
           menu_item_id: string;
           quantity: number;
-          selected_options: SelectedOption[];
+          selected_options: CartSelectedOption[];
           note: string | null;
           subtotal: number;
         };
@@ -173,6 +179,7 @@ export interface Database {
           subtotal: number;
         };
         Update: Partial<Database["public"]["Tables"]["order_items"]["Row"]>;
+        Relationships: [];
       };
       waiter_calls: {
         Row: {
@@ -189,7 +196,12 @@ export interface Database {
           restaurant_id: string;
         };
         Update: Partial<Database["public"]["Tables"]["waiter_calls"]["Row"]>;
+        Relationships: [];
       };
     };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
 }
