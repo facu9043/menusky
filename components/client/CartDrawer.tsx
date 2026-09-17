@@ -17,6 +17,7 @@ import { formatPrice } from "@/lib/format";
 import { useCart } from "@/lib/cart/useCart";
 import { cartItemSubtotal, cartItemUnitPrice } from "@/lib/types/cart";
 import { submitOrder } from "@/lib/orders/submitOrder";
+import { setLastOrderId } from "@/lib/orders/lastOrder";
 
 export function CartDrawer({
   open,
@@ -34,6 +35,7 @@ export function CartDrawer({
     setSending(true);
     try {
       const { orderId } = await submitOrder(tableId, items);
+      setLastOrderId(tableId, orderId);
       clear();
       onOpenChange(false);
       router.push(`/m/${tableId}/pedido/${orderId}`);
