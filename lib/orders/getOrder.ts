@@ -5,6 +5,7 @@ import type { CartSelectedOption } from "@/lib/types/cart";
 export interface OrderItemView {
   id: string;
   menuItemName: string;
+  photoUrl: string | null;
   quantity: number;
   selectedOptions: CartSelectedOption[];
   note: string | null;
@@ -24,7 +25,7 @@ type OrderItemRow = {
   selected_options: CartSelectedOption[];
   note: string | null;
   subtotal: number;
-  menu_items: { name: string } | null;
+  menu_items: { name: string; photo_url: string | null } | null;
 };
 
 export async function getOrder(
@@ -42,7 +43,7 @@ export async function getOrder(
 
   const { data: itemRows } = await supabase
     .from("order_items")
-    .select("id, quantity, selected_options, note, subtotal, menu_items(name)")
+    .select("id, quantity, selected_options, note, subtotal, menu_items(name, photo_url)")
     .eq("order_id", orderId)
     .returns<OrderItemRow[]>();
 
@@ -56,6 +57,7 @@ export async function getOrder(
     items: (itemRows ?? []).map((row) => ({
       id: row.id,
       menuItemName: row.menu_items?.name ?? "Producto",
+      photoUrl: row.menu_items?.photo_url ?? null,
       quantity: row.quantity,
       selectedOptions: row.selected_options,
       note: row.note,

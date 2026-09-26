@@ -5,6 +5,7 @@ import { TransitionLink } from "@/components/client/TransitionLink";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 const timeFormatter = new Intl.DateTimeFormat("es-AR", {
   hour: "2-digit",
@@ -36,24 +37,51 @@ export default async function OrderStatusPage({
 
       <div className="flex flex-col gap-3">
         {items.map((item) => (
-          <Card key={item.id} className="p-3">
-            <div className="flex items-start justify-between gap-2">
+          <Card
+            key={item.id}
+            className={cn("relative overflow-hidden p-3", item.photoUrl && "text-white")}
+          >
+            {item.photoUrl && (
+              <>
+                {/* Foto del plato de fondo, atenuada con un degradado oscuro
+                    para que el texto de arriba siga siendo legible sea cual
+                    sea la foto. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={item.photoUrl}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/15" />
+              </>
+            )}
+            <div className="relative flex items-start justify-between gap-2">
               <div className="min-w-0">
                 <p className="font-medium leading-tight">
                   {item.quantity}× {item.menuItemName}
                 </p>
                 {item.selectedOptions.length > 0 && (
-                  <p className="text-xs text-muted-foreground">
+                  <p className={cn("text-xs", item.photoUrl ? "text-white/80" : "text-muted-foreground")}>
                     {item.selectedOptions.map((o) => o.choiceName).join(" · ")}
                   </p>
                 )}
                 {item.note && (
-                  <p className="text-xs italic text-muted-foreground">
+                  <p
+                    className={cn(
+                      "text-xs italic",
+                      item.photoUrl ? "text-white/80" : "text-muted-foreground"
+                    )}
+                  >
                     &ldquo;{item.note}&rdquo;
                   </p>
                 )}
               </div>
-              <span className="shrink-0 text-sm font-semibold text-primary">
+              <span
+                className={cn(
+                  "shrink-0 text-sm font-semibold",
+                  item.photoUrl ? "text-white" : "text-primary"
+                )}
+              >
                 {formatPrice(item.subtotal)}
               </span>
             </div>
