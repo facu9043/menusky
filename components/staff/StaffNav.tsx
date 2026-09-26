@@ -34,7 +34,7 @@ export function StaffNav({ role, restaurantId }: { role: StaffRole; restaurantId
               "relative rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
               active
                 ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                : "text-muted-foreground hover:bg-secondary/25 hover:text-foreground"
             )}
           >
             {link.label}

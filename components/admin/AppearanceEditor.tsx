@@ -36,7 +36,9 @@ export function AppearanceEditor({
   return (
     <div className="flex flex-col gap-6 p-4">
       <div>
-        <h1 className="mb-1 text-lg font-semibold">Apariencia</h1>
+        <h1 className="mb-1 font-[family-name:var(--font-staff-display)] text-lg font-semibold">
+          Apariencia
+        </h1>
         <p className="text-sm text-muted-foreground">
           Elegí un tema predefinido o armá tu propia paleta. Se aplica en la
           carta que ven tus clientes al escanear el QR de la mesa.
