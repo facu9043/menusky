@@ -3,6 +3,7 @@ import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import { getTableMenu } from "@/lib/menu/getTableMenu";
 import { CartProvider } from "@/lib/cart/useCart";
 import { TableHeader } from "@/components/client/TableHeader";
+import { ThemeRoot } from "@/components/client/ThemeRoot";
 import { CartFab } from "@/components/client/CartFab";
 import { CallWaiterButton } from "@/components/client/CallWaiterButton";
 import { themeToCssVars } from "@/lib/theme/applyTheme";
@@ -39,7 +40,8 @@ export default async function TableLayout({
 
   return (
     <CartProvider tableQrToken={tableId}>
-      <div
+      <ThemeRoot
+        dataThemeStyle={theme.style ?? "soft"}
         className={`${fraunces.variable} ${plusJakartaSans.variable} flex min-h-screen flex-col bg-background text-foreground`}
         style={{
           ...themeToCssVars(theme),
@@ -51,7 +53,7 @@ export default async function TableLayout({
         <main className="flex-1 pb-28">{children}</main>
         <CallWaiterButton />
         <CartFab />
-      </div>
+      </ThemeRoot>
     </CartProvider>
   );
 }

@@ -9,17 +9,49 @@ import type { RestaurantTheme } from "@/lib/theme/types";
 // restaurante — cada preview queda aislado y puede mostrar un theme
 // distinto al que está aplicado en ese momento.
 export function ThemeMockupCard({ theme }: { theme: RestaurantTheme }) {
+  const isBrutal = theme.style === "brutal";
+  const isNeumorphic = theme.style === "neumorphic";
+  const isClay = theme.style === "clay";
+  const hardEdge = isBrutal
+    ? { border: `2px solid ${theme.textPrimary}`, boxShadow: `3px 3px 0 0 ${theme.textPrimary}` }
+    : {};
+  // Misma fórmula que app/globals.css: sombra clara + oscura derivadas del
+  // propio color de fondo del bloque, para que "salga" de esa superficie
+  // en vez de destacarse por color.
+  const softEdge = (bg: string) =>
+    isNeumorphic
+      ? {
+          border: "none",
+          boxShadow: `4px 4px 8px color-mix(in srgb, ${bg} 70%, black), -4px -4px 8px color-mix(in srgb, ${bg} 90%, white)`,
+        }
+      : {};
+  // Clay: sombra externa oscura grande + sombra interna clara, fijas (no
+  // derivadas del color del bloque) — acá el objeto SÍ tiene su propio color
+  // distinto del fondo, es lo que da el volumen "inflado".
+  const clayEdge = isClay
+    ? {
+        border: "none",
+        boxShadow:
+          "-4px -4px 10px rgba(255,255,255,0.5), 6px 6px 16px rgba(0,0,0,0.22), inset 2px 2px 5px rgba(0,0,0,0.1), inset -2px -2px 5px rgba(255,255,255,0.4)",
+      }
+    : {};
+  const radius = (soft: number) =>
+    isBrutal ? 0 : isNeumorphic || isClay ? Math.max(soft, 12) : soft;
+
   return (
-    <div style={{ background: theme.background, borderRadius: 10, padding: 14 }}>
+    <div style={{ background: theme.background, borderRadius: radius(10), padding: 14 }}>
       <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
         <span
           style={{
             background: theme.accentSecondary,
             color: getForegroundColor(theme.accentSecondary),
             fontSize: 11,
-            fontWeight: 600,
+            fontWeight: isBrutal ? 700 : 600,
             padding: "5px 12px",
-            borderRadius: 999,
+            borderRadius: isNeumorphic || isClay ? 999 : radius(999),
+            ...hardEdge,
+            ...softEdge(theme.accentSecondary),
+            ...clayEdge,
           }}
         >
           Principales
@@ -31,18 +63,21 @@ export function ThemeMockupCard({ theme }: { theme: RestaurantTheme }) {
       <div
         style={{
           background: theme.cardBackground,
-          borderRadius: 8,
+          borderRadius: radius(8),
           padding: 10,
           display: "flex",
           gap: 10,
           alignItems: "center",
+          ...hardEdge,
+          ...softEdge(theme.cardBackground),
+          ...clayEdge,
         }}
       >
         <div
           style={{
             width: 44,
             height: 44,
-            borderRadius: 6,
+            borderRadius: isBrutal ? 0 : 6,
             background: theme.textPrimary,
             opacity: 0.15,
             flexShrink: 0,
@@ -65,10 +100,14 @@ export function ThemeMockupCard({ theme }: { theme: RestaurantTheme }) {
           style={{
             background: theme.accentPrimary,
             color: getForegroundColor(theme.accentPrimary),
-            fontWeight: 600,
+            fontWeight: isBrutal ? 700 : 600,
             fontSize: 12,
             padding: "7px 12px",
-            borderRadius: 6,
+            borderRadius: radius(6),
+            textTransform: isBrutal ? "uppercase" : "none",
+            ...hardEdge,
+            ...softEdge(theme.accentPrimary),
+            ...clayEdge,
           }}
         >
           Enviar pedido
@@ -77,12 +116,15 @@ export function ThemeMockupCard({ theme }: { theme: RestaurantTheme }) {
           style={{
             width: 30,
             height: 30,
-            borderRadius: "50%",
+            borderRadius: isBrutal ? 0 : "50%",
             background: theme.waiterButton,
             color: getForegroundColor(theme.waiterButton),
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            ...hardEdge,
+            ...softEdge(theme.waiterButton),
+            ...clayEdge,
           }}
         >
           <BellRing size={14} />

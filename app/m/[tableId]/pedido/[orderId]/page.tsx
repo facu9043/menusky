@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getOrder } from "@/lib/orders/getOrder";
 import { OrderStatusTracker } from "@/components/client/OrderStatusTracker";
+import { TransitionLink } from "@/components/client/TransitionLink";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/format";
@@ -66,7 +66,7 @@ export default async function OrderStatusPage({
         <span className="text-primary">{formatPrice(order.total)}</span>
       </div>
 
-      <Button variant="outline" render={<Link href={`/m/${tableId}`} />}>
+      <Button variant="outline" render={<TransitionLink href={`/m/${tableId}`} />}>
         Pedir algo más
       </Button>
     </div>

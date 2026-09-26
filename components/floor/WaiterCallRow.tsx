@@ -40,7 +40,7 @@ export function WaiterCallRow({
   };
 
   return (
-    <Card className="flex flex-row items-center gap-3 border-destructive/40 bg-destructive/5 p-3">
+    <Card className="board-card-enter flex flex-row items-center gap-3 border-destructive/40 bg-destructive/5 p-3">
       <BellRing className="size-5 shrink-0 text-destructive" />
       <div className="min-w-0 flex-1">
         <p className="font-medium leading-tight">{tableLabel}</p>

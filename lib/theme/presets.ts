@@ -1,4 +1,4 @@
-import type { RestaurantTheme } from "@/lib/theme/types";
+import { THEME_KEYS, type RestaurantTheme } from "@/lib/theme/types";
 
 export interface ThemePreset {
   key: string;
@@ -62,16 +62,63 @@ export const THEME_PRESETS: ThemePreset[] = [
       waiterButton: "#B24C2F",
     },
   },
+  {
+    key: "neobrutalista",
+    label: "Neobrutalista",
+    theme: {
+      background: "#FFF7E6",
+      cardBackground: "#FFC53D",
+      textPrimary: "#141414",
+      textSecondary: "#3A3A3A",
+      accentPrimary: "#E63946",
+      accentSecondary: "#FFC53D",
+      waiterButton: "#E63946",
+      style: "brutal",
+    },
+  },
+  {
+    key: "neumorfismo",
+    label: "Neumorfismo",
+    theme: {
+      // cardBackground = background a propósito: en neumorfismo la tarjeta
+      // no se diferencia por color, "sale" del mismo fondo solo por la
+      // sombra doble (ver bloque [data-theme-style="neumorphic"] en
+      // app/globals.css).
+      background: "#E7E2D8",
+      cardBackground: "#E7E2D8",
+      textPrimary: "#3A362E",
+      textSecondary: "#7A7466",
+      accentPrimary: "#C97B5A",
+      accentSecondary: "#5E8B7E",
+      waiterButton: "#C97B5A",
+      style: "neumorphic",
+    },
+  },
+  {
+    key: "claymorfismo",
+    label: "Claymorfismo",
+    theme: {
+      background: "#F4F1FB",
+      cardBackground: "#FFD6A5",
+      textPrimary: "#2E2A3D",
+      textSecondary: "#6B647F",
+      accentPrimary: "#FF6F61",
+      accentSecondary: "#4ECDC4",
+      waiterButton: "#FF6F61",
+      style: "clay",
+    },
+  },
 ];
 
 export const DEFAULT_THEME: RestaurantTheme = THEME_PRESETS[0].theme;
 
 export function findPresetByTheme(theme: RestaurantTheme): ThemePreset | null {
   return (
-    THEME_PRESETS.find((preset) =>
-      (Object.keys(preset.theme) as (keyof RestaurantTheme)[]).every(
-        (key) => preset.theme[key].toLowerCase() === theme[key]?.toLowerCase()
-      )
+    THEME_PRESETS.find(
+      (preset) =>
+        THEME_KEYS.every(
+          (key) => preset.theme[key].toLowerCase() === theme[key]?.toLowerCase()
+        ) && (preset.theme.style ?? "soft") === (theme.style ?? "soft")
     ) ?? null
   );
 }

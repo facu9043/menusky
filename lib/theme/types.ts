@@ -10,9 +10,19 @@ export interface RestaurantTheme {
   accentPrimary: string;
   accentSecondary: string;
   waiterButton: string;
+  // Variante estructural (bordes/sombra/esquinas), no un color — por eso
+  // queda afuera de THEME_KEYS: el editor de paleta personalizada y el
+  // validador de contraste solo iteran colores. Ausente = "soft" (el look
+  // actual). Ver [lib/theme/applyTheme.ts] y los bloques
+  // `[data-theme-style="brutal"]` / `[data-theme-style="neumorphic"]` /
+  // `[data-theme-style="clay"]` en app/globals.css.
+  style?: "soft" | "brutal" | "neumorphic" | "clay";
 }
 
-export const THEME_KEYS: (keyof RestaurantTheme)[] = [
+// Tupla literal (no solo `(keyof RestaurantTheme)[]`) para que `style`
+// -no siendo parte de esta lista- quede excluido a nivel de tipos, no solo
+// en tiempo de ejecución.
+export const THEME_KEYS = [
   "background",
   "cardBackground",
   "textPrimary",
@@ -20,4 +30,4 @@ export const THEME_KEYS: (keyof RestaurantTheme)[] = [
   "accentPrimary",
   "accentSecondary",
   "waiterButton",
-];
+] as const satisfies readonly (keyof RestaurantTheme)[];

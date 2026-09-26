@@ -13,7 +13,7 @@ import { getForegroundColor, meetsWcagAA } from "@/lib/theme/contrast";
 import { THEME_KEYS } from "@/lib/theme/types";
 import type { RestaurantTheme } from "@/lib/theme/types";
 
-const FIELD_LABELS: Record<keyof RestaurantTheme, string> = {
+const FIELD_LABELS: Record<(typeof THEME_KEYS)[number], string> = {
   background: "Fondo",
   cardBackground: "Fondo de tarjeta",
   textPrimary: "Texto principal",
@@ -38,7 +38,7 @@ export function ThemeCustomEditor({
   const [theme, setTheme] = useState(initialTheme);
   const [saving, setSaving] = useState(false);
 
-  const setField = (key: keyof RestaurantTheme, value: string) => {
+  const setField = (key: (typeof THEME_KEYS)[number], value: string) => {
     setTheme((prev) => ({ ...prev, [key]: value }));
   };
 

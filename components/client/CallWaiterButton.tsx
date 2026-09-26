@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { BellRing, ReceiptText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { TransitionLink } from "@/components/client/TransitionLink";
 import { getLastOrderId } from "@/lib/orders/lastOrder";
 
 const DARK_OPTION_CLASS =
@@ -106,7 +106,7 @@ export function CallWaiterButton() {
                     variant="outline"
                     className={DARK_OPTION_CLASS}
                     onClick={() => setOpen(false)}
-                    render={<Link href={`/m/${tableId}/pedido/${orderId}`} />}
+                    render={<TransitionLink href={`/m/${tableId}/pedido/${orderId}`} />}
                   >
                     <ReceiptText />
                     Ver mi pedido

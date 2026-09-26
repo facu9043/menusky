@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Minus, Plus, Trash2 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -12,12 +11,13 @@ import {
   SheetFooter,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { formatPrice } from "@/lib/format";
 import { useCart } from "@/lib/cart/useCart";
-import { cartItemSubtotal, cartItemUnitPrice } from "@/lib/types/cart";
+import { useAnimatedNumber } from "@/lib/animation/useAnimatedNumber";
 import { submitOrder } from "@/lib/orders/submitOrder";
 import { setLastOrderId } from "@/lib/orders/lastOrder";
+import { withViewTransition } from "@/lib/navigation/viewTransition";
+import { CartItemRow } from "@/components/client/CartItemRow";
 
 export function CartDrawer({
   open,
@@ -30,6 +30,7 @@ export function CartDrawer({
   const { tableId } = useParams<{ tableId: string }>();
   const router = useRouter();
   const [sending, setSending] = useState(false);
+  const displayTotal = useAnimatedNumber(totalPrice);
 
   const handleSend = async () => {
     setSending(true);
@@ -38,7 +39,7 @@ export function CartDrawer({
       setLastOrderId(tableId, orderId);
       clear();
       onOpenChange(false);
-      router.push(`/m/${tableId}/pedido/${orderId}`);
+      withViewTransition(() => router.push(`/m/${tableId}/pedido/${orderId}`));
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "No se pudo enviar el pedido");
     } finally {
@@ -62,67 +63,12 @@ export function CartDrawer({
             </p>
           )}
           {items.map((item) => (
-            <div key={item.cartItemId} className="flex flex-col gap-1">
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="font-medium leading-tight">{item.name}</p>
-                  {item.selectedOptions.length > 0 && (
-                    <p className="text-xs text-muted-foreground">
-                      {item.selectedOptions.map((o) => o.choiceName).join(" · ")}
-                    </p>
-                  )}
-                  {item.note && (
-                    <p className="text-xs italic text-muted-foreground">
-                      &ldquo;{item.note}&rdquo;
-                    </p>
-                  )}
-                </div>
-                <span className="shrink-0 text-sm font-semibold text-primary">
-                  {formatPrice(cartItemSubtotal(item))}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 rounded-lg border px-1">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={() =>
-                      setQuantity(item.cartItemId, item.quantity - 1)
-                    }
-                  >
-                    <Minus />
-                  </Button>
-                  <span className="w-4 text-center text-sm font-medium">
-                    {item.quantity}
-                  </span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={() =>
-                      setQuantity(item.cartItemId, item.quantity + 1)
-                    }
-                  >
-                    <Plus />
-                  </Button>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-muted-foreground">
-                    {formatPrice(cartItemUnitPrice(item))} c/u
-                  </span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={() => removeItem(item.cartItemId)}
-                  >
-                    <Trash2 />
-                  </Button>
-                </div>
-              </div>
-              <Separator className="mt-3" />
-            </div>
+            <CartItemRow
+              key={item.cartItemId}
+              item={item}
+              onSetQuantity={setQuantity}
+              onRemove={removeItem}
+            />
           ))}
         </div>
 
@@ -130,7 +76,9 @@ export function CartDrawer({
           <SheetFooter className="gap-3">
             <div className="flex items-center justify-between text-base font-semibold">
               <span>Total</span>
-              <span className="text-primary">{formatPrice(totalPrice)}</span>
+              <span className="text-primary tabular-nums">
+                {formatPrice(Math.round(displayTotal))}
+              </span>
             </div>
             <Button type="button" size="lg" disabled={sending} onClick={handleSend}>
               {sending ? "Enviando..." : "Enviar pedido a cocina"}

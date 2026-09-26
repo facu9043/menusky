@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card";
+import { LazyImage } from "@/components/client/LazyImage";
 import { formatPrice } from "@/lib/format";
 import type { MenuItemData } from "@/lib/types/menu";
 
@@ -20,15 +21,16 @@ export function MenuItemCard({
           onSelect();
         }
       }}
-      className="flex flex-row items-stretch gap-3 p-3 cursor-pointer hover:border-primary/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      // onTouchStart vacío: es el workaround conocido para que :active
+      // dispare en Safari/iOS al tocar (si no, solo funciona con mouse).
+      onTouchStart={() => {}}
+      className="flex flex-row items-stretch gap-3 p-3 cursor-pointer hover:border-primary/50 active:scale-[0.97] transition-[color,background-color,border-color,transform] duration-150 motion-reduce:transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       {item.photoUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
+        <LazyImage
           src={item.photoUrl}
           alt={item.name}
-          loading="lazy"
-          className="size-20 shrink-0 rounded-md object-cover bg-muted"
+          className="size-20 shrink-0 rounded-md"
         />
       ) : (
         <div className="size-20 shrink-0 rounded-md bg-muted" />

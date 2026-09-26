@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Minus, Plus } from "lucide-react";
+import { flyToCart } from "@/lib/cart/flyToCart";
+import { LazyImage } from "@/components/client/LazyImage";
 import {
   Sheet,
   SheetContent,
@@ -16,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { formatPrice } from "@/lib/format";
 import { useCart } from "@/lib/cart/useCart";
+import { useAnimatedNumber } from "@/lib/animation/useAnimatedNumber";
 import { cn } from "@/lib/utils";
 import type { MenuItemData } from "@/lib/types/menu";
 import type { CartSelectedOption } from "@/lib/types/cart";
@@ -54,9 +57,11 @@ function MenuItemDetailForm({
   onDone: () => void;
 }) {
   const { addItem } = useCart();
+  const addButtonRef = useRef<HTMLButtonElement>(null);
   const [singleSelections, setSingleSelections] = useState<Record<string, string>>({});
   const [multiSelections, setMultiSelections] = useState<Record<string, Set<string>>>({});
   const [quantity, setQuantity] = useState(1);
+  const displayQuantity = useAnimatedNumber(quantity, 150);
   const [note, setNote] = useState("");
 
   const toggleMulti = (groupId: string, choiceId: string) => {
@@ -106,6 +111,7 @@ function MenuItemDetailForm({
       toast.error(`Elegí una opción de "${missingRequiredGroup.name}"`);
       return;
     }
+    if (addButtonRef.current) flyToCart(addButtonRef.current, item.photoUrl);
     addItem({
       menuItemId: item.id,
       name: item.name,
@@ -122,12 +128,7 @@ function MenuItemDetailForm({
   return (
     <>
       {item.photoUrl && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={item.photoUrl}
-          alt={item.name}
-          className="h-48 w-full object-cover"
-        />
+        <LazyImage src={item.photoUrl} alt={item.name} className="h-48 w-full" />
       )}
       <SheetHeader>
         <SheetTitle className="font-[family-name:var(--font-menu-display)] text-lg">
@@ -205,7 +206,9 @@ function MenuItemDetailForm({
           >
             <Minus />
           </Button>
-          <span className="w-4 text-center text-sm font-medium">{quantity}</span>
+          <span className="w-4 text-center text-sm font-medium tabular-nums">
+            {Math.round(displayQuantity)}
+          </span>
           <Button
             type="button"
             variant="ghost"
@@ -215,7 +218,7 @@ function MenuItemDetailForm({
             <Plus />
           </Button>
         </div>
-        <Button type="button" className="flex-1" onClick={handleAdd}>
+        <Button ref={addButtonRef} type="button" className="flex-1" onClick={handleAdd}>
           Agregar · {formatPrice(unitPrice * quantity)}
         </Button>
       </SheetFooter>

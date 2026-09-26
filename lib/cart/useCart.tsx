@@ -19,6 +19,12 @@ interface CartContextValue {
   clear: () => void;
   totalItems: number;
   totalPrice: number;
+  // Se incrementa en cada addItem — el CartFab lo escucha para hacer un
+  // pequeño "rebote" cuando recibe un ítem (ver components/client/CartFab.tsx
+  // y lib/cart/flyToCart.ts). Un número en vez de un booleano para que dos
+  // adds seguidos disparen dos rebotes aunque el efecto no llegue a resetear
+  // un booleano entre medio.
+  bumpCount: number;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -36,6 +42,7 @@ export function CartProvider({
 }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const [bumpCount, setBumpCount] = useState(0);
 
   useEffect(() => {
     // Hidratación única desde localStorage (fuente externa al render de React,
@@ -66,6 +73,7 @@ export function CartProvider({
         ? crypto.randomUUID()
         : `${Date.now()}-${Math.random()}`;
     setItems((prev) => [...prev, { ...item, cartItemId }]);
+    setBumpCount((prev) => prev + 1);
   }, []);
 
   const removeItem = useCallback((cartItemId: string) => {
@@ -99,6 +107,7 @@ export function CartProvider({
     clear,
     totalItems,
     totalPrice,
+    bumpCount,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

@@ -139,3 +139,215 @@
     @apply font-sans;
   }
 }
+
+/* Tema "Neobrutalista" (theme.style === "brutal", ver lib/theme/types.ts):
+   bordes gruesos + sombra dura sin difuminar + esquinas rectas, acotado a
+   /m/[tableId] vía el atributo `data-theme-style` que pone el layout del
+   cliente. --radius en 0 ya alcanza para las esquinas: todas las escalas
+   rounded-sm..4xl de Tailwind salen de --radius (ver @theme inline arriba).
+   El color de borde/sombra reusa --foreground (texto principal del theme,
+   negro puro en este preset) en vez de un #000 fijo, para no desconectarse
+   si algún día hay una paleta "brutal" custom con otro color de texto. */
+[data-theme-style="brutal"] {
+  --radius: 0px;
+}
+
+[data-theme-style="brutal"] [data-slot="card"],
+[data-theme-style="brutal"] [data-slot="button"],
+[data-theme-style="brutal"] [data-slot="badge"],
+[data-theme-style="brutal"] [data-slot="input"],
+[data-theme-style="brutal"] [data-slot="textarea"],
+[data-theme-style="brutal"] [data-slot="sheet-content"] {
+  border: 3px solid var(--foreground);
+  box-shadow: 4px 4px 0 0 var(--foreground);
+}
+
+[data-theme-style="brutal"] [data-slot="button"] {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+[data-theme-style="brutal"] [data-slot="button"]:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 0 var(--foreground);
+}
+
+[data-theme-style="brutal"] [data-slot="sheet-content"][data-side="bottom"] {
+  border-bottom: none;
+}
+
+/* Tema "Neumorfismo" (theme.style === "neumorphic"): los elementos no se
+   distinguen del fondo por color -cardBackground === background a
+   propósito, ver lib/theme/presets.ts- sino por una sombra doble: una clara
+   arriba-izquierda y una oscura abajo-derecha, que da sensación de
+   "moldeado" sobre la misma superficie en vez de una tarjeta flotando
+   encima. Los tonos de sombra salen de --background vía color-mix() en vez
+   de un rgba fijo, para que funcione con cualquier color de fondo. Esquinas
+   grandes y sin bordes — lo opuesto al tema brutalista de arriba. */
+[data-theme-style="neumorphic"] {
+  --radius: 20px;
+}
+
+[data-theme-style="neumorphic"] [data-slot="card"],
+[data-theme-style="neumorphic"] [data-slot="button"],
+[data-theme-style="neumorphic"] [data-slot="badge"],
+[data-theme-style="neumorphic"] [data-slot="input"],
+[data-theme-style="neumorphic"] [data-slot="textarea"],
+[data-theme-style="neumorphic"] [data-slot="sheet-content"] {
+  border: none;
+  box-shadow:
+    6px 6px 12px color-mix(in srgb, var(--background) 70%, black),
+    -6px -6px 12px color-mix(in srgb, var(--background) 90%, white);
+}
+
+[data-theme-style="neumorphic"] [data-slot="button"] {
+  transition: box-shadow 0.15s ease;
+}
+
+[data-theme-style="neumorphic"] [data-slot="button"]:active:not(:disabled) {
+  box-shadow:
+    inset 4px 4px 8px color-mix(in srgb, var(--background) 70%, black),
+    inset -4px -4px 8px color-mix(in srgb, var(--background) 90%, white);
+}
+
+/* Tema "Claymorfismo" (theme.style === "clay"): al revés del neumorfismo de
+   arriba, acá cardBackground SÍ es un color bien distinto del fondo -son
+   "objetos" de plastilina apoyados sobre una superficie plana, no tallados
+   en ella-, así que el negro/blanco de la sombra van fijos (no derivados de
+   --background) y solo cambia el color del objeto en sí. La combinación de
+   sombra externa grande y oscura + sombra interna suave es lo que da el
+   volumen "inflado" característico (a diferencia del neumorfismo, que solo
+   usa sombra externa). Esquinas muy redondeadas. */
+[data-theme-style="clay"] {
+  --radius: 28px;
+}
+
+[data-theme-style="clay"] [data-slot="card"],
+[data-theme-style="clay"] [data-slot="button"],
+[data-theme-style="clay"] [data-slot="badge"],
+[data-theme-style="clay"] [data-slot="input"],
+[data-theme-style="clay"] [data-slot="textarea"],
+[data-theme-style="clay"] [data-slot="sheet-content"] {
+  border: none;
+  box-shadow:
+    -6px -6px 14px rgba(255, 255, 255, 0.55),
+    10px 10px 24px rgba(0, 0, 0, 0.28),
+    inset 4px 4px 10px rgba(0, 0, 0, 0.12),
+    inset -4px -4px 10px rgba(255, 255, 255, 0.45);
+}
+
+[data-theme-style="clay"] [data-slot="button"] {
+  transition: box-shadow 0.15s ease;
+}
+
+[data-theme-style="clay"] [data-slot="button"]:active:not(:disabled) {
+  box-shadow:
+    inset 6px 6px 14px rgba(0, 0, 0, 0.18),
+    inset -6px -6px 14px rgba(255, 255, 255, 0.35);
+}
+
+/* Pulso del paso que se acaba de activar en OrderStatusTracker (ver
+   components/client/OrderStatusTracker.tsx) cuando cocina cambia el estado
+   del pedido en tiempo real. */
+@keyframes step-activate {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 45%, transparent);
+  }
+  40% {
+    transform: scale(1.3);
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--primary) 20%, transparent);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* Entrada de las tarjetas de los tableros de cocina/salón (OrderCard,
+   ReadyOrderCard, WaiterCallRow) — hoy un pedido nuevo aparecía de golpe,
+   con @starting-style anima su llegada sin necesitar JS ni librería. Se
+   aplica tanto a la carga inicial del tablero como a los pedidos nuevos que
+   entran por realtime, en ambos casos es una mejora sobre el "aparece de
+   la nada" actual. */
+.board-card-enter {
+  transition:
+    opacity 0.35s ease-out,
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@starting-style {
+  .board-card-enter {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.97);
+  }
+}
+
+/* Entrada del botón flotante del carrito (CartFab). La salida (cuando el
+   carrito queda vacío) la maneja la clase "leaving" a mano en el componente
+   -React desmonta el nodo apenas totalItems llega a 0, @starting-style solo
+   sirve para la entrada de un nodo nuevo, no para una salida-. */
+@starting-style {
+  .cart-fab-wrap {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+/* Transición entre páginas (carta -> "Tu pedido" y viceversa), disparada
+   por lib/navigation/viewTransition.ts + TransitionLink.tsx. Sin esto, el
+   navegador ya hace un crossfade default apenas se llama a
+   document.startViewTransition() — esto solo lo reemplaza por algo con un
+   poco más de intención (un leve deslizamiento) en vez del fundido plano. */
+::view-transition-old(root) {
+  animation: 220ms ease-in both page-transition-out;
+}
+::view-transition-new(root) {
+  animation: 260ms ease-out both page-transition-in;
+}
+
+@keyframes page-transition-out {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@keyframes page-transition-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Shimmer en LazyImage.tsx mientras carga la foto de un plato. */
+@keyframes shimmer-sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Aparición en cascada de las tarjetas del menú al entrar en pantalla (ver
+   MenuBrowser.tsx, que las observa con IntersectionObserver y agrega
+   ".revealed" la primera vez que cada una entra en el viewport). */
+.reveal-item {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-item.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

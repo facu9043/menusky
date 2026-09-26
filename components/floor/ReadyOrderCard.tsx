@@ -40,7 +40,7 @@ export function ReadyOrderCard({
   };
 
   return (
-    <Card className="relative flex flex-col gap-3 p-4">
+    <Card className="board-card-enter relative flex flex-col gap-3 p-4">
       {isNew && (
         <span className="absolute -top-1.5 -right-1.5 flex size-3">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />

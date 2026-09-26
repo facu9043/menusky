@@ -13,6 +13,11 @@ export function themeToCssVars(theme: RestaurantTheme): CSSProperties {
     "--background": theme.background,
     "--card": theme.cardBackground,
     "--card-foreground": theme.textPrimary,
+    // Los sheets (carrito, detalle de producto, campanita) usan bg-popover,
+    // no --card — sin esto quedan blancos sin importar el theme. Mismo tono
+    // que las tarjetas para que se sientan parte de la misma superficie.
+    "--popover": theme.cardBackground,
+    "--popover-foreground": theme.textPrimary,
     "--foreground": theme.textPrimary,
     "--muted": "color-mix(in srgb, var(--foreground) 8%, var(--background))",
     "--muted-foreground": theme.textSecondary,
