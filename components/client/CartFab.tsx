@@ -5,13 +5,11 @@ import { ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/format";
 import { useCart } from "@/lib/cart/useCart";
-import { useAnimatedNumber } from "@/lib/animation/useAnimatedNumber";
 import { CartDrawer } from "@/components/client/CartDrawer";
 import { cn } from "@/lib/utils";
 
 export function CartFab() {
   const { totalItems, totalPrice, bumpCount } = useCart();
-  const displayTotal = useAnimatedNumber(totalPrice);
   const [open, setOpen] = useState(false);
   const [bumping, setBumping] = useState(false);
   const lastBumpCount = useRef(bumpCount);
@@ -53,22 +51,29 @@ export function CartFab() {
     <>
       <div
         className={cn(
-          "cart-fab-wrap fixed inset-x-0 bottom-0 z-20 flex justify-center px-4 pb-4 transition-[transform,opacity] duration-300 ease-out motion-reduce:transition-none",
-          leaving && "translate-y-full opacity-0"
+          "cart-fab-wrap fixed top-28 right-4 z-30 transition-[transform,opacity] duration-300 ease-out motion-reduce:transition-none",
+          leaving && "scale-50 opacity-0"
         )}
       >
         <Button
           type="button"
-          size="lg"
-          className="w-full max-w-md shadow-lg"
+          size="icon-lg"
+          className="relative rounded-full shadow-lg"
           onClick={() => setOpen(true)}
         >
           <ShoppingBag
             data-cart-fab-icon
             className={cn("transition-transform duration-300", bumping && "scale-125")}
           />
-          Ver pedido · {totalItems} {totalItems === 1 ? "ítem" : "ítems"} ·{" "}
-          <span className="tabular-nums">{formatPrice(Math.round(displayTotal))}</span>
+          <span className="sr-only">
+            Ver pedido · {totalItems} {totalItems === 1 ? "ítem" : "ítems"} ·{" "}
+            {formatPrice(totalPrice)}
+          </span>
+          {/* Insignia de cantidad — el ícono solo ya no deja lugar para el
+              texto "N ítems", pero el número sigue visible de un vistazo. */}
+          <span className="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full bg-destructive text-[11px] font-semibold text-destructive-foreground tabular-nums">
+            {totalItems}
+          </span>
         </Button>
       </div>
       <CartDrawer open={open} onOpenChange={setOpen} />

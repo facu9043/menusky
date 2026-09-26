@@ -287,13 +287,14 @@
   }
 }
 
-/* Entrada del botón flotante del carrito (CartFab). La salida (cuando el
-   carrito queda vacío) la maneja la clase "leaving" a mano en el componente
-   -React desmonta el nodo apenas totalItems llega a 0, @starting-style solo
-   sirve para la entrada de un nodo nuevo, no para una salida-. */
+/* Entrada del ícono flotante del carrito (CartFab, arriba a la derecha). La
+   salida (cuando el carrito queda vacío) la maneja la clase "leaving" a mano
+   en el componente -React desmonta el nodo apenas totalItems llega a 0,
+   @starting-style solo sirve para la entrada de un nodo nuevo, no para una
+   salida-. */
 @starting-style {
   .cart-fab-wrap {
-    transform: translateY(100%);
+    transform: scale(0.5);
     opacity: 0;
   }
 }
