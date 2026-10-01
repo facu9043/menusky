@@ -42,9 +42,29 @@ export function Reveal() {
     const prevScroll = html.style.scrollBehavior;
     html.style.scrollBehavior = "smooth";
 
+    // Qué bloques arrancan ocultos: los que están debajo de la pantalla.
+    // Ojo con content-visibility: medir un elemento DENTRO de una sección
+    // salteada obliga al navegador a maquetarla entera, una vez por
+    // elemento (cientos de ms en un celular). Por eso se mide primero la
+    // sección (su caja existe con la altura estimada) y solo se miden los
+    // hijos de las secciones que llegan a la pantalla. Solo lecturas, sin
+    // escrituras en el medio: una única maquetación.
     const vh = window.innerHeight;
+    const limit = vh * 0.92;
     const reveal = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
-    const pending = reveal.filter((el) => el.getBoundingClientRect().top > vh * 0.92);
+    const sectionTop = new Map<Element, number>();
+    const pending = reveal.filter((el) => {
+      const section = el.closest(".ms-section, .ms-footer");
+      if (section) {
+        let top = sectionTop.get(section);
+        if (top === undefined) {
+          top = section.getBoundingClientRect().top;
+          sectionTop.set(section, top);
+        }
+        if (top > limit) return true;
+      }
+      return el.getBoundingClientRect().top > limit;
+    });
     pending.forEach((el) => {
       el.dataset.revealState = "hidden";
     });

@@ -42,6 +42,7 @@ export function FlowDemo() {
   const slotRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const startedRef = useRef(false);
+  const measureRef = useRef<(() => void) | null>(null);
 
   // Arranca la secuencia la primera vez que entra en pantalla y la pausa
   // cuando sale (no consume CPU fuera de vista). Sin reduced-motion.
@@ -53,6 +54,7 @@ export function FlowDemo() {
       ([entry]) => {
         if (entry.isIntersecting && !startedRef.current) {
           startedRef.current = true;
+          measureRef.current?.();
           setStep(0);
         }
         setRunning(entry.isIntersecting);
@@ -85,10 +87,19 @@ export function FlowDemo() {
       stage.style.setProperty("--fly-x", `${b.left + b.width / 2 - (a.left + a.width / 2)}px`);
       stage.style.setProperty("--fly-y", `${b.top + 24 - (a.top + a.height / 2)}px`);
     };
-    measure();
-    const ro = new ResizeObserver(measure);
+    // No se mide al montar: la sección todavía está salteada por
+    // content-visibility y medirla obligaría a maquetarla entera durante
+    // la carga. Se mide al entrar en pantalla (efecto de arriba) y en cada
+    // cambio de tamaño posterior.
+    measureRef.current = measure;
+    const ro = new ResizeObserver(() => {
+      if (startedRef.current) measure();
+    });
     ro.observe(stage);
-    return () => ro.disconnect();
+    return () => {
+      ro.disconnect();
+      measureRef.current = null;
+    };
   }, []);
 
   const tracker = TRACKER_FOR_STEP[step];
