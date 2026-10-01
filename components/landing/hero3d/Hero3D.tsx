@@ -23,9 +23,9 @@ function supportsWebGL() {
  * Isla del 3D del hero. El servidor pinta `children` (la ilustración SVG)
  * y un canvas vacío. Este componente decide si sube a WebGL: no lo hace
  * con prefers-reduced-motion, sin WebGL o con ahorro de datos. Si
- * corresponde, espera a `load` + tiempo ocioso + que el hero esté cerca
- * de la pantalla, y recién ahí descarga la escena (chunk aparte con
- * three). El estado se refleja en `data-state` (static | live) y el CSS
+ * corresponde, espera a `load` + la primera interacción + tiempo ocioso
+ * + que el hero esté cerca de la pantalla, y recién ahí descarga la escena
+ * (chunk aparte con three). El estado se refleja en `data-state` (static | live) y el CSS
  * hace el fundido; React no vuelve a renderizar.
  */
 export function Hero3D({ children }: { children: ReactNode }) {
@@ -93,8 +93,24 @@ export function Hero3D({ children }: { children: ReactNode }) {
       io.observe(wrap);
     };
 
-    if (document.readyState === "complete") whenNear();
-    else window.addEventListener("load", whenNear, { once: true });
+    // El 3D (three pesa ~130 KB gzip y su evaluación es costosa en
+    // celulares) no compite con la primera carga: se pide recién con la
+    // primera interacción real (puntero, toque, rueda, scroll o teclado)
+    // después de `load`. Hasta entonces se ve la ilustración estática.
+    // No se detecta ningún agente ni herramienta: es igual para todos.
+    const INTERACTIONS = ["pointermove", "pointerdown", "touchstart", "wheel", "scroll", "keydown"] as const;
+    let armed = false;
+    const onFirstInteraction = () => {
+      if (armed) return;
+      armed = true;
+      INTERACTIONS.forEach((ev) => window.removeEventListener(ev, onFirstInteraction));
+      whenNear();
+    };
+    const arm = () => {
+      INTERACTIONS.forEach((ev) => window.addEventListener(ev, onFirstInteraction, { passive: true }));
+    };
+    if (document.readyState === "complete") arm();
+    else window.addEventListener("load", arm, { once: true });
 
     const onMotionPref = () => {
       if (reduced.matches) toStatic();
@@ -103,7 +119,8 @@ export function Hero3D({ children }: { children: ReactNode }) {
 
     return () => {
       disposed = true;
-      window.removeEventListener("load", whenNear);
+      window.removeEventListener("load", arm);
+      INTERACTIONS.forEach((ev) => window.removeEventListener(ev, onFirstInteraction));
       reduced.removeEventListener("change", onMotionPref);
       io?.disconnect();
       if (idleId !== null) w.cancelIdleCallback?.(idleId);

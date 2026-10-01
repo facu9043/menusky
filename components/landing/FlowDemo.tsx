@@ -13,6 +13,10 @@ const DURATIONS = [2000, 2600, 1500, 2000, 2300, 1900, 2700];
 const STATIC_STEP = 4; // estado fijo legible: sin JS o con reduced-motion
 const TRACKER_FOR_STEP = [-1, -1, 0, 0, 1, 2, 3];
 const PASO_FOR_STEP = [0, 1, 2, 2, 2, 2, 2];
+const NEW_ORDER = [
+  { qty: 1, name: "Burger completa", options: "A punto · Papas fritas" },
+  { qty: 1, name: "Napolitana" },
+];
 
 const PASOS = [
   {
@@ -175,16 +179,18 @@ export function FlowDemo() {
             </div>
             <div className="ms-flow__cards">
               <div ref={slotRef} className={`ms-flow__slot ${step >= 3 && step <= 4 ? "is-filled" : ""}`}>
+                {/* Copia invisible: reserva la altura de la tarjeta para que
+                    el hueco no crezca al llenarse (sin saltos de diseño). */}
+                <div className="ms-flow__ghost" aria-hidden="true">
+                  <KitchenCard table="Mesa 4" time="21:06" status="in_kitchen" items={NEW_ORDER} />
+                </div>
                 {step >= 3 && step <= 4 && (
                   <KitchenCard
                     table="Mesa 4"
                     time="21:06"
                     status={step === 3 ? "received" : "in_kitchen"}
                     isNew={step === 3}
-                    items={[
-                      { qty: 1, name: "Burger completa", options: "A punto · Papas fritas" },
-                      { qty: 1, name: "Napolitana" },
-                    ]}
+                    items={NEW_ORDER}
                     className="ms-flow__newcard"
                   />
                 )}

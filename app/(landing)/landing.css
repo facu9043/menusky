@@ -57,10 +57,11 @@
   -webkit-font-smoothing: antialiased;
 }
 
-html:has(.ms-landing) {
-  scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--ms-header-h, 64px) + 12px);
-  background: #fff5e1;
+/* Anclas: el desplazamiento compensa el encabezado fijo. El scroll suave
+   lo activa Reveal.tsx en <html> solo sin reduced-motion (evita un
+   selector html:has(), que recalcula estilos en cada cambio del DOM). */
+.ms-landing [id] {
+  scroll-margin-top: calc(var(--ms-header-h) + 12px);
 }
 
 @media (min-width: 1024px) {
@@ -202,18 +203,58 @@ html:has(.ms-landing) {
 }
 
 /* Borde de comanda (dientes) arriba de la sección: un pseudo-elemento del
-   color de la sección, recortado con una máscara de triángulos. */
+   color de la sección ANTERIOR, recortado como triángulos que cuelgan.
+   Va adentro de la caja porque content-visibility recorta lo que sale. */
 .ms-edge::before {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  top: -11px;
+  top: 0;
   height: 12px;
-  background: var(--ms-edge-color, var(--ms-patty));
-  -webkit-mask: conic-gradient(from 135deg at top, #000 90deg, #0000 0) top / 22px 100% repeat-x;
-  mask: conic-gradient(from 135deg at top, #000 90deg, #0000 0) top / 22px 100% repeat-x;
+  background: var(--ms-edge-prev, var(--ms-bun));
+  -webkit-mask: conic-gradient(from -45deg at bottom, #000 90deg, #0000 0) bottom / 22px 100% repeat-x;
+  mask: conic-gradient(from -45deg at bottom, #000 90deg, #0000 0) bottom / 22px 100% repeat-x;
   pointer-events: none;
+}
+
+/* Rendimiento: las secciones debajo del pliegue no se maquetan ni se
+   pintan hasta acercarse a la pantalla. contain-intrinsic-size es la
+   altura del CONTENIDO (sin el padding de la sección), medida a 390, 768
+   y 1280 px; después el navegador recuerda la real (auto). Las anclas se
+   corrigen al llegar (Reveal.tsx) por si el texto envuelve distinto. */
+.ms-section,
+.ms-footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--ms-cis, 900px);
+}
+.ms-benefits { --ms-cis: 730px; }
+.ms-how { --ms-cis: 1560px; }
+.ms-features { --ms-cis: 1975px; }
+.ms-team { --ms-cis: 2045px; }
+.ms-custom { --ms-cis: 1640px; }
+.ms-faq { --ms-cis: 510px; }
+.ms-final { --ms-cis: 445px; }
+.ms-footer { --ms-cis: 585px; }
+@media (min-width: 768px) {
+  .ms-benefits { --ms-cis: 650px; }
+  .ms-how { --ms-cis: 1045px; }
+  .ms-features { --ms-cis: 1405px; }
+  .ms-team { --ms-cis: 1860px; }
+  .ms-custom { --ms-cis: 1620px; }
+  .ms-faq { --ms-cis: 490px; }
+  .ms-final { --ms-cis: 360px; }
+  .ms-footer { --ms-cis: 320px; }
+}
+@media (min-width: 1024px) {
+  .ms-benefits { --ms-cis: 470px; }
+  .ms-how { --ms-cis: 750px; }
+  .ms-features { --ms-cis: 1300px; }
+  .ms-team { --ms-cis: 1155px; }
+  .ms-custom { --ms-cis: 990px; }
+  .ms-faq { --ms-cis: 368px; }
+  .ms-final { --ms-cis: 392px; }
+  .ms-footer { --ms-cis: 311px; }
 }
 
 /* --------------------------------------------------------------------------
@@ -1362,7 +1403,7 @@ html:has(.ms-landing) {
    3. Beneficio (sección oscura)
    -------------------------------------------------------------------------- */
 .ms-benefits {
-  --ms-edge-color: var(--ms-patty);
+  --ms-edge-prev: var(--ms-bun);
   background: var(--ms-patty);
   color: var(--ms-bun);
 }
@@ -1755,9 +1796,20 @@ html:has(.ms-landing) {
   align-items: start;
 }
 .ms-flow__slot {
+  display: grid;
   min-height: 11.5em;
   border: 2px dashed rgba(43, 23, 16, 0.22);
   border-radius: 0.9em;
+}
+/* La copia invisible y la tarjeta real ocupan la misma celda: el hueco
+   ya mide lo que la tarjeta, así no empuja la página al llenarse. */
+.ms-flow__slot > * {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+.ms-flow__ghost {
+  visibility: hidden;
+  pointer-events: none;
 }
 .ms-flow__slot.is-filled {
   border-color: transparent;
@@ -2071,7 +2123,7 @@ html:has(.ms-landing) {
    6. Para tu equipo (fondo cheddar)
    -------------------------------------------------------------------------- */
 .ms-team {
-  --ms-edge-color: var(--ms-cheddar);
+  --ms-edge-prev: var(--ms-bun);
   background: var(--ms-cheddar);
 }
 .ms-team .ms-section__lead {
@@ -2580,7 +2632,7 @@ html:has(.ms-landing) {
    9. CTA final (bloque tomate)
    -------------------------------------------------------------------------- */
 .ms-final {
-  --ms-edge-color: var(--ms-tomato);
+  --ms-edge-prev: var(--ms-paper);
   background: var(--ms-tomato);
   color: var(--ms-paper);
   text-align: center;
@@ -3036,9 +3088,6 @@ html:has(.ms-landing) {
    prefers-reduced-motion: todo quieto (CA-8.4)
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
-  html:has(.ms-landing) {
-    scroll-behavior: auto;
-  }
   .ms-landing *,
   .ms-landing *::before,
   .ms-landing *::after {
