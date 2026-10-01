@@ -1,4 +1,4 @@
-# Carta Digital + Pedidos por QR
+# MenuSky — Carta digital + pedidos por QR
 
 Carta digital y sistema de pedidos por QR para restaurantes. Cada mesa tiene un QR
 único que lleva a `/m/{qr_token}`, donde el cliente ve la carta, arma su pedido y lo

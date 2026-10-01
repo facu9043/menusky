@@ -1,4 +1,4 @@
-# STACK de MenuSky (repo "carta-digital")
+# STACK de MenuSky
 
 Documento mantenido por el Líder Técnico. Describe el stack REAL del proyecto,
 verificado con evidencia. Todo agente debe leerlo antes de empezar.
@@ -18,7 +18,7 @@ admin). Datos, auth y tiempo real en Supabase. Despliegue en Vercel
 |---|---|---|
 | Node.js (local) | 24.19.0 (README pide 20+) | runtime |
 | npm | 11.17.0 | gestor de paquetes (hay `package-lock.json`) |
-| next | 16.3.1 | framework, App Router |
+| next | 16.3.8 (antes 16.3.1; actualizado por vulnerabilidad crítica, rama fix/next-security) | framework, App Router |
 | react / react-dom | 19.2.8 | UI |
 | typescript | 5.9.3 | `strict: true`, alias `@/*` -> raíz |
 | tailwindcss | 4.3.3 (+ `@tailwindcss/postcss`) | estilos; config en CSS (`app/globals.css`, `@theme inline`), sin `tailwind.config` |
@@ -31,7 +31,7 @@ admin). Datos, auth y tiempo real en Supabase. Despliegue en Vercel
 | @supabase/ssr | 0.12.4 | clientes server/browser y refresco de sesión |
 | @supabase/supabase-js | 2.112.3 | cliente Supabase |
 | qrcode | ^1.5.4 | QR por mesa (`lib/qr.ts`, `app/api/qr/[qrToken]`) |
-| eslint | 9.39.5 + `eslint-config-next` 16.3.1 | lint (`eslint.config.mjs`) |
+| eslint | 9.39.5 + `eslint-config-next` 16.3.8 | lint (`eslint.config.mjs`) |
 
 Fuentes: `next/font/google` con Geist y Geist Mono (`app/layout.tsx`).
 
@@ -74,10 +74,108 @@ Fuentes: `next/font/google` con Geist y Geist Mono (`app/layout.tsx`).
   `lib/animation/useAnimatedNumber.ts`. No son de la landing.
 - `npm audit`: 9 vulnerabilidades (3 moderate, 5 high, 1 critical). La critical es
   de `next` (GHSA-vcvr-r3jv-pc5j, RCE en `next/og` ImageResponse; fix en next@16.3.8).
-  También `sharp`, `undici`, `qs`. Pendiente de decisión (ver riesgos del informe).
+  También `sharp`, `undici`, `qs`. **RESUELTO** (2026-09-30, commit b45a429, rama
+  `fix/next-security`, integrada en `feat/landing-page`): next/eslint-config-next 16.3.8
+  y `npm audit fix` sin `--force` -> `found 0 vulnerabilities`. Seguridad: Apto. QA: Aprobado.
 - `npm install` avisa que `unrs-resolver` tiene un postinstall no aprobado en `allowScripts`.
 
-## Decisiones de la landing (fase 1)
+## Arquitectura de la landing (`/`) — decisión del Líder Técnico (2026-09-30)
 
-Pendientes de las respuestas del Director a `docs/specs/landing.md`. Se completará
-aquí la arquitectura de la landing (componentes, assets, metadata/SEO) una vez aprobadas las specs.
+Spec: `docs/specs/landing.md` v1.0. Créditos de imágenes: `docs/CREDITS.md`.
+
+### Ubicación de archivos
+
+| Qué | Dónde | Notas |
+|---|---|---|
+| Página | `app/(landing)/page.tsx` | Route group: no cambia la URL (`/`). **Borrar `app/page.tsx`** (dos `page` para `/` es error de build). Server Component, prerenderizado estático (○ en el build). |
+| Layout de la landing | `app/(landing)/layout.tsx` | Solo para la landing: importa `landing.css` y, si se usa, la fuente display. No repite `<html>`/`<body>` (eso queda en el layout raíz). |
+| Estilos y tokens de marca | `app/(landing)/landing.css` | Variables CSS de la paleta MenuSky con prefijo `--ms-*` y bajo un contenedor `.ms-landing`. **No tocar** los tokens globales de `app/globals.css` (los usan la carta del cliente y los paneles). |
+| Componentes | `components/landing/` (`Header`, `Hero`, `Benefits`, `HowItWorks`, `Features`, `TeamPanels`, `Customize`, `Faq`, `FinalCta`, `Footer`, `brand/Logo`, `mockups/*`, `hero3d/*`, `Reveal`) | Server Components por defecto; `"use client"` solo en islas que lo necesiten (3D, Reveal, FAQ si no se usa `<details>`). |
+| Constantes de contacto | `components/landing/contact.ts` | URLs exactas de WhatsApp y mailto de la spec (CA-2.1, CA-2.3). Única fuente: no repetir las URLs a mano. |
+| Fotos | `public/landing/*.webp` | Convertidas desde las URLs de `docs/CREDITS.md`. Se commitean solo los WebP finales, no los JPEG originales. |
+| Script de optimización (opcional) | `scripts/optimize-landing-images.mjs` | Usa `sharp` (ya instalado como dependencia de next). |
+| Favicon e ícono | `app/icon.svg` (+ `app/apple-icon.png` 180x180) y reemplazar `app/favicon.ico` | Convención de archivos de metadata de Next. |
+| Imagen social | `app/opengraph-image.png` y `app/twitter-image.png` (1200x630, estáticas) | Archivo estático, NO `ImageResponse`/`next/og` en runtime (menos superficie; ese módulo tuvo la RCE). |
+| robots y sitemap | `app/robots.ts`, `app/sitemap.ts` | CA-6.8 (decisión del Líder, revisable por el Director). |
+| Metadata global y `lang` | `app/layout.tsx` | Única edición compartida permitida: `metadataBase` `https://menusky.vercel.app`, título por defecto con MenuSky y `template: "%s | MenuSky"`, descripción, OG/Twitter, `lang="es-AR"`. No tocar `<Toaster>` ni las fuentes existentes. |
+| Cabeceras de seguridad | `next.config.ts` (dueño: Backend) | `poweredByHeader: false` y cabeceras básicas sin CSP de scripts (ver abajo). |
+
+Fuera de límites para la landing: `app/m/**`, `app/kitchen`, `app/floor`, `app/admin/**`,
+`app/login`, `app/api/**`, `components/{client,kitchen,floor,admin,auth,ui}/**`, `lib/**`,
+`proxy.ts`, `supabase/**`. La landing NO importa nada de `lib/supabase` ni llama a `/api`.
+
+### 3D
+
+- **Librería: `three` (vanilla) 0.186.1 + `@types/three` 0.186.0 (dev).** Sin peer deps;
+  compatible con cualquier React. Se usa desde un Client Component con `useEffect`.
+- **NO** `@react-three/fiber` (9.8.1, peer `react >=19 <19.4`: compatible, pero suma el
+  reconciliador y su estado, innecesario para una sola escena) **ni** `@react-three/drei`
+  (10.7.9, muchas dependencias transitivas). Si el Frontend demuestra que los necesita,
+  lo pide al Líder con el peso medido.
+- **Geometría procedural** (cilindros, esferas, planos deformados, materiales simples):
+  sin modelos GLTF, texturas ni recursos externos (RNF-S5) y peso mínimo.
+- **Carga diferida y progresiva** (CA-8.3, 9.3, 9.4):
+  1. El hero se renderiza en el servidor con una **ilustración estática (SVG/CSS)** que es a
+     la vez el fallback de reduced-motion, sin-WebGL y sin-JS. El LCP es el h1 o esa ilustración.
+  2. Un componente cliente pequeño (`hero3d/Hero3DLoader`) decide si sube a WebGL:
+     no carga si `prefers-reduced-motion: reduce`, si no hay WebGL o si `navigator.connection.saveData`.
+     Si corresponde, espera `load` + `requestIdleCallback` (con timeout) y hace
+     `import("./scene")` (chunk separado; `three` nunca entra en el JS inicial).
+  3. Prohibido detectar Lighthouse o bots para esconder el 3D: la medición tiene que ser honesta.
+- **Rendimiento en ejecución**: `devicePixelRatio` limitado (<= 1.5 en móvil, <= 2 en escritorio),
+  `antialias` solo en escritorio, render solo cuando el canvas está visible (IntersectionObserver)
+  y la pestaña está activa (`visibilitychange`), medición de tiempo por frame que degrada
+  la calidad o vuelve al fallback si no se sostiene, `dispose()` de geometrías, materiales y
+  renderer al desmontar.
+- **Interacción**: el canvas tiene `aria-hidden="true"`, `pointer-events: none` y nunca tapa
+  los CTA; el movimiento del puntero se escucha en `window`. En móvil: reacción al scroll o
+  animación suave continua; **sin** pedir permiso de giroscopio.
+
+### Animaciones
+
+- **Sin librería de animación**: CSS (transiciones/keyframes, `tw-animate-css` ya instalado) +
+  un Client Component `Reveal` con IntersectionObserver para entradas por sección.
+  `motion` (13.4.6, compatible con React 19) y `gsap` (3.15.0) existen pero no se aprueban por
+  defecto: suman JS al bundle inicial. Si hacen falta, se piden al Líder con el peso medido.
+- El contenido debe estar **visible sin JS**: el estado oculto inicial lo aplica el script, no el
+  CSS por defecto (CA-8.7, RNF-K2).
+- Solo se animan `transform` y `opacity` (sin reflujo; CLS <= 0,1).
+- `@media (prefers-reduced-motion: reduce)`: sin entradas, sin loops, sin parallax, scroll a
+  anclas instantáneo.
+
+### Tipografía
+
+Geist (ya cargada en el layout raíz). Se permite **una** fuente display adicional de
+`next/font/google` (variable, subset `latin`) solo en `app/(landing)/layout.tsx`, si se
+verifica que existe y su peso se justifica en el informe.
+
+### Presupuesto de rendimiento (spec HU-9, criterio de bloqueo)
+
+- Lighthouse móvil (mediana de 3) sobre `npm run build && npm run start` local:
+  Rendimiento >= 90, LCP <= 2,5 s, CLS <= 0,1, TBT <= 200 ms.
+- Primera carga <= 1 MB transferidos. Objetivo interno: JS inicial de `/` (sin el chunk 3D)
+  <= 170 KB gzip; chunk 3D medido y reportado.
+- Imágenes: WebP, `next/image` con `sizes` correctos, `priority` solo para la imagen LCP si la hay,
+  `loading="lazy"` debajo del pliegue.
+
+### Modo oscuro
+
+La app activa el modo oscuro con la clase `.dark` (`@custom-variant dark (&:is(.dark *))` en
+`app/globals.css`), no con `prefers-color-scheme`. La landing no usa la clase `.dark` ni
+variantes `dark:`; tiene un único aspecto (CA-8.12).
+
+### Cabeceras HTTP (Backend, `next.config.ts`)
+
+`poweredByHeader: false`; para todas las rutas: `X-Content-Type-Options: nosniff`,
+`Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: DENY` y
+`Content-Security-Policy: frame-ancestors 'none'`, `Permissions-Policy` que deshabilite
+`camera`, `microphone`, `geolocation`, `payment`. No se agrega CSP de `script-src` en esta fase
+(Next inyecta scripts inline; requiere nonces y es un cambio aparte). HSTS lo pone Vercel en
+`*.vercel.app`.
+
+### Ramas
+
+- `feat/landing-page`: landing (Frontend) y docs.
+- `chore/security-headers` (desde `feat/landing-page`): cabeceras (Backend); se integra en
+  `feat/landing-page` y se audita junto con la landing.
+- Nada se integra en `master` sin Seguridad Apto, QA Aprobado y autorización del Director.
