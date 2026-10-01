@@ -3,7 +3,8 @@
 Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada delegación
 y después de cada paso verificado.
 
-Última actualización: 2026-10-01. Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
+Última actualización: 2026-10-01, **PAUSA ORDENADA pedida por el Director**.
+Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 
 ## Tarea A: vulnerabilidad de Next.js — CERRADA
 - `fix/next-security` (b45a429): next y eslint-config-next 16.3.8, npm audit 9 -> 0. Seguridad Apto, QA Aprobado.
@@ -13,18 +14,37 @@ y después de cada paso verificado.
 | Paso | Estado | Evidencia |
 |---|---|---|
 | 1. Spec v1.0 (PO) | HECHO | 7ec5838 `docs/specs/landing.md`, `docs/CREDITS.md` |
-| 2. Arquitectura (Líder) + renombre | HECHO | 084d10e `docs/STACK.md` |
+| 2. Arquitectura (Líder) + renombre | HECHO | 084d10e `docs/STACK.md` (actualizado con el 3D en worker) |
 | 2b. Cabeceras de seguridad (Backend) | HECHO | 0196514, merge 7d5d8a9 |
-| 3. Dirección de arte + construcción (Frontend) | HECHO hasta 66cc555 | 40269c2 ... 66cc555 |
-| 3b. Pulido del Frontend en curso (anclas, CLS, 3D tras primera interacción, content-visibility) | EN CURSO: commit de resguardo 72c9651 SIN VERIFICAR | `git show 72c9651` |
-| 4. Seguridad de la landing | PENDIENTE | docs/security/ |
+| 3. Dirección de arte + construcción (Frontend) | HECHO | 40269c2 ... 66cc555 |
+| 3b. Pulido del Frontend (WIP 72c9651 verificado y completado) | HECHO | 2c36293, eaeaa15, 0e91e78 |
+| 4. Seguridad de la landing | **PRÓXIMO PASO (no iniciado)** | docs/security/ |
 | 5. QA de la landing | PENDIENTE | docs/qa/ |
 | 6. Correcciones y re-auditoría | PENDIENTE | |
 | 7. Informe final al Director | PENDIENTE | |
 
-## Paso actual
-Frontend verifica y completa el WIP 72c9651 (build, lint, Lighthouse local en puerto != 3000),
-con commits chicos. Después: Seguridad -> QA.
+## Autoverificación del Frontend (no reemplaza a QA)
+OK: sin scroll horizontal (360/768/1440, antes y después del 3D), CLS 0, primera carga ~357 KiB / 20 requests,
+Lighthouse Accesibilidad 100, SEO 100, Best Practices 100, reduced-motion (3D no carga, nada se mueve),
+sin WebGL (fallback SVG, consola limpia), consola 0 errores/warnings, palabras prohibidas CA-3.2: ninguna,
+anclas OK, 3D reacciona al puntero/scroll, 0 tareas largas al cargar el 3D (worker).
+
+## Hallazgos abiertos
+1. **HU-9 (bloqueo) NO cumplida en este equipo** (Celeron N4020, 2 núcleos, benchmarkIndex 400-715, con la pestaña
+   de :3000 consumiendo CPU). Lighthouse móvil por defecto (4x), mediana de 3: Perf 56, LCP 4,1 s, TBT 2016 ms.
+   Calibrado 1x (recomendado por Lighthouse para este índice): Perf 87, LCP 3,3 s, TBT 221 ms.
+   Control: `/login` (pantalla simple de la app) da TBT ~1380 ms con 4x en este equipo.
+   Decisión pendiente: (a) medir en un equipo con benchmarkIndex >= 1000 sin otras pestañas pesadas,
+   o (b) aceptar la medición calibrada, o (c) reducir el hero en móvil / DOM (960 nodos), lo que cambia diseño
+   y requiere aprobación del Director.
+2. Sin probar en Safari/iOS real (camino del worker con fallback en página).
+3. QA: usar `textContent` (no `innerText`) para búsquedas de texto: `content-visibility` deja `innerText` vacío en secciones no pintadas.
+4. Seguridad de la landing aún no auditada.
+
+## Orden para retomar
+1. Seguridad audita `feat/landing-page` (enlaces externos, secretos, deps nuevas three/@types/three, npm audit, cabeceras, worker, sin peticiones a Supabase/api desde `/`).
+2. QA prueba todos los CA de la spec v1.0 (incluye regresión /login, /kitchen, /floor, /admin, /m/{token} 404). Lighthouse según la decisión del punto 1 de hallazgos.
+3. Correcciones -> re-auditoría -> informe final al Director (con textos del hero para aprobar).
 
 ## Reglas operativas vigentes
 - El Director mira `next dev` en http://localhost:3000 (sesión principal): NO pararlo ni usar el puerto 3000. Build/start en 3100+ y parar solo lo propio.

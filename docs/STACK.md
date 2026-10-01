@@ -117,10 +117,16 @@ Fuera de límites para la landing: `app/m/**`, `app/kitchen`, `app/floor`, `app/
 - **Carga diferida y progresiva** (CA-8.3, 9.3, 9.4):
   1. El hero se renderiza en el servidor con una **ilustración estática (SVG/CSS)** que es a
      la vez el fallback de reduced-motion, sin-WebGL y sin-JS. El LCP es el h1 o esa ilustración.
-  2. Un componente cliente pequeño (`hero3d/Hero3DLoader`) decide si sube a WebGL:
+  2. Un componente cliente pequeño (`hero3d/Hero3D.tsx`) decide si sube a WebGL:
      no carga si `prefers-reduced-motion: reduce`, si no hay WebGL o si `navigator.connection.saveData`.
-     Si corresponde, espera `load` + `requestIdleCallback` (con timeout) y hace
-     `import("./scene")` (chunk separado; `three` nunca entra en el JS inicial).
+     Si corresponde, espera `load` + la **primera interacción** del usuario (puntero, toque,
+     rueda, scroll o teclado; si la página ya está desplazada cuenta como interacción) +
+     tiempo ocioso + cercanía del hero. Decisión del Líder (2026-10-01): aceptado como mejora
+     progresiva, igual para todos los usuarios.
+     La escena corre en un **Web Worker con OffscreenCanvas** (`hero3d/host.ts` +
+     `hero3d/burger.worker.ts` + `hero3d/scene.ts`, chunk three ~137 KB gzip); si no hay
+     `transferControlToOffscreen`, corre en la página con `import()`. `three` nunca entra
+     en el JS inicial.
   3. Prohibido detectar Lighthouse o bots para esconder el 3D: la medición tiene que ser honesta.
 - **Rendimiento en ejecución**: `devicePixelRatio` limitado (<= 1.5 en móvil, <= 2 en escritorio),
   `antialias` solo en escritorio, render solo cuando el canvas está visible (IntersectionObserver)
