@@ -3,7 +3,7 @@
 Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada delegación
 y después de cada paso verificado.
 
-Última actualización: 2026-10-01, **PAUSA ORDENADA pedida por el Director**.
+Última actualización: 2026-10-01, retomado tras la pausa. Paso actual: 4 (Seguridad).
 Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 
 ## Tarea A: vulnerabilidad de Next.js — CERRADA
@@ -18,7 +18,7 @@ Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 | 2b. Cabeceras de seguridad (Backend) | HECHO | 0196514, merge 7d5d8a9 |
 | 3. Dirección de arte + construcción (Frontend) | HECHO | 40269c2 ... 66cc555 |
 | 3b. Pulido del Frontend (WIP 72c9651 verificado y completado) | HECHO | 2c36293, eaeaa15, 0e91e78 |
-| 4. Seguridad de la landing | **PRÓXIMO PASO (no iniciado)** | docs/security/ |
+| 4. Seguridad de la landing | **EN CURSO** | docs/security/ |
 | 5. QA de la landing | PENDIENTE | docs/qa/ |
 | 6. Correcciones y re-auditoría | PENDIENTE | |
 | 7. Informe final al Director | PENDIENTE | |
@@ -28,6 +28,10 @@ OK: sin scroll horizontal (360/768/1440, antes y después del 3D), CLS 0, primer
 Lighthouse Accesibilidad 100, SEO 100, Best Practices 100, reduced-motion (3D no carga, nada se mueve),
 sin WebGL (fallback SVG, consola limpia), consola 0 errores/warnings, palabras prohibidas CA-3.2: ninguna,
 anclas OK, 3D reacciona al puntero/scroll, 0 tareas largas al cargar el 3D (worker).
+
+## Decisiones del Director (2026-10-01)
+- Rendimiento: opción a) medir en una PC más potente (disponible en 1-2 días). Por esta vez se OMITE la medición de Lighthouse Performance (RNF-P1 / CA-9.1, CA-9.2). NO se descarta: queda **PENDIENTE y BLOQUEA EL RELEASE** hasta medirla en otra PC. No se cambia el diseño para perseguir esa meta. El resto (CLS, peso, accesibilidad, SEO, reduced-motion, sin scroll horizontal) se verifica normalmente.
+- 3D tras la primera interacción: informado al Director, **pendiente de su aprobación**. Se deja como está.
 
 ## Hallazgos abiertos
 1. **HU-9 (bloqueo) NO cumplida en este equipo** (Celeron N4020, 2 núcleos, benchmarkIndex 400-715, con la pestaña
