@@ -1,72 +1,82 @@
 # Spec: Landing page de MenuSky (ruta `/`)
 
-Estado: BORRADOR v0.1 — pendiente de respuestas del Director. Autor: Product Owner.
+Estado: v1.0 — APROBADA por el Director en sus respuestas (2026-09-30). Los textos quedan sujetos a revisión del Director en el release. Autor: Product Owner.
 Rama de trabajo: `feat/landing-page`.
-Nota: `docs/STACK.md` no existía al momento de escribir este borrador. Esta spec no define tecnología.
+Stack: ver `docs/STACK.md` (esta spec no define tecnología; el Líder decide cómo se construye el 3D, las animaciones y los metadatos).
+Imágenes y créditos: `docs/CREDITS.md`.
 
 Convenciones:
-- "Hecho verificado" = afirmación respaldada por un archivo del repo (se cita la ruta).
-- "PROPUESTA" = idea del PO, NO decidida. Requiere confirmación del Director.
-- "PENDIENTE de pregunta N" = el criterio depende de la respuesta a la pregunta N de la sección 10.
+- "Hecho verificado" = respaldado por un archivo de este repositorio (se cita la ruta). Toda afirmación sale de este repo.
+- "Decisión del Director" = respuesta textual del Director (R-D n = su respuesta n).
+- "Decisión del Líder, revisable por el Director" = default propuesto por el PO donde el Director no respondió.
+- Notación de criterios: CA-x.y. Se prueban en `npm run build && npm run start` local o en la preview equivalente. Viewports: móvil 360x640, tablet 768x1024, escritorio 1440x900.
 
 ---
 
 ## 1. Objetivo y contexto
 
-### 1.1 Qué es MenuSky según el código (hechos verificados)
+### 1.1 Visión del Director (requisito principal, textual)
 
-1. Es una carta digital con pedidos por QR para restaurantes. Cada mesa tiene un QR único que lleva a `/m/{qr_token}`; el cliente ve la carta, arma el pedido y lo envía a cocina sin pasar por el mozo y sin instalar nada. Fuente: `README.md` líneas 3-5.
-2. Nombre de marca: la palabra "MenuSky" no aparece en el repo. `package.json` se llama "carta-digital" y el README titula "Carta Digital + Pedidos por QR". El nombre MenuSky viene solo del encargo del Director.
+"Necesito que la página principal sea algo que un cliente lo vea y diga: wow, necesito MenuSky para mi restaurante. Mirá todo lo que puedo hacer. Necesito conseguirlo. La idea es que traigamos buenos clientes, que tengamos buenos resultados con esto. Por eso tiene que ser algo llamativo, profesional, intuitivo, con movimientos y diseños 3D para que llame la atención."
+
+Traducción a requisitos verificables: ver HU-8 ("wow"), HU-9 (rendimiento como criterio de bloqueo) y HU-1 a HU-3 (claridad y conversión). "Intuitivo" se mide así: en una prueba con 3 personas ajenas al proyecto, cada una identifica en menos de 10 segundos de mirar el hero qué es MenuSky y dónde pedir la demo (QA/Director lo registra; ver CA-1.5).
+
+### 1.2 Qué es MenuSky según el código (hechos verificados)
+
+1. Carta digital con pedidos por QR. Cada mesa tiene un QR único que lleva a `/m/{qr_token}`; el cliente ve la carta, arma el pedido y lo envía a cocina sin pasar por el mozo y sin instalar nada. Fuente: `README.md` líneas 3-5.
+2. Nombre: MenuSky es el nombre oficial (R-D 16). Hoy `package.json` dice "carta-digital" y el README titula "Carta Digital + Pedidos por QR"; se renombran (ver HU-7).
 3. Vista del cliente (sin login, sin instalar app):
-   - Carta por categorías con pestañas (`components/client/MenuCategoryTabs.tsx`, `MenuBrowser.tsx`), tarjetas con foto (`MenuItemCard.tsx`, `LazyImage.tsx`) y hoja de detalle del plato (`MenuItemDetailSheet.tsx`).
-   - Opciones por plato: grupos de selección única o múltiple, obligatorios u opcionales, con precio extra (`app/api/orders/route.ts` líneas 105-132; ejemplos en `supabase/seed.sql`: "Guarnición", "Punto de cocción", "Extras").
-   - Nota libre por plato, "Nota (opcional)" (`MenuItemDetailSheet.tsx` línea 188).
-   - Carrito con botón flotante y cajón (`CartFab.tsx`, `CartDrawer.tsx`, `CartItemRow.tsx`). El carrito se guarda en el navegador por mesa (`README.md` línea 31: "localStorage por mesa").
-   - Seguimiento del pedido en 4 pasos: Recibido, En preparación, Listo, Entregado; o "cancelado" (`components/client/OrderStatusTracker.tsx` líneas 8-13 y 37-43), actualizado en tiempo real (`lib/realtime/useOrderStatus`).
-   - Botón "Llamar al mozo" con motivos "Pedir la cuenta" y "Hacer una consulta" (`components/client/CallWaiterButton.tsx` líneas 15-18; endpoint `app/api/waiter-calls/route.ts`).
-   - Precios en pesos argentinos (`lib/format.ts`: `es-AR`, `ARS`).
-   - Estado vacío: "Todavía no hay platos cargados en la carta." (`app/m/[tableId]/page.tsx` línea 15).
-4. Panel de cocina `/kitchen`: tablero de pedidos en tiempo real, con avance de estado y "Cuenta de la mesa hoy" (`app/kitchen/page.tsx`, `components/kitchen/OrderBoard.tsx`, `OrderCard.tsx` línea 62). Estado vacío: "No hay pedidos pendientes."
-5. Panel de salón `/floor`: secciones "Llamados de mozo", "Listos para llevar" y "Mesas"; cada mesa con estado libre / activa / lista / llamando (`components/floor/FloorBoard.tsx`).
-6. Panel de administración `/admin` (rol admin), con tres secciones: Carta, Mesas y Apariencia (`components/admin/AdminNav.tsx`):
-   - Carta: categorías, platos (nombre, descripción, precio, foto subida o por URL, disponible / "Sin stock hoy"), grupos de opciones (`components/admin/MenuItemEditForm.tsx`).
-   - Mesas: crear y eliminar mesas, descargar el QR como PNG, ver la carta de esa mesa (`components/admin/TableList.tsx`; `README.md` líneas 136-138: PNG, no PDF).
-   - Apariencia: temas de color por restaurante, 7 predefinidos (Default, Glaciar, Galaxia, Madera, Neobrutalista, Neumorfismo, Claymorfismo) más editor de paleta personalizada (`lib/theme/presets.ts`, `components/admin/AppearanceEditor.tsx`). Este tema lo ve el cliente final en la carta del restaurante, no es una marca MenuSky.
-7. Roles de staff: `admin`, `waiter`, `kitchen` (`README.md` líneas 108-112; `supabase/migrations/0001_init.sql`).
-8. Acceso: `/login` es solo para staff existente (email y contraseña; `components/auth/LoginForm.tsx`). No existe registro público. Altas de usuarios y restaurantes se hacen a mano en Supabase (`README.md` líneas 108-129).
-9. Protección de rutas: `proxy.ts` protege solo `/kitchen`, `/floor`, `/admin`; `/` es pública.
-10. Limitaciones declaradas (no publicitar como funcionalidad): no hay reordenar categorías/platos arrastrando (`README.md` líneas 139-141); la cuenta acumulada es "aproximada, no reemplaza caja" (`README.md` línea 166). Hoy el producto es de un restaurante por usuario staff; no hay panel "multi-local" para el dueño (no se encontró evidencia de ello; ver pregunta 18).
-11. Estado actual de `/`: plantilla por defecto de create-next-app (`app/page.tsx`). `app/layout.tsx` tiene título "Create Next App", descripción "Generated by create next app" y `<html lang="en">`, aunque toda la app está en español.
-12. Activos: `public/` solo contiene los SVG de plantilla; no hay logo ni imágenes de MenuSky. Demo de datos: restaurante ficticio "El Buen Sabor" (`supabase/seed.sql`), con 3 mesas cuyos `qr_token` son aleatorios (`'mesa-1-' || substr(md5(random()::text),1,8)`), por lo que el enlace a una carta de ejemplo no es una URL fija conocida.
+   - Carta por categorías con pestañas (`components/client/MenuCategoryTabs.tsx`, `MenuBrowser.tsx`), tarjetas con foto (`MenuItemCard.tsx`) y detalle del plato (`MenuItemDetailSheet.tsx`).
+   - Opciones por plato: grupos de selección única o múltiple, obligatorios u opcionales, con precio extra (`app/api/orders/route.ts` líneas 105-132; ejemplos "Guarnición", "Punto de cocción", "Extras" en `supabase/seed.sql`).
+   - Nota libre por plato "Nota (opcional)" (`MenuItemDetailSheet.tsx` línea 188).
+   - Carrito con botón flotante y cajón (`CartFab.tsx`, `CartDrawer.tsx`); el carrito se guarda en el navegador por mesa (`README.md` línea 31).
+   - Seguimiento del pedido en 4 pasos: Recibido, En preparación, Listo, Entregado (o cancelado), en tiempo real (`components/client/OrderStatusTracker.tsx`, `lib/realtime/useOrderStatus`).
+   - Botón "Llamar al mozo" con motivos "Pedir la cuenta" y "Hacer una consulta" (`components/client/CallWaiterButton.tsx` líneas 15-18; `app/api/waiter-calls/route.ts`).
+4. Panel de cocina `/kitchen`: tablero de pedidos en tiempo real, con avance de estado y "Cuenta de la mesa hoy" (`components/kitchen/OrderCard.tsx` línea 62).
+5. Panel de salón `/floor`: "Llamados de mozo", "Listos para llevar" y "Mesas" con estado libre / activa / lista / llamando (`components/floor/FloorBoard.tsx`).
+6. Panel de administración `/admin` (rol admin): Carta (categorías, platos con foto, disponible / "Sin stock hoy", grupos de opciones), Mesas (crear/eliminar, descargar QR como PNG) y Apariencia (7 temas predefinidos más paleta personalizada) (`components/admin/*`, `lib/theme/presets.ts`).
+7. Roles de staff: `admin`, `waiter`, `kitchen`. `/login` es solo para staff existente; no hay registro público (`components/auth/LoginForm.tsx`, `README.md` líneas 108-129).
+8. `proxy.ts` protege solo `/kitchen`, `/floor`, `/admin`; `/` y `/m/*` son públicas.
+9. Limitaciones declaradas (NO publicitar como funcionalidad): la cuenta acumulada es "aproximada, no reemplaza caja" (`README.md` línea 166); no hay reordenar por arrastre (`README.md` líneas 139-141). El código NO emite facturas ni procesa pagos.
+10. Estado actual de `/`: plantilla de create-next-app (`app/page.tsx`). `app/layout.tsx` tiene título "Create Next App", descripción "Generated by create next app" y `<html lang="en">`.
+11. Activos: `public/` solo tiene SVG de plantilla; no hay logo ni capturas de MenuSky. El seed usa el restaurante ficticio "El Buen Sabor" con "Coca-Cola" en un plato; NO se usa en la landing.
 
-### 1.2 Problema que resuelve y para quién (inferido del código; a confirmar, ver preguntas 1 y 2)
+### 1.3 Problema, público y objetivo
 
-Problema: en un restaurante el cliente espera al mozo para ver la carta, pedir y pedir la cuenta; el mozo toma pedidos a mano y cocina los recibe con demora. MenuSky permite que el cliente pida desde su celular y que cocina y salón vean los pedidos al instante.
-Destinatario probable de la landing: dueños o gerentes de restaurantes, bares o cafeterías (quien decide contratar). El cliente final (comensal) NO es el público de la landing: entra por el QR.
-
-### 1.3 Objetivo de la landing (PROPUESTA, a confirmar)
-
-Que un dueño de restaurante que llega a `https://menusky.vercel.app/` entienda en menos de 30 segundos qué es MenuSky y pueda dar el siguiente paso (acción principal a definir: ver pregunta 3).
-Cómo se mide (PENDIENTE de pregunta 3 y 13): porcentaje de visitantes que hacen clic en el CTA principal. Sin analítica no hay medición; hoy no existe ninguna.
+- Problema: en un restaurante el cliente espera al mozo para ver la carta, pedir y pedir la cuenta; el mozo anota a mano y cocina recibe los pedidos con demora.
+- Público (R-D 1): dueños y gerentes de restaurantes, bares y cafés de Argentina. El comensal NO es el público: entra por el QR.
+- Objetivo de la landing: que un dueño que llega a `https://menusky.vercel.app/` diga "wow", entienda qué es MenuSky en menos de 30 segundos y haga clic en "Pedí una demo".
+- Medición: sin analítica (R-D 12), el éxito se evalúa por los criterios de aceptación y por las consultas que lleguen por WhatsApp/email. No se instala ninguna herramienta de medición en v1.
 
 ---
 
 ## 2. Alcance y fuera de alcance
 
-### 2.1 Dentro del alcance (borrador)
-- Página pública en `/` que reemplaza la plantilla de Next.
-- Contenido en español basado solo en funcionalidades reales (sección 1.1).
-- Acceso visible a `/login` para el staff existente (PENDIENTE de pregunta 3).
-- Metadatos básicos (título, descripción, idioma) y corrección de `lang`.
-- Diseño responsive y accesible.
+### 2.1 Dentro del alcance
+- Página única en `/` que reemplaza por completo la plantilla de Next (R-D 7), en español rioplatense (R-D 9).
+- Destacar: carta digital, pedidos por QR, llamado al mozo y "Pedir la cuenta" (R-D 3); más las funciones reales de 1.2 (cocina en tiempo real, salón, administración, opciones y extras, seguimiento del pedido, temas).
+- Elemento 3D y animaciones (HU-8) con fallbacks.
+- Mockups/ilustraciones de la app creados en código o SVG con datos ficticios genéricos (R-D 5, 13).
+- Fotos de ejemplo con licencia libre (`docs/CREDITS.md`).
+- CTA "Pedí una demo" por WhatsApp y por email (R-D 4).
+- Link discreto "Ingresar" a `/login` (R-D 6).
+- Identidad visual propia: logotipo tipográfico o isotipo SVG de MenuSky y favicon (R-D 8).
+- Metadatos/SEO, `lang="es-AR"`, robots y sitemap (HU-6).
+- Renombre a MenuSky en `package.json`, README y metadata de `app/layout.tsx` (R-D 15, 16).
 
 ### 2.2 Fuera de alcance (explícito)
-- Registro / alta de restaurantes autoservicio, pago de suscripción, facturación.
-- Cualquier cambio a `/m/*`, `/kitchen`, `/floor`, `/admin`, `/login`, APIs, base de datos o `proxy.ts`. La landing no modifica la app.
-- Publicitar funcionalidades inexistentes: pagos online, delivery, reservas, estadísticas o reportes, inventario, multi-local, integración con POS/cajas, pedido para llevar, impresión de comandas, multi-idioma de la carta. (Solo pueden entrar si el Director confirma que existen o se especifican aparte.)
+- Demo en vivo: carta real en `/m/{token}` o pedidos de prueba desde la landing (R-D 5). Quedan fuera los antiguos CA-4.1, CA-4.2 y CA-4.4.
+- Precios, planes y la palabra "gratis" (R-D 10).
+- Formulario de contacto, backend nuevo, base de datos nueva (R-D 11).
+- Redes sociales (no se dieron datos; R-D 11).
+- Testimonios, métricas, cifras, logos de clientes (R-D 17).
+- Analítica, cookies y banner de cookies (R-D 12, 14).
+- Facturación, factura electrónica, pagos online, delivery, reservas, estadísticas/reportes, inventario, multi-local, integración con POS/cajas, pedido para llevar, impresión de comandas, multi-idioma, "próximamente" (R-D 3, 18).
+- Modo oscuro conmutable (R-D 8).
+- Registro/alta autoservicio de restaurantes.
+- Cambios a `/m/*`, `/kitchen`, `/floor`, `/admin`, `/login`, `app/api/*`, base de datos o `proxy.ts`. La única edición compartida permitida es `app/layout.tsx` (metadata y `lang`), coordinada con el Líder.
 - Blog, centro de ayuda, chat en vivo, comparativas con competidores.
-- Formulario de contacto con backend y legales: solo entran si el Director responde afirmativamente (preguntas 8 y 15); en ese caso requieren una ampliación de esta spec.
-- Cambiar la identidad visual de la app interna (paneles y carta del cliente).
+- Dominio propio (se usa `menusky.vercel.app`).
 
 ---
 
@@ -74,193 +84,315 @@ Cómo se mide (PENDIENTE de pregunta 3 y 13): porcentaje de visitantes que hacen
 
 | Rol | Qué hace en la landing |
 |---|---|
-| Visitante anónimo (dueño/gerente de restaurante) | Lee, navega, hace clic en CTAs. No necesita cuenta. Es el público objetivo. |
-| Staff existente (admin/mesero/cocina) | Usa el enlace "Ingresar" hacia `/login`. |
-| Comensal | No es público de la landing. Si llega aquí por error, debe entender que para pedir debe escanear el QR de su mesa (PENDIENTE de pregunta 4). |
-| Director / equipo | Edita textos y contenido (PENDIENTE de pregunta 5). |
+| Visitante anónimo (dueño/gerente) | Lee, mira las animaciones y el 3D, hace clic en "Pedí una demo". Sin cuenta. Es el público objetivo. |
+| Staff existente (admin/waiter/kitchen) | Usa el link discreto "Ingresar" hacia `/login`. Si ya tiene sesión y entra a `/`, ve la landing igual (sin redirección; R-D 6). |
+| Comensal | No es público. Si llega por error, ve el aviso "¿Sos cliente? Escaneá el QR de tu mesa". |
+| Director | Revisa textos en el release y aprueba la salida a producción. |
 
-Permisos: todo el contenido de `/` es público y sin autenticación. La landing no debe mostrar ni pedir datos de ningún restaurante real ni de staff.
-
----
-
-## 4. Estructura propuesta (PROPUESTA, a confirmar; ver preguntas 5 y 6)
-
-Orden sugerido. Cada sección usa solo funcionalidades reales de la sección 1.1.
-
-1. Encabezado (logo o nombre "MenuSky", enlaces de ancla, botón "Ingresar" a `/login`, CTA principal).
-2. Hero: propuesta de valor en una frase, subtítulo, CTA principal y visual (captura o mockup; ver pregunta 10).
-3. Problema/beneficio: cliente pide sin esperar al mozo; cocina recibe el pedido al instante; menos idas y vueltas (afirmaciones respaldadas por 1.1 puntos 1, 3, 4).
-4. Cómo funciona (3 pasos): (1) el cliente escanea el QR de la mesa, (2) arma el pedido con opciones y notas, (3) cocina lo recibe y el cliente sigue el estado en vivo.
-5. Funcionalidades: carta digital con fotos y categorías; opciones y extras por plato; llamado al mozo; panel de cocina en tiempo real; panel de salón con estado de mesas; administración de carta, mesas y QR; temas de color para la carta del restaurante.
-6. Demo: carta de ejemplo en vivo o capturas/video (PENDIENTE de pregunta 4).
-7. Precios/planes (PENDIENTE de pregunta 7; si no hay precios, reemplazar por "Contactanos").
-8. Preguntas frecuentes (PROPUESTA, textos a escribir solo con hechos verificados; ejemplos: "¿El cliente tiene que instalar una app?" No, README línea 5; "¿Puedo cambiar los colores de mi carta?" Sí, 1.1 punto 6). Las respuestas sobre pagos, etc., dependen del Director.
-9. CTA final repetido.
-10. Pie de página: contacto, redes, enlaces legales si aplican (preguntas 8, 9, 15), "Ingresar".
+Permisos: todo `/` es público, sin autenticación, y no lee ni escribe datos de restaurantes, pedidos o staff.
 
 ---
 
-## 5. Historias de usuario y criterios de aceptación
+## 4. Estructura final (una sola página, en este orden)
 
-Notación: CA-x.y. Todos los criterios se prueban en `https://menusky.vercel.app/` o en la URL de preview/local equivalente.
-Viewports de referencia: móvil 360x640, tablet 768x1024, escritorio 1440x900.
+Cada sección tiene un `id` de ancla estable. Solo se anuncia lo que existe hoy (R-D 18).
+
+1. Encabezado fijo: logotipo MenuSky; enlaces de ancla "Funciones", "Cómo funciona", "Preguntas"; link discreto "Ingresar" (a `/login`); botón "Pedí una demo".
+2. Hero: h1, subtítulo, CTA principal "Pedí una demo", CTA secundario "Mirá cómo funciona" (ancla), elemento 3D interactivo y mockup de celular con la carta.
+3. Beneficio ("Menos idas y vueltas en cada mesa"): tres ideas respaldadas por 1.2 puntos 1, 3 y 4.
+4. Cómo funciona (3 pasos): escanean el QR, eligen y piden, cocina lo recibe y el cliente sigue el pedido.
+5. Las cuatro funciones estrella (con mockup animado cada una): carta digital, pedidos por QR, llamado al mozo, pedir la cuenta.
+6. Para tu equipo: panel de cocina en tiempo real, panel de salón, administración (carta, mesas y QR).
+7. A tu medida: opciones y extras por plato, seguimiento del pedido, temas de color.
+8. Preguntas frecuentes.
+9. CTA final: "Pedí una demo" (WhatsApp y email).
+10. Pie: logotipo, contacto (WhatsApp, email), "Ingresar", aviso "¿Sos cliente? Escaneá el QR de tu mesa", © MenuSky. Sin redes, sin legales (pendiente, ver 11).
+
+---
+
+## 5. Textos propuestos (voseo rioplatense)
+
+Los redacta el equipo; el Director revisa en el release (R-D 2). El Frontend puede pulirlos sin cambiar el sentido ni prometer nada inexistente (ver lista de prohibidos en CA-3.x).
+
+### 5.1 Hero
+- h1 (recomendado <= 70 caracteres): "Que tus clientes pidan desde la mesa. Y tu cocina lo vea al instante." (68)
+- Subtítulo (recomendado <= 160): "MenuSky es la carta digital con pedidos por QR para restaurantes, bares y cafés. Tus clientes escanean, eligen y piden. Vos lo seguís todo en vivo." (~148)
+- CTA principal: "Pedí una demo". CTA secundario: "Mirá cómo funciona".
+- Microcopy bajo el CTA: "Hablamos por WhatsApp o por email."
+
+### 5.2 Títulos de sección (h2) y bajadas
+- Beneficio: "Menos idas y vueltas en cada mesa".
+- Cómo funciona: "Así de simple". Pasos: "1. Escanean el QR de su mesa" / "2. Eligen sus platos, con opciones y extras" / "3. Cocina recibe el pedido y ellos lo siguen en vivo".
+- Funciones estrella: "Todo lo que pasa en tu salón, en un solo lugar".
+  - Carta digital: "Tu carta, con fotos y por categorías, siempre al día."
+  - Pedidos por QR: "Cada mesa tiene su QR. El pedido va directo a cocina."
+  - Llamado al mozo: "Un toque y el mozo ve quién lo necesita."
+  - Pedir la cuenta: "Tus clientes piden la cuenta sin levantar la mano. Tu equipo ve el llamado y la cuenta de la mesa en sus paneles."
+- Para tu equipo: "Cocina, salón y administración, en tiempo real".
+- A tu medida: "Tu carta, con tu estilo".
+- FAQ: "Preguntas frecuentes".
+- CTA final: "¿Querés ver MenuSky en tu restaurante?" + botón "Pedí una demo".
+
+### 5.3 FAQ propuestas (solo hechos verificados)
+1. "¿Mis clientes tienen que instalar una app?" — "No. Escanean el QR de la mesa y la carta se abre en el navegador de su celular."
+2. "¿Cómo piden la cuenta?" — "Desde la carta tocan 'Llamar al mozo' y eligen 'Pedir la cuenta'. Tu equipo ve el llamado en el panel de salón y la cuenta de la mesa en sus paneles. Es una cuenta orientativa: no reemplaza a tu caja."
+3. "¿Puedo cargar y cambiar mi carta?" — "Sí. Desde el panel de administración cargás categorías, platos, fotos y opciones, y marcás un plato como 'Sin stock hoy'."
+4. "¿Cómo consigo los QR de mis mesas?" — "Creás las mesas en el panel de administración y descargás el QR de cada una como imagen PNG, listo para imprimir."
+5. "¿Puedo cambiar los colores de mi carta?" — "Sí. Elegís entre 7 temas o armás tu propia paleta."
+6. "¿Cómo empiezo?" — "Pedí una demo por WhatsApp o por email y te mostramos cómo funciona MenuSky."
+
+### 5.4 Metadatos
+- `title` (<= 60 caracteres): "MenuSky | Carta digital y pedidos por QR para restaurantes" (58)
+- `description` (120-160): "Carta digital y pedidos por QR para restaurantes, bares y cafés. Tus clientes piden desde la mesa y cocina lo ve al instante. Pedí tu demo por WhatsApp." (~150)
+- Open Graph y Twitter: mismo título y descripción; imagen 1200x630; `og:locale` es_AR.
+
+### 5.5 Mensajes de contacto (CTA)
+- WhatsApp, texto precargado: "Hola, vi MenuSky y quiero pedir una demo para mi restaurante, bar o café."
+- Email, asunto: "Quiero una demo de MenuSky". Cuerpo (con saltos de línea):
+  ```
+  Hola, vi MenuSky y quiero pedir una demo.
+
+  Nombre:
+  Local (restaurante, bar o café):
+  Ciudad:
+  Teléfono:
+  ```
+
+---
+
+## 6. Historias de usuario y criterios de aceptación
 
 ### HU-1 Entender qué es MenuSky
-Como dueño de restaurante quiero ver en la primera pantalla qué es MenuSky y para quién, para decidir si seguir leyendo.
+Como dueño de restaurante quiero ver en la primera pantalla qué es MenuSky y para quién, para decidir si sigo.
 
-- CA-1.1 Dado un visitante sin sesión, cuando abre `/`, entonces no ve ningún texto de la plantilla de Next ("To get started, edit the page.tsx file", enlaces a Vercel/Next.js/Docs/Templates).
-- CA-1.2 Cuando abre `/` en 360x640 y 1440x900, entonces, sin hacer scroll, ve el nombre MenuSky, la propuesta de valor (texto final PENDIENTE de pregunta 2) y el CTA principal.
-- CA-1.3 Cuando lee la página completa, entonces todas las funcionalidades mencionadas existen en la lista de la sección 1.1 (QA compara texto contra esa lista; cualquier mención de pagos online, delivery, reservas o estadísticas es un defecto salvo confirmación por escrito del Director).
-- CA-1.4 Cuando abre `/`, entonces la primera pintura de contenido ocurre sin depender de inicio de sesión ni de datos de restaurante (la landing no consulta la base de datos de restaurantes; PENDIENTE de pregunta 4 si la demo la requiere).
+- CA-1.1 Dado un visitante sin sesión, cuando abre `/`, entonces no ve ningún texto ni enlace de la plantilla de Next ("To get started, edit the page.tsx file", Vercel, Next.js, Docs, Templates) y `app/page.tsx` ya no la contiene.
+- CA-1.2 Cuando abre `/` en 360x640 y en 1440x900, entonces, sin hacer scroll, ve el nombre/logotipo MenuSky, el h1, el subtítulo y el CTA "Pedí una demo".
+- CA-1.3 La página tiene exactamente un `h1` y las secciones aparecen en el orden de la sección 4.
+- CA-1.4 La landing no consulta la base de datos ni la API de la app: en la pestaña Red de `/` no hay peticiones a Supabase ni a `/api/*`.
+- CA-1.5 En una prueba con 3 personas ajenas al proyecto (QA o Director las convoca), 3 de 3 responden correctamente "qué es" y "dónde pedir la demo" en <= 10 segundos de mirar el hero. Evidencia: notas de la prueba.
+- CA-1.6 La página muestra el aviso "¿Sos cliente? Escaneá el QR de tu mesa" en el pie.
 
-### HU-2 Dar el siguiente paso (CTA)
-Como dueño interesado quiero un camino claro para probar o contratar.
+### HU-2 Pedir una demo (CTA)
+Como dueño interesado quiero un camino inmediato para pedir una demo.
 
-- CA-2.1 Cuando hace clic en el CTA principal, entonces llega al destino definido (PENDIENTE de pregunta 3). Ningún CTA apunta a una ruta inexistente ni a "#" vacío.
-- CA-2.2 Cuando el CTA es un contacto por WhatsApp o email, entonces abre la app correspondiente con el número/dirección correctos y un mensaje precargado si el Director lo define (PENDIENTE de preguntas 3 y 8).
-- CA-2.3 Cuando hay varios CTAs en la página, entonces todos llevan al mismo destino principal (salvo "Ingresar" y "Ver demo").
-- CA-2.4 No existe ningún botón "Registrate" o "Probá gratis" que lleve a un registro, mientras no exista registro público (hecho: sección 1.1 punto 8).
+- CA-2.1 Todos los botones/enlaces "Pedí una demo" (encabezado, hero, CTA final, pie) abren WhatsApp con exactamente esta URL base: `https://wa.me/5493624105311` más `?text=` con el mensaje de 5.5 codificado: `https://wa.me/5493624105311?text=Hola%2C%20vi%20MenuSky%20y%20quiero%20pedir%20una%20demo%20para%20mi%20restaurante%2C%20bar%20o%20caf%C3%A9.`
+- CA-2.2 Formato verificado: WhatsApp indica `https://wa.me/<número>` con número completo en formato internacional, sin ceros, corchetes ni guiones, y `https://wa.me/<número>?text=<texto codificado>` para precargar el mensaje (https://faq.whatsapp.com/5913398998672934, "How to use click to chat"). Para Argentina WhatsApp indica el prefijo 54, un 9 entre el código de país y el de área, y quitar el 15 (https://faq.whatsapp.com/537057536884131/?locale=es_LA). Resultado: 54 + 9 + 362 + 4105311 = 5493624105311 (13 dígitos). Nota: el texto exacto de la página de WhatsApp no pudo abrirse en su totalidad con la herramienta de lectura; la regla general se confirmó en el resultado de búsqueda de esa misma página (faq.whatsapp.com) y la regla argentina en la página de ayuda citada. QA debe abrir el enlace en un celular y confirmar que abre el chat con +54 9 362 410-5311.
+- CA-2.3 Existe un enlace secundario de email "Escribinos por email" con `mailto:facu785@gmail.com?subject=Quiero%20una%20demo%20de%20MenuSky&body=Hola%2C%20vi%20MenuSky%20y%20quiero%20pedir%20una%20demo.%0D%0A%0D%0ANombre%3A%0D%0ALocal%20(restaurante%2C%20bar%20o%20caf%C3%A9)%3A%0D%0ACiudad%3A%0D%0ATel%C3%A9fono%3A%0D%0A` (visible en el hero y en el CTA final). Al hacer clic se abre el cliente de correo con destinatario, asunto y cuerpo cargados y legibles (acentos correctos).
+- CA-2.4 Los enlaces de WhatsApp abren en pestaña nueva con `target="_blank"` y `rel="noopener noreferrer"`.
+- CA-2.5 No hay otros números ni correos en la página, ni formulario, ni enlaces a redes sociales. Solo el WhatsApp 5493624105311 y el email facu785@gmail.com.
+- CA-2.6 Ningún enlace apunta a una ruta inexistente ni a `#` vacío; los anclas de la navegación llevan a un `id` existente.
+- CA-2.7 No existe botón "Registrate" ni "Probá gratis" (no hay registro público).
+- CA-2.8 En escritorio sin la app de WhatsApp, el enlace degrada a WhatsApp Web sin error de nuestra página.
 
-### HU-3 Ingresar como staff
-Como staff existente quiero llegar a mi acceso desde la landing.
+### HU-3 No prometer lo que MenuSky no hace
+Como Director quiero que la landing diga solo lo que existe, para no generar falsas expectativas.
 
-- CA-3.1 Cuando hace clic en "Ingresar" (en encabezado y pie, etiqueta PENDIENTE de pregunta 3), entonces navega a `/login` y ve el formulario de ingreso (después de "tirar de la cadena"; comportamiento actual de `LoginForm.tsx`).
-- CA-3.2 Dado un staff con sesión activa, cuando abre `/`, entonces ve la landing igual (no hay redirección automática) salvo que el Director decida otra cosa (PENDIENTE de pregunta 3c).
-- CA-3.3 El enlace "Ingresar" es alcanzable con teclado (Tab) y activable con Enter.
+- CA-3.1 La palabra "cuenta" aparece solo en el sentido de "Pedir la cuenta" mediante el llamado al mozo, y de que el staff ve la cuenta de la mesa en sus paneles. El texto aclara (en FAQ 2) que es orientativa y no reemplaza a la caja.
+- CA-3.2 En todo el texto visible, `alt`, `title`, `aria-label` y metadatos NO aparece ninguna de estas palabras o ideas: "factura", "facturación", "facturar", "ticket fiscal", "AFIP", "pago", "pagos", "pagar", "cobrar", "cobro", "propina", "MercadoPago", "tarjeta de crédito/débito", "delivery", "envío", "a domicilio", "para llevar", "reserva", "estadísticas", "reportes", "inventario", "stock" (salvo la etiqueta real "Sin stock hoy"), "multi-local", "sucursales", "POS", "impresión", "próximamente", "pronto", "gratis", "gratuito", "precio" ni cifras de plan de MenuSky. El símbolo "$" solo puede aparecer dentro de los mockups de carta, como monto ficticio de un plato (ver duda 3 de la sección 12). QA lo verifica con búsqueda de texto sobre el HTML renderizado (adjunta salida).
+- CA-3.3 No hay testimonios, citas de clientes, métricas, cifras de uso ni logos de clientes (R-D 17). En los mockups no hay números presentados como resultados ("+30% de ventas", etc.).
+- CA-3.4 Cada funcionalidad mencionada existe en la lista de 1.2 puntos 3 a 6 (QA compara texto contra esa lista; cualquier otra es un defecto).
+- CA-3.5 Los mockups usan nombres, platos y montos ficticios genéricos; no aparece "El Buen Sabor", "Coca-Cola" ni ninguna marca real. Los montos, si aparecen en un mockup, son ilustrativos y no se destacan como precios de MenuSky (ver 11, duda 3).
+- CA-3.6 No hay precios de MenuSky ni la palabra "gratis" (R-D 10).
 
-### HU-4 Ver la app en acción (demo)
-Como dueño quiero ver cómo se ve la carta y el flujo de pedido.
+### HU-4 Ver cómo es MenuSky (mockups)
+Como dueño quiero ver cómo se ve la app, sin demo en vivo.
 
-- CA-4.1 PENDIENTE de pregunta 4: si la demo es carta en vivo, al hacer clic en "Ver demo" se abre `/m/{token}` de una mesa de demostración en una pestaña nueva (`rel="noopener noreferrer"`) y se ve la carta con platos (no el estado vacío ni 404).
-- CA-4.2 PENDIENTE de pregunta 4: si la demo en vivo permite enviar pedidos reales al restaurante de demostración, QA verifica que esos pedidos no ensucien datos reales ni se mezclen con un restaurante de un cliente real (riesgo R2).
-- CA-4.3 PENDIENTE de pregunta 10: si hay capturas/mockups, cada imagen tiene texto alternativo descriptivo, y ningún dato personal, nombre de restaurante real o token de QR real es visible en ellas.
-- CA-4.4 Si una demo en vivo no carga (token inválido/eliminado), entonces la landing sigue funcionando; el botón no debe quedar roto: QA prueba con un token inexistente y confirma que `/m/{token}` muestra la página 404 de Next y el resto de la landing no se ve afectado.
+- CA-4.1 Hay un mockup de celular con la carta (categorías, tarjetas de plato con foto de ejemplo, botón de carrito) y un mockup del panel de cocina (columnas/tarjetas de pedidos con estados), construidos en código o SVG con datos ficticios genéricos. No son capturas de producción.
+- CA-4.2 Hay una animación o secuencia que muestra el flujo: el pedido sale del celular, aparece en cocina y el cliente ve pasar los estados Recibido, En preparación, Listo, Entregado (nombres idénticos a los del código).
+- CA-4.3 Cada imagen informativa tiene `alt` descriptivo; las decorativas tienen `alt=""`. Las fotos provienen de `docs/CREDITS.md`.
+- CA-4.4 Ningún mockup incluye datos personales, nombres de restaurantes reales ni `qr_token` reales.
+- CA-4.5 No existe en la página ningún enlace a `/m/*` ni botón "Ver demo".
 
-### HU-5 Contactar al equipo (PENDIENTE de pregunta 8)
-- CA-5.1 Si el contacto es por enlace (WhatsApp/email): los datos coinciden exactamente con los entregados por el Director.
-- CA-5.2 Si el contacto es un formulario (requiere backend y ampliación de la spec): campos, validaciones, destino de los mensajes, protección anti-spam y mensajes de éxito/error se definen en una spec aparte una vez respondida la pregunta 8. Hasta entonces este criterio queda bloqueado.
+### HU-5 Ingresar como staff
+- CA-5.1 Hay un link discreto "Ingresar" en encabezado y pie que lleva a `/login`, con peso visual menor al CTA principal (no es un botón relleno).
+- CA-5.2 Un staff con sesión activa que abre `/` ve la landing, sin redirección (verificable: la URL sigue en `/`; `proxy.ts` solo cubre `/kitchen`, `/floor`, `/admin`).
+- CA-5.3 "Ingresar" es alcanzable con Tab y se activa con Enter.
 
-### HU-6 Consultar precios (PENDIENTE de pregunta 7)
-- CA-6.1 Si se muestran precios: cada plan muestra nombre, valor, moneda y período tal como lo define el Director; QA compara contra el documento del Director.
-- CA-6.2 Si no se muestran: no aparece ningún precio ni la palabra "gratis" en la página.
+### HU-6 SEO y metadatos
+- CA-6.1 `<title>` = el de 5.4 (o su versión pulida, <= 60 caracteres) y ya no es "Create Next App". Aplica a toda la app vía `app/layout.tsx` (R-D 15).
+- CA-6.2 `meta description` de 120 a 160 caracteres y ya no es "Generated by create next app".
+- CA-6.3 `<html lang="es-AR">`.
+- CA-6.4 URL canónica y base de metadatos `https://menusky.vercel.app` (R-D 12). La etiqueta canonical de `/` apunta a `https://menusky.vercel.app/`.
+- CA-6.5 Open Graph (título, descripción, imagen, url, locale es_AR) y Twitter card, con imagen de 1200x630 px (aparece al pegar el enlace; QA verifica etiquetas y que la imagen responde 200 en local).
+- CA-6.6 Favicon propio de MenuSky (no el de la plantilla); se ve en la pestaña.
+- CA-6.7 Sin `noindex` en `/`.
+- CA-6.8 (Decisión del Líder, revisable por el Director) Existen `/robots.txt` con `Disallow` para `/m/`, `/kitchen`, `/floor`, `/admin`, `/login`, `/api` y referencia al sitemap, y `/sitemap.xml` con solo `https://menusky.vercel.app/`. No se modifica ninguna página de la app. Limitación: `robots.txt` pide no rastrear pero no garantiza la baja de páginas ya indexadas; evitar la indexación de `/m/*` de forma estricta requeriría tocar la app y no está en este alcance.
+- CA-6.9 Cero texto "Lorem ipsum", "TODO" ni de la plantilla en el HTML publicado.
 
-### HU-7 Usar la landing en celular
-- CA-7.1 Dado un viewport de 360 px de ancho, cuando se recorre toda la página, entonces no hay scroll horizontal (`document.documentElement.scrollWidth <= window.innerWidth`). Esto es crítico: hubo un bug reciente de desborde horizontal en móvil causado por el marquee del Hero (commit a3861be del historial git, según lo informado por el Líder); se debe evitar repetirlo.
-- CA-7.2 En 360x640, 768x1024 y 1440x900 ningún texto queda cortado, superpuesto ni ilegible; las imágenes no se deforman.
-- CA-7.3 Todos los botones y enlaces tocables miden al menos 44x44 px en viewport móvil.
-- CA-7.4 Con el zoom del navegador al 200%, el contenido sigue legible y navegable sin pérdida de funcionalidad.
+### HU-7 Renombre a MenuSky
+- CA-7.1 `package.json` tiene `"name": "menusky"` (antes "carta-digital"). El Líder actualiza también el nombre en `package-lock.json` si corresponde.
+- CA-7.2 El título del `README.md` pasa de "Carta Digital + Pedidos por QR" a "MenuSky" (puede mantener el subtítulo descriptivo). Los demás contenidos del README no se alteran salvo menciones al nombre.
+- CA-7.3 La metadata de `app/layout.tsx` usa MenuSky; en ninguna pantalla de la app (login, paneles, carta del cliente) el título de la pestaña dice "Create Next App".
+- CA-7.4 `docs/STACK.md` (Líder) se actualiza al nuevo nombre.
+- CA-7.5 `npm run build` pasa sin errores tras el renombre.
 
----
+### HU-8 Efecto "wow": 3D, movimiento y diseño llamativo
+Como Director quiero que la página impacte para convertir visitas en clientes.
 
-## 6. Requisitos no funcionales
+Elemento 3D (PROPUESTA de concepto, no tecnología: un objeto en 3D del universo gastronómico, por ejemplo una hamburguesa de capas separadas o un celular con la carta rodeado de platos flotantes; el Frontend puede elegir otro si cumple los criterios):
+- CA-8.1 Existe al menos un elemento 3D interactivo o animado en el hero. En escritorio reacciona al movimiento del puntero y/o al scroll; QA lo verifica moviendo el mouse y comprobando que cambia de orientación o posición.
+- CA-8.2 En móvil reacciona al scroll o al giroscopio, o tiene animación continua suave. Si se usa giroscopio, NO se muestra ningún pedido de permiso al cargar la página (en iOS requiere permiso); debe haber alternativa por scroll o animación.
+- CA-8.3 El h1, el subtítulo y el CTA principal son visibles y usables (clic funcionando) antes de que cargue el 3D: con la red limitada a "Slow 3G" en las herramientas de desarrollo, el texto y el CTA aparecen antes que el 3D y el CTA es clickeable sin esperar.
+- CA-8.4 Con `prefers-reduced-motion: reduce`: el 3D queda estático o se reemplaza por una imagen; no hay animaciones de desplazamiento ni de entrada; ningún elemento se mueve solo ni reacciona al puntero. Todo el contenido sigue visible.
+- CA-8.5 Si WebGL no está disponible (se simula desactivándolo), se muestra un fallback estático (imagen o ilustración) en el mismo lugar, sin saltos de diseño y sin errores en la consola.
+- CA-8.6 El 3D no tapa ni desplaza el texto ni los botones; la zona clickeable de los CTAs no queda bloqueada por el canvas (QA hace clic en el CTA con el 3D cargado).
+- CA-8.7 Cada sección (de la 3 a la 9) entra con una animación al hacer scroll (aparición/desplazamiento suave de 200 a 600 ms), una sola vez por sección; el contenido existe en el DOM antes de la animación (no queda invisible si falla el script).
+- CA-8.8 Micro-interacciones en CTAs: efecto visible al hover (escritorio), al foco con teclado y al presionar (móvil); duración <= 300 ms.
+- CA-8.9 Los mockups de celular y de cocina tienen movimiento propio (secuencia de CA-4.2).
+- CA-8.10 Diseño y colores: paleta de cocina, rojo y amarillo ("los colores típicos de una hamburguesa completa": pan dorado, queso cheddar, tomate rojo, lechuga verde, carne marrón, mostaza). QA/Director verifican visualmente que el rojo y el amarillo son los protagonistas y que aparecen acentos de verde y marrón. Valores de color a definir por el Frontend, validados contra RNF-A1.
+- CA-8.11 Logotipo tipográfico o isotipo SVG propio de MenuSky, visible en el encabezado, el pie y el favicon; original, sin marcas de terceros.
+- CA-8.12 Un único aspecto (sin selector de modo oscuro). Con `prefers-color-scheme: dark` activo en el sistema, la landing se ve igual de legible (contraste AA mantenido; sin texto claro sobre fondo claro ni viceversa).
+- CA-8.13 Evaluación subjetiva obligatoria: el Director revisa la landing en el release y confirma si cumple "wow, llamativo, profesional, intuitivo". Se adjuntan capturas en 360x640 y 1440x900. Si no cumple, la landing no sale.
 
-### 6.1 Seguridad y privacidad
-- RNF-S1 La landing es estática/pública: no expone ni consulta datos de restaurantes, pedidos o staff. QA/Seguridad verifican que el HTML y las peticiones de red de `/` no contienen claves de servicio (`SUPABASE_SERVICE_ROLE_KEY`) ni tokens de QR reales.
-- RNF-S2 Todos los enlaces externos usan `rel="noopener noreferrer"` y `target="_blank"` si abren pestaña nueva.
-- RNF-S3 Si la landing captura datos (formulario, analítica con cookies), se requiere texto de privacidad visible y consentimiento según corresponda (PENDIENTE de preguntas 13 y 15). Sin captura de datos ni analítica, no se requiere.
-- RNF-S4 Teléfono, email o WhatsApp publicados son solo los entregados por el Director; no se usan los datos del restaurante ficticio del seed (`+54 11 5555-1234`, "Av. Siempre Viva 742").
-- RNF-S5 La landing no debe alterar `proxy.ts` ni abrir rutas nuevas protegidas; `/kitchen`, `/floor`, `/admin` siguen redirigiendo a login sin sesión (QA de regresión).
+### HU-9 Rendimiento (criterio de bloqueo)
+El 3D y las animaciones deben convivir con estas metas. Si no se cumplen, la landing NO pasa a release.
 
-### 6.2 Rendimiento (valores de referencia; el Director puede ajustarlos)
-- RNF-P1 En una medición Lighthouse móvil sobre la URL desplegada (perfil por defecto, conexión simulada 4G): puntuación de Rendimiento >= 90, LCP <= 2,5 s, CLS <= 0,1, TBT <= 200 ms. (PROPUESTA: umbrales basados en los valores "buenos" de Core Web Vitals; confirmar con el Director.)
-- RNF-P2 Peso de la página inicial (HTML + CSS + JS + imágenes por encima del pliegue) <= 1 MB transferido en la primera carga. (PROPUESTA de umbral.)
-- RNF-P3 Las imágenes por debajo del pliegue se cargan de forma diferida; las imágenes tienen dimensiones declaradas para evitar saltos de diseño.
-- RNF-P4 Las animaciones respetan `prefers-reduced-motion` (el código existente ya lo hace en `CallWaiterButton.tsx` y `OrderStatusTracker.tsx`; se mantiene el criterio).
+- CA-9.1 Medición con Lighthouse en modo móvil sobre `npm run build && npm run start` local (la URL desplegada no se toca; nada va a producción). Se repite 3 veces y se reporta la mediana.
+- CA-9.2 Rendimiento >= 90; LCP <= 2,5 s; CLS <= 0,1; TBT <= 200 ms.
+- CA-9.3 Primera carga <= 1 MB transferidos, medida sin interacción ni scroll (incluye el 3D si se carga automáticamente; si no cabe, el 3D se carga diferido después de la carga inicial o al entrar en pantalla).
+- CA-9.4 El elemento LCP es texto o imagen estática, no el canvas del 3D. El 3D se carga de forma diferida (no bloquea la primera pintura).
+- CA-9.5 Imágenes en WebP/AVIF, con tamaños adecuados por viewport, dimensiones declaradas y carga diferida debajo del pliegue.
+- CA-9.6 Buen rendimiento en celulares de gama media: en el perfil de CPU 4x más lenta de las herramientas de desarrollo, el scroll se mantiene fluido (sin tareas largas de más de 200 ms durante el scroll del hero) y el 3D degrada su calidad o se reemplaza por el fallback si no logra sostener la animación. QA adjunta el registro de rendimiento.
+- CA-9.7 Cero errores y cero advertencias de la propia página en la consola, en escritorio y móvil.
 
-### 6.3 Accesibilidad (objetivo: WCAG 2.2 nivel AA; PROPUESTA de nivel, confirmar)
-- RNF-A1 Contraste de texto >= 4,5:1 (texto normal) y >= 3:1 (texto grande e iconos) verificado con una herramienta de contraste (PENDIENTE de pregunta 6, colores).
-- RNF-A2 Toda la página se navega solo con teclado; el foco es siempre visible; el orden de tabulación sigue el orden visual.
-- RNF-A3 Un único `h1`; jerarquía de encabezados sin saltos (h1, h2, h3).
-- RNF-A4 Imágenes informativas con `alt` descriptivo; decorativas con `alt=""`. Botones con solo icono tienen nombre accesible.
-- RNF-A5 Existe un enlace "Saltar al contenido" visible al recibir foco.
-- RNF-A6 Cero errores críticos en la auditoría automática de accesibilidad (axe o Lighthouse Accesibilidad >= 95). QA lo ejecuta y adjunta la salida.
-- RNF-A7 Video (si se incluye, pregunta 4): con subtítulos y sin reproducción automática con sonido.
-
-### 6.4 SEO básico y metadatos
-- RNF-SEO1 El `<title>` de `/` es distinto de "Create Next App" y contiene "MenuSky" (texto exacto PENDIENTE de pregunta 13). Longitud recomendada <= 60 caracteres.
-- RNF-SEO2 La `meta description` es distinta de "Generated by create next app" (texto exacto PENDIENTE de pregunta 13). Longitud recomendada 120-160 caracteres.
-- RNF-SEO3 El atributo `lang` del `<html>` es `es` (o la variante que decida el Director, p. ej. `es-AR`; PENDIENTE de pregunta 11) y deja de ser `en`. Nota: `app/layout.tsx` es compartido por toda la app; el cambio afecta a todas las páginas (correcto porque toda la app está en español). Se debe comunicar al Líder.
-- RNF-SEO4 Hay metadatos Open Graph y Twitter (título, descripción, imagen) para que el enlace se vea bien al compartirlo por WhatsApp (PENDIENTE de pregunta 13; imagen PENDIENTE de pregunta 5 y 10).
-- RNF-SEO5 Hay favicon. Hoy existe `app/favicon.ico`, pero es el de la plantilla salvo que el Director confirme lo contrario (PENDIENTE de pregunta 6).
-- RNF-SEO6 URL canónica definida (PENDIENTE de pregunta 13: dominio).
-- RNF-SEO7 La landing es indexable (sin `noindex`) salvo indicación contraria. Las rutas `/m/*`, `/kitchen`, `/floor`, `/admin` no deben aparecer en buscadores (hoy `/m/*` es pública por diseño; PENDIENTE de pregunta 14, afecta a la app y no solo a la landing).
-- RNF-SEO8 Existen `robots.txt` y `sitemap.xml` (PROPUESTA; confirmar si se quieren).
-
-### 6.5 Contenido y calidad de texto
-- RNF-C1 Sin texto de relleno ("Lorem ipsum") ni marcadores tipo "TODO" en la versión que se publica.
-- RNF-C2 Sin faltas de ortografía en español; se respeta la variante definida (PENDIENTE de pregunta 11).
-- RNF-C3 Si aparecen marcas de terceros (p. ej. "Coca-Cola" del seed) en capturas, se consulta al Director (pregunta 10).
-
-### 6.6 Compatibilidad
-- RNF-K1 Funciona en las dos últimas versiones estables de Chrome, Safari (iOS y macOS), Firefox y Edge. (PROPUESTA; confirmar.)
-- RNF-K2 Sin JavaScript activo, el contenido textual principal sigue siendo legible (PROPUESTA, deseable).
-
----
-
-## 7. Casos límite y manejo de errores
-
-1. Ruta `/` con sesión de staff activa: se muestra la landing (ver CA-3.2).
-2. Demo en vivo no disponible (mesa eliminada, base de datos caída): la landing no debe romperse; el CTA de demo falla de forma aislada (CA-4.4). Hoy `/m/{token}` inválido responde `notFound()` (`app/m/[tableId]/page.tsx` línea 11).
-3. Carta demo vacía: mostraría el mensaje "Todavía no hay platos cargados en la carta." (`app/m/[tableId]/page.tsx`); QA debe verificar que la demo tenga platos antes de publicar.
-4. Un comensal que entra a `/` esperando pedir: mensaje corto "¿Sos cliente? Escaneá el QR de tu mesa" (PROPUESTA, pregunta 4).
-5. JavaScript desactivado o lento: el texto principal se ve (RNF-K2).
-6. Enlace de WhatsApp/email en escritorio sin app instalada: el enlace debe degradar de manera razonable (p. ej. WhatsApp Web).
-7. Modo oscuro del sistema: decisión pendiente (pregunta 6). Mientras no se defina, la landing tiene un único aspecto y no debe ser ilegible con modo oscuro activo (QA verifica con `prefers-color-scheme: dark`). Nota: `app/globals.css` puede ya tener estilos de modo oscuro; el Líder debe confirmar cómo interactúan.
-8. Conexiones lentas (3G): el texto y el CTA aparecen antes que las imágenes pesadas.
-9. Idioma del navegador distinto a español: la landing sigue en español (multi-idioma PENDIENTE de pregunta 11).
-10. 404 general de la app (rutas inexistentes): fuera del alcance.
+### HU-10 Usar la landing en celular y otros tamaños
+- CA-10.1 En 360x640, 768x1024 y 1440x900, `document.documentElement.scrollWidth <= window.innerWidth` al recorrer toda la página (sin scroll horizontal). El 3D, las animaciones de entrada y los mockups no provocan desborde horizontal (se prueba también durante las animaciones).
+- CA-10.2 En esos tres tamaños ningún texto queda cortado, superpuesto ni ilegible; las imágenes no se deforman.
+- CA-10.3 Botones y enlaces tocables miden al menos 44x44 px en móvil.
+- CA-10.4 Con zoom al 200%, el contenido sigue legible y navegable sin pérdida de funciones.
+- CA-10.5 Funciona en las dos últimas versiones estables de Chrome, Safari (iOS y macOS), Firefox y Edge.
 
 ---
 
-## 8. Referencias de diseño o mercado
+## 7. Requisitos no funcionales
 
-No se investigó mercado web en esta versión del borrador (no se tenía el público objetivo confirmado). Patrón habitual en landing de carta QR / pedidos en mesa para SaaS de gastronomía (conocimiento general, NO verificado con fuentes en esta tarea): hero con propuesta + CTA, "cómo funciona" en 3 pasos, funcionalidades, demo/capturas, precios, preguntas frecuentes y contacto por WhatsApp (muy usado en Argentina/LatAm). Si el Director lo pide, el PO investiga competidores concretos y adjunta enlaces y capturas.
+### 7.1 Seguridad y privacidad
+- RNF-S1 La landing es pública y no expone ni consulta datos de restaurantes, pedidos o staff. Seguridad verifica que el HTML y las peticiones de `/` no contienen `SUPABASE_SERVICE_ROLE_KEY`, ni claves, ni `qr_token` reales.
+- RNF-S2 Enlaces externos con `target="_blank"` usan `rel="noopener noreferrer"`.
+- RNF-S3 Datos publicados: solo el WhatsApp (+54 9 362 410-5311) y el email facu785@gmail.com, entregados por el Director para publicar (R-D 4). No se publican datos del restaurante ficticio del seed.
+- RNF-S4 Sin formulario, analítica ni cookies de terceros: Seguridad confirma que no se setea ninguna cookie desde `/` y que no hay scripts de terceros (salvo lo que el Líder declare por escrito para el 3D o las fuentes; se audita).
+- RNF-S5 Si el 3D usa recursos externos (modelos, texturas, scripts), están alojados en el mismo origen o provienen de una fuente declarada y verificada por Seguridad; sin CDN desconocidas.
+- RNF-S6 Regresión: `/kitchen`, `/floor`, `/admin` siguen redirigiendo a `/login` sin sesión; `/m/{token}` sigue funcionando; `proxy.ts` no cambia.
+- RNF-S7 El teléfono y el email publicados pueden ser recolectados por bots de spam. Riesgo aceptado por el Director al entregarlos para publicar; ver riesgos.
+- RNF-S8 `npm audit` sin vulnerabilidades críticas ni altas tras agregar dependencias para el 3D (estado actual informado por el Líder: next 16.3.8, 0 vulnerabilidades). Toda dependencia nueva requiere aprobación del Líder.
+
+### 7.2 Rendimiento
+Ver HU-9 (criterio de bloqueo). Además: RNF-P1 las animaciones solo usan propiedades que no provocan reflujo de la página (criterio de resultado: CLS <= 0,1 durante el scroll completo).
+
+### 7.3 Accesibilidad (WCAG 2.2 AA)
+- RNF-A1 Contraste >= 4,5:1 para texto normal y >= 3:1 para texto grande e íconos. Los amarillos/dorados sobre fondo claro suelen no cumplir: el texto sobre amarillo es oscuro, o el amarillo se usa en fondos de botones con texto oscuro. Verificado con herramienta de contraste (se adjuntan los pares).
+- RNF-A2 Toda la página se navega con teclado; foco visible; orden de tabulación = orden visual.
+- RNF-A3 Un solo `h1`; jerarquía h1, h2, h3 sin saltos.
+- RNF-A4 Imágenes informativas con `alt`; decorativas con `alt=""`. Botones solo-ícono con nombre accesible. El canvas del 3D es decorativo: oculto a lectores de pantalla (`aria-hidden`) y no recibe foco.
+- RNF-A5 Enlace "Saltar al contenido" visible al recibir foco.
+- RNF-A6 Lighthouse Accesibilidad >= 95 y cero errores críticos de axe; QA adjunta la salida.
+- RNF-A7 Ninguna animación parpadea más de 3 veces por segundo. Toda animación automática de más de 5 segundos tiene forma de pausarse o es decorativa y se detiene con `prefers-reduced-motion`.
+- RNF-A8 El mensaje del 3D no es el único portador de información: todo lo que dice se dice también en texto.
+
+### 7.4 Contenido
+- RNF-C1 Sin faltas de ortografía; español rioplatense con voseo ("Pedí", "Mirá", "Escribinos"); `lang="es-AR"`.
+- RNF-C2 Sin marcas de terceros visibles en imágenes o mockups.
+- RNF-C3 Las fotos de ejemplo no se presentan como platos de clientes de MenuSky.
+
+### 7.5 Compatibilidad
+- RNF-K1 Ver CA-10.5. RNF-K2 Sin JavaScript, el texto principal (h1, subtítulo, secciones) es legible y el CTA funciona.
 
 ---
 
-## 9. Priorización (MoSCoW, PROPUESTA)
+## 8. Casos límite y manejo de errores
+
+1. Staff con sesión que entra a `/`: ve la landing (CA-5.2).
+2. WebGL no disponible o error al cargar el 3D: fallback estático sin errores en consola (CA-8.5); el resto de la página sigue operativa.
+3. `prefers-reduced-motion: reduce`: ver CA-8.4. El scroll a anclas es instantáneo (sin desplazamiento suave).
+4. Conexión lenta (3G): primero texto y CTA; imágenes y 3D después (CA-8.3).
+5. Celular de gama media: 3D degradado o fallback (CA-9.6).
+6. JavaScript desactivado: ver RNF-K2.
+7. Enlace de WhatsApp/email sin app instalada: degrada a WhatsApp Web / cliente de correo del sistema (CA-2.8).
+8. Modo oscuro del sistema: la landing mantiene un único aspecto legible (CA-8.12). Nota para el Líder: `app/globals.css` puede tener estilos de modo oscuro; confirmar que no alteran la landing.
+9. Idioma del navegador distinto al español: la landing sigue en español (sin multi-idioma).
+10. Un comensal que entra a `/` por error: ve el aviso de escanear el QR (CA-1.6).
+11. Imagen que no carga: se ve un fondo de color y el `alt`; el diseño no se rompe.
+12. Rutas inexistentes (404 general de la app): fuera de alcance.
+13. Pestaña en segundo plano: el 3D pausa su animación (no consume CPU).
+
+---
+
+## 9. Referencias de diseño o mercado
+
+Son inspiración, no para copiar. Se leyeron el 2026-09-30.
+
+| Referencia | Qué tomar | Qué NO tomar |
+|---|---|---|
+| Stripe, https://stripe.com/ | Hero con fondo animado de gradiente y texto sobre contenido; grilla de bloques (bento) para funciones; fotografía de situaciones reales. Su fondo animado tiene imagen de reemplazo estática (patrón de fallback). | Carrusel de logos de clientes, estadísticas ("135+ monedas", "99,999%"): no podemos mostrar logos ni cifras. |
+| Linear, https://linear.app/ | Mockups de producto como protagonista (la UI misma es el visual), una sección por flujo, titulares cortos, CTA primario "Get started" repetido. | Sección de testimonios y changelog (no aplican). |
+| Menu Tiger, https://www.menutiger.com/ | Es un competidor directo en carta QR y pedidos para cafés/bares (descripción de resultados de búsqueda). | No se pudo leer su contenido con la herramienta: NO se verificó su estructura. Solo referencia de que existe el rubro. |
+
+Patrón general del rubro (conocimiento general, no verificado en detalle): hero con propuesta y CTA, "cómo funciona" en 3 pasos, funciones con mockups, FAQ, CTA final y contacto por WhatsApp (muy usado en Argentina).
+
+Idea de diferencial visual para el Frontend: mostrar el flujo "del celular a la cocina" como una animación continua que une los dos mockups (CA-4.2), con la paleta de hamburguesa completa.
+
+---
+
+## 10. Priorización (MoSCoW)
 
 | Prioridad | Elemento |
 |---|---|
-| Debe | Reemplazar plantilla en `/`; hero con propuesta de valor y CTA; "cómo funciona"; funcionalidades reales; acceso "Ingresar"; responsive sin scroll horizontal; metadatos y `lang` corregidos; accesibilidad AA básica |
-| Debería | Demo (carta en vivo o capturas); contacto (WhatsApp/email); FAQ; imagen Open Graph; favicon propio; analítica (si el Director la quiere) |
-| Podría | Sección de precios (si existen); video; animaciones de entrada; modo oscuro; `sitemap.xml` y `robots.txt` |
-| No por ahora | Formulario con backend; registro autoservicio; multi-idioma; blog; chat; comparativas |
+| Debe | Reemplazar la plantilla; hero con h1, subtítulo y CTA "Pedí una demo" (WhatsApp + email); elemento 3D en hero con fallbacks (HU-8); estructura de la sección 4; mockups de carta y cocina; 4 funciones estrella; "Ingresar"; metas de rendimiento (HU-9, bloqueo); responsive sin scroll horizontal; accesibilidad AA; metadatos, `lang`, canonical, OG 1200x630, favicon y logotipo; renombre; criterios de "no prometer" (HU-3) |
+| Debería | Animaciones de entrada por sección; micro-interacciones; secuencia animada del flujo; FAQ; fotos de ejemplo; robots.txt y sitemap |
+| Podría | Más de un elemento 3D; sonido (no); parallax adicional; imágenes OG distintas por plataforma |
+| No por ahora | Demo en vivo, precios, formulario, redes, testimonios/cifras/logos, analítica, cookies, legales, modo oscuro, multi-idioma, dominio propio, "próximamente" |
 
-Alcance mínimo viable (MVP de la landing): Hero + Cómo funciona + Funcionalidades + CTA de contacto + "Ingresar" + pie, con metadatos correctos.
-
----
-
-## 10. Preguntas abiertas para el Director
-
-Cada una indica qué bloquea. La recomendación (R) es del PO y NO es una decisión.
-
-1. Público objetivo: ¿a quién le hablamos? a) Dueños de restaurantes, bares y cafeterías; b) también food trucks, heladerías, hoteles u otros; c) otro. ¿Mercado: solo Argentina o LatAm? (Los precios del código están en ARS: `lib/format.ts`.) R: a) y Argentina. Bloquea: textos, idioma, precios.
-2. Propuesta de valor: ¿cuál es la frase principal? Sugerencias para elegir o reemplazar: a) "Que tus clientes pidan desde la mesa, sin esperar al mozo"; b) "Carta digital y pedidos por QR, sin instalar nada"; c) la del Director. ¿Cuál es el diferencial frente a otras cartas QR? (No lo podemos deducir del código.) Bloquea: CA-1.2.
-3. CTA principal y destinos: a) Contacto por WhatsApp; b) Contacto por email; c) Formulario de contacto; d) "Solicitar demo" con agenda; e) "Probar gratis" (hoy no existe registro: implicaría construirlo, sería otra spec); f) solo "Ingresar" para staff. También: ¿cómo se llama el botón hacia `/login` ("Ingresar", "Acceso restaurantes")? ¿Un staff con sesión debería ser redirigido a su panel al entrar a `/` (opción 3c en CA-3.2)? R: a) más f). Bloquea: HU-2, HU-3, HU-5.
-4. Demo: a) carta de ejemplo en vivo con el restaurante "El Buen Sabor" (requiere fijar un QR estable en producción; los tokens del seed son aleatorios y habría que decidir si los pedidos de prueba van a cocina real de la demo); b) carta en vivo de solo lectura (no enviar pedidos: implicaría cambiar la app, fuera de esta spec); c) capturas o mockups; d) video; e) sin demo por ahora. R: c) para el MVP y a) después. Además: ¿se muestra un aviso "¿Sos cliente? Escaneá el QR de tu mesa"? Bloquea: HU-4, RNF-A7.
-5. Secciones y textos: ¿los redacta el equipo como borrador (el PO propone, el Director aprueba) o los entrega el Director? ¿Se aprueba la estructura de la sección 4 (quitar, agregar, reordenar secciones)? ¿Quién redacta las FAQ? R: el equipo redacta, el Director aprueba antes de publicar. Bloquea: toda la página.
-6. Identidad visual: ¿existe logo de MenuSky (hoy no hay; tampoco en `public/`)? ¿Paleta y tipografía propias o se reutiliza el aspecto de la app? Hoy la app usa Geist (`app/layout.tsx`), naranja `#E8590C` como acento en el login y paneles (`components/auth/LoginForm.tsx`) y los temas por restaurante de `lib/theme/presets.ts` (que son del restaurante, no de la marca). ¿Y el nombre: "MenuSky" con esa grafía (M y S mayúsculas) y qué significa el "sky"? ¿Favicon propio? ¿Modo oscuro sí/no? R: identidad propia de MenuSky, coherente con el acento naranja del staff solo si el Director lo quiere. Bloquea: diseño, RNF-A1, RNF-SEO5.
-7. Precios o planes: a) no se muestran ("Contactanos"); b) se muestran planes (cuántos, nombres, valores, moneda, período, qué incluye cada uno); c) prueba gratuita (¿cuántos días?). R: a) hasta que el modelo de negocio esté definido. Bloquea: HU-6.
-8. Datos de contacto y formulario: ¿WhatsApp (número), email, teléfono? ¿Hay formulario? Si lo hay, ¿a dónde llegan los mensajes (email, base de datos, hoja de cálculo, CRM)? Un formulario implica backend y una spec aparte (anti-spam, privacidad). R: sin formulario; WhatsApp y email por enlace. Bloquea: HU-5.
-9. Redes sociales: ¿cuáles (Instagram, LinkedIn, etc.) y qué URLs? ¿Se muestran en el pie? Bloquea: pie de página.
-10. Imágenes: ¿se pueden usar capturas de la app con el restaurante ficticio "El Buen Sabor" (incluye la marca "Coca-Cola" en un plato del seed)? ¿Hay fotos de platos y del local (fuente y licencia)? ¿Hay que producir mockups de celular? ¿Quién los hace? Bloquea: CA-4.3, RNF-SEO4.
-11. Idioma: a) español neutro; b) rioplatense con voseo ("Pedí", "Probá", como ya usa la app: "Elegí un tema...", "probá de nuevo"); c) además inglés u otros idiomas (implicaría más trabajo). `lang`: `es` o `es-AR`. R: b) y `es-AR`. Nota: el `lang="en"` se corrige en `app/layout.tsx`, archivo compartido por toda la app. Bloquea: RNF-SEO3, RNF-C2.
-12. Contenido actual de `/` (plantilla de Next): confirmar que se reemplaza por completo y no se conserva ningún enlace ni imagen. (El PO lo da por hecho pero lo consulta por la regla de no asumir.) Bloquea: CA-1.1.
-13. SEO, dominio y analítica: a) ¿se queda `menusky.vercel.app` o habrá dominio propio (cuál)? b) título (<= 60 caracteres) y descripción (120-160 caracteres): ¿los propone el equipo? c) imagen para compartir (1200x630): ¿la hace el Director o el equipo? d) analítica: ¿sí o no? ¿cuál herramienta? (Si usa cookies, requiere aviso; ver pregunta 15). e) ¿se quiere sitemap y robots? R: equipo propone título y descripción; sin analítica en la primera versión salvo que el Director quiera medir conversión. Bloquea: RNF-SEO1 a SEO8, objetivo medible.
-14. Indexación de la app: hoy `/m/*` es pública y no hay `robots`. ¿Se debe evitar que los buscadores indexen cartas de restaurantes y los paneles? (Afecta a la app, no solo a la landing; se consulta porque puede interferir con el SEO de `/`.)
-15. Legales: ¿se necesitan Términos y Condiciones y Política de Privacidad? Son obligatorios en la práctica si hay formulario, analítica o registro. ¿Quién los redacta (un abogado, no el equipo)? ¿Datos de la empresa (razón social, CUIT) en el pie? Bloquea: RNF-S3, pie.
-16. Nombre del producto: el repo se llama "carta-digital" (`package.json`) y el README "Carta Digital + Pedidos por QR". ¿Se renombran paquete, README y título de la app a MenuSky? (Fuera de esta spec salvo que el Director lo pida; se consulta por coherencia.)
-17. Casos de éxito, testimonios y logos de clientes: no existen en el repo; ¿hay alguno real que se pueda mostrar? (No inventar testimonios ni métricas.) Bloquea: sección opcional.
-18. Funcionalidades a destacar o evitar: la lista de 1.1 es lo único verificado. ¿Existe algo del roadmap que se quiera anunciar como "próximamente" (pagos, estadísticas, multi-local, etc.)? ¿O alguna limitación que no se quiera mostrar? R: anunciar solo lo que existe.
-19. Metas de rendimiento: ¿sirven los umbrales de RNF-P1/P2 o el Director prefiere otros?
-20. Fecha objetivo y aprobación: ¿hay fecha de salida? ¿Quién aprueba el contenido final antes de producción (se asume el Director, por las reglas del equipo)?
+MVP de la landing: todo lo "Debe".
 
 ---
 
-## 11. Notas para cada rol
+## 11. Pendientes cerrados (v0.1 a v1.0)
 
-- Frontend: secciones y criterios de las HU-1 a HU-7, RNF-A y RNF-P. No cambiar `app/layout.tsx` sin coordinar con el Líder (afecta a toda la app).
-- Backend: sin trabajo previsto mientras no se apruebe formulario, demo con token fijo o analítica (preguntas 3, 4, 8, 13).
-- Seguridad: RNF-S1 a S5; revisar que enlaces externos y datos de contacto sean los entregados; verificar ausencia de secretos.
-- QA: cada CA es una prueba. Dispositivos: 360x640, 768x1024, 1440x900. Herramientas: Lighthouse móvil y axe; comparar textos con la sección 1.1 (CA-1.3); regresión de `/login`, `/kitchen`, `/floor`, `/admin`, `/m/{token}`.
+Referencia R-D n = respuesta n del Director (su numeración).
+
+| Pendiente de v0.1 | Cierre |
+|---|---|
+| Público objetivo | R-D 1: dueños y gerentes de restaurantes, bares y cafés de Argentina. |
+| Propuesta de valor y textos | R-D 2: los genera el equipo; el Director revisa en el release. Propuesta en la sección 5. |
+| Estructura de secciones | R-D 3: una sola página; sección 4. Destacadas: carta digital, pedidos por QR, llamado al mozo, pedir la cuenta. "Cuenta/factura": SOLO "pedir la cuenta" por llamado al mozo; sin facturación (CA-3.1 a 3.3). |
+| CTA principal y destinos (HU-2, HU-5) | R-D 4: "Pedí una demo" por WhatsApp `https://wa.me/5493624105311?text=...` y por email mailto. |
+| Demo en vivo (HU-4 antigua) | R-D 5: no por ahora. CA-4.1, 4.2 y 4.4 antiguos pasan a fuera de alcance; HU-4 queda como mockups. |
+| "Ingresar" y staff con sesión (CA-3.2 antiguo) | R-D 6: link discreto "Ingresar" a `/login`; sin redirección. |
+| Reemplazo de la plantilla | R-D 7: sí, completo. |
+| Identidad visual, logo, modo oscuro, favicon | R-D 8: colores de hamburguesa completa; logotipo/isotipo propio; favicon propio; un solo aspecto legible con el sistema en modo oscuro. |
+| Idioma y `lang` | R-D 9: español rioplatense; `lang="es-AR"`. |
+| Precios | R-D 10: no se muestran; sin "gratis". |
+| Contacto y redes (HU-5, pie) | R-D 11: solo WhatsApp y email; sin formulario; sin redes. |
+| Dominio, SEO, analítica | R-D 12: `menusky.vercel.app` (canonical y metadataBase); sin analítica. |
+| Imágenes | R-D 13: fotos de Unsplash/Pexels en `docs/CREDITS.md`; mockups en código/SVG con datos ficticios. |
+| Legales | R-D 14: sin respuesta. Sin formulario, analítica ni cookies no hacen falta en v1. Queda como PENDIENTE de v1 (único pendiente abierto, ver sección 12). |
+| Título y metadata de la app | R-D 15: sí, MenuSky en `app/layout.tsx` (HU-7). |
+| Renombre | R-D 16: sí (HU-7). |
+| Testimonios | R-D 17: no; no inventar testimonios, métricas ni logos. |
+| Funcionalidades a anunciar | R-D 18: solo lo que funciona; nada de "próximamente". |
+| Metas de rendimiento | R-D 19: Lighthouse móvil >= 90, LCP <= 2,5 s, CLS <= 0,1, TBT <= 200 ms, primera carga <= 1 MB; medición local (HU-9). |
+| Fecha y aprobación | R-D 20: sin fecha; aprueba el Director. |
+| Indexación de `/m/*` y paneles, robots, sitemap | Sin respuesta. Default: CA-6.8 (decisión del Líder, revisable por el Director). |
+| Corrección de la spec | Se eliminó la mención a un bug de desborde por un marquee del Hero y a un commit del historial: pertenecía a otro repositorio, no a MenuSky. El criterio de "sin scroll horizontal en 360 px" se mantiene (CA-10.1). |
+
+---
+
+## 12. Preguntas abiertas para el Director
+
+1. Legales (R-D 14, sin respuesta): en v1 no hay formulario, analítica ni cookies, por lo que no se piden Términos ni Política de Privacidad. Pendiente de v1: ¿se agregará más adelante un aviso legal o razón social/CUIT en el pie? Hoy no se muestra.
+2. FAQ sobre facturas y pagos: por tu instrucción, la landing no menciona "factura", "facturación" ni pagos. Esto deja sin respuesta a un dueño que pregunte "¿emite facturas?". ¿Preferís mantenerlo así (default) o agregar una respuesta aclaratoria ("MenuSky no emite facturas ni cobra; no reemplaza tu caja")?
+3. Montos en los mockups: la carta del mockup mostrará montos ficticios en pesos para parecer real. ¿Aceptás eso (default) o preferís mockups sin números? (Ya aclaramos que no son precios de MenuSky.)
+4. Contacto: el WhatsApp es un celular y el email es un Gmail personal (facu785@gmail.com), publicados con tu autorización. ¿Querés que más adelante se use un correo con el dominio de MenuSky? Hoy no hay dominio propio.
+5. Significado de "Sky" en el nombre: no hay una explicación en el repo. El 3D y el logotipo pueden jugar con el cielo/lo alto, o con la hamburguesa. ¿Hay alguna idea de marca que quieras reflejar? (Default: el Frontend propone y vos validás en el release.)
+6. Indexación (default propuesto, ver CA-6.8): ¿confirmás desindexar `/m/`, paneles, `/login` y `/api` y publicar un sitemap solo con `/`? Si querés garantizar la baja de `/m/*` ya indexadas, hace falta tocar la app (otra spec).
+7. Fecha de salida: no hay. Aprueba el Director.
+
+---
+
+## 13. Notas para cada rol
+
+- Frontend: HU-1 a HU-10, RNF-A y la paleta de CA-8.10. Textos de la sección 5 (se pueden pulir sin cambiar el sentido ni prometer nada inexistente; cumplir CA-3.2). Imágenes de `docs/CREDITS.md`. Coordinar con el Líder cualquier cambio en `app/layout.tsx`.
+- Backend: sin trabajo previsto (no hay formulario, demo, ni analítica). Solo revisar que no se toquen APIs ni migraciones.
+- Líder: stack del 3D y dependencias nuevas (RNF-S5, S8); `app/layout.tsx` (metadata, `lang`, metadataBase), robots/sitemap (CA-6.8), renombre de `package.json`/`package-lock.json`/README/STACK; commit en `feat/landing-page`.
+- Seguridad: RNF-S1 a S8; verificar ausencia de secretos y de peticiones a la app desde `/`; enlaces externos; datos de contacto idénticos a los entregados.
+- QA: cada CA es una prueba. Dispositivos: 360x640, 768x1024, 1440x900. Herramientas: Lighthouse móvil sobre build local, axe, búsqueda de texto prohibido (CA-3.2), simulación de `prefers-reduced-motion`, WebGL desactivado, CPU 4x más lenta, Slow 3G. Regresión de `/login`, `/kitchen`, `/floor`, `/admin`, `/m/{token}`.
