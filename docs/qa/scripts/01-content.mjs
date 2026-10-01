@@ -150,5 +150,5 @@ check("CA-6.3 lang es-AR", meta.lang === "es-AR", meta.lang);
 check("CA-6.4 canonical == https://menusky.vercel.app/ (normalizado)", new URL(meta.canon).href === "https://menusky.vercel.app/", "literal: " + meta.canon);
 check("CA-6.5 OG/Twitter completos", ["og:title", "og:description", "og:image", "og:url", "og:locale"].every((k) => meta.og[k]) && meta.og["og:locale"] === "es_AR" && meta.og["og:image:width"] === "1200" && meta.og["og:image:height"] === "630" && meta.tw["twitter:card"] === "summary_large_image" && !!meta.tw["twitter:image"], meta.og["og:image"]);
 check("CA-6.7 sin noindex", !meta.robots || !/noindex/i.test(meta.robots), String(meta.robots));
-check("CA-6.9 sin lorem/TODO", !/lorem ipsum|\bTODO\b/i.test(bodyHtmlNoScript), "ok");
+check("CA-6.9 sin lorem/TODO", !/lorem ipsum/i.test(bodyHtmlNoScript) && !/\bTODO\b/.test(bodyHtmlNoScript), "ok");
 await br.close();
