@@ -1,6 +1,11 @@
 // Escena 3D del hero: hamburguesa completa procedural (sin modelos ni
-// texturas externas). Se carga con import() dinámico desde Hero3D.tsx,
-// así `three` queda en un chunk aparte y nunca entra en el JS inicial.
+// texturas externas). No toca el DOM: recibe un canvas (normal u
+// OffscreenCanvas) y todo lo demás (tamaño, puntero, scroll, visibilidad)
+// por su API. Así corre igual en un Web Worker (burger.worker.ts, el
+// camino normal: three se evalúa, compila y dibuja fuera del hilo
+// principal) o, si el navegador no tiene OffscreenCanvas, en la página
+// con import() dinámico desde Hero3D.tsx. En ambos casos `three` queda
+// en un chunk aparte y nunca entra en el JS inicial.
 //
 // Presupuesto (docs/design/direccion-de-arte.md, sección 5): ~6k
 // triángulos, un solo tipo de material (toon, un programa de shader),
@@ -32,9 +37,43 @@ import {
   type Side,
 } from "three";
 
-type Options = {
+export type BurgerInit = {
+  canvas: HTMLCanvasElement | OffscreenCanvas;
+  /** Celular o pantalla chica: sin antialias y DPR <= 1.5. */
+  mobile: boolean;
+  /** Mouse/trackpad: la hamburguesa sigue al puntero. */
+  finePointer: boolean;
+  dpr: number;
+  width: number;
+  height: number;
+  /** 0 = armada, 1 = desarmada (según el scroll; lo calcula la página). */
+  explode: number;
+};
+
+export type BurgerEvents = {
   onReady: () => void;
   onFallback: () => void;
+};
+
+export type BurgerApi = {
+  resize: (width: number, height: number) => void;
+  /** Puntero normalizado a -1..1 respecto de la ventana. */
+  pointer: (x: number, y: number) => void;
+  explode: (target: number) => void;
+  /** En pantalla y con la pestaña visible: dibuja; si no, se pausa. */
+  setActive: (active: boolean) => void;
+  dispose: () => void;
+};
+
+// requestAnimationFrame existe en la página y en workers con
+// OffscreenCanvas; el respaldo con setTimeout cubre lo demás.
+const nextFrame = (cb: (now: number) => void): number =>
+  typeof requestAnimationFrame === "function"
+    ? requestAnimationFrame(cb)
+    : (setTimeout(() => cb(performance.now()), 16) as unknown as number);
+const cancelFrame = (id: number) => {
+  if (typeof cancelAnimationFrame === "function") cancelAnimationFrame(id);
+  else clearTimeout(id);
 };
 
 const COLORS = {
@@ -50,13 +89,10 @@ const COLORS = {
 };
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
-const smooth = (t: number) => t * t * (3 - 2 * t);
 
-export function mountBurger(canvas: HTMLCanvasElement, { onReady, onFallback }: Options): () => void {
-  const coarse = window.matchMedia("(pointer: coarse)").matches;
-  const mobile = coarse || window.innerWidth < 768;
-  const maxDpr = mobile ? 1.5 : 2;
-  let dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
+export function createBurger(init: BurgerInit, { onReady, onFallback }: BurgerEvents): BurgerApi {
+  const { canvas, mobile, finePointer } = init;
+  let dpr = Math.min(init.dpr || 1, mobile ? 1.5 : 2);
 
   const renderer = new WebGLRenderer({
     canvas,
@@ -242,47 +278,30 @@ export function mountBurger(canvas: HTMLCanvasElement, { onReady, onFallback }: 
   scene.add(tilt);
 
   // ---------- estado de interacción ----------
-  let explode = 1;
+  // El armado por scroll (explodeGoal) y el puntero llegan desde la
+  // página (Hero3D.tsx); acá solo se suavizan.
+  let explodeGoal = clamp(init.explode, 0, 1);
+  let explode = explodeGoal;
   let pointerX = 0;
   let pointerY = 0;
   let spinAngle = -0.5;
-  const finePointer = window.matchMedia("(pointer: fine)").matches;
-
-  const onPointer = (e: PointerEvent) => {
-    pointerX = clamp((e.clientX / window.innerWidth) * 2 - 1, -1, 1);
-    pointerY = clamp((e.clientY / window.innerHeight) * 2 - 1, -1, 1);
-  };
-  if (finePointer) window.addEventListener("pointermove", onPointer, { passive: true });
-
-  // Armado por scroll según dónde está el canvas en la pantalla: desarmada
-  // mientras su centro está por debajo del 50% del alto de la ventana,
-  // armada cuando llega cerca del borde superior. Sirve igual para
-  // escritorio (hero arriba) y móvil (el 3D aparece después del texto).
-  const explodeTarget = () => {
-    const r = canvas.getBoundingClientRect();
-    const vh = window.innerHeight;
-    const center = r.top + r.height / 2;
-    return smooth(clamp((center - vh * 0.12) / (vh * 0.36), 0, 1));
-  };
 
   // ---------- tamaño ----------
   let aspect = 1;
-  const resize = () => {
-    const w = canvas.clientWidth;
-    const h = canvas.clientHeight;
-    if (!w || !h) return;
-    renderer.setSize(w, h, false);
-    aspect = w / h;
+  let width = init.width;
+  let height = init.height;
+  const applySize = () => {
+    if (!width || !height) return;
+    renderer.setSize(width, height, false);
+    aspect = width / height;
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
   };
-  const ro = new ResizeObserver(resize);
-  ro.observe(canvas);
-  resize();
+  applySize();
 
   const update = (dt: number, t: number) => {
     const k = 1 - Math.exp(-dt * 4);
-    explode += (explodeTarget() - explode) * k;
+    explode += (explodeGoal - explode) * k;
     spinAngle += dt * 0.28;
 
     layers.forEach((layer, i) => {
@@ -302,8 +321,8 @@ export function mountBurger(canvas: HTMLCanvasElement, { onReady, onFallback }: 
 
     // La pila gira alrededor de su centro; la cámara se acerca a medida
     // que la hamburguesa se arma (alto total: 2.15 armada, 5.25 desarmada).
-    const height = 2.15 + explode * 3.1;
-    spin.position.y = -height / 2;
+    const stack = 2.15 + explode * 3.1;
+    spin.position.y = -stack / 2;
     const fit = aspect < 1 ? 1 / aspect : 1;
     const dist = (8.2 + explode * 5.6) * fit;
     camera.position.set(0, 1.1, dist);
@@ -313,14 +332,14 @@ export function mountBurger(canvas: HTMLCanvasElement, { onReady, onFallback }: 
   // ---------- bucle con pausa y degradación ----------
   let raf = 0;
   let last = 0;
-  let visible = false;
+  let active = false;
   let disposed = false;
   let frames = 0;
   let frameSum = 0;
   let degradeStep = 0;
 
   const frame = (now: number) => {
-    raf = requestAnimationFrame(frame);
+    raf = nextFrame(frame);
     const dtMs = last ? now - last : 16;
     last = now;
     update(Math.min(dtMs, 100) / 1000, now / 1000);
@@ -338,7 +357,7 @@ export function mountBurger(canvas: HTMLCanvasElement, { onReady, onFallback }: 
             degradeStep = 1;
             dpr = 1;
             renderer.setPixelRatio(dpr);
-            resize();
+            applySize();
           } else {
             onFallback();
             return;
@@ -351,35 +370,22 @@ export function mountBurger(canvas: HTMLCanvasElement, { onReady, onFallback }: 
   };
 
   const start = () => {
-    if (raf || disposed || !visible || document.hidden) return;
+    if (raf || disposed || !active) return;
     last = 0;
     frames = 0;
     frameSum = 0;
-    raf = requestAnimationFrame(frame);
+    raf = nextFrame(frame);
   };
   const stop = () => {
-    if (raf) cancelAnimationFrame(raf);
+    if (raf) cancelFrame(raf);
     raf = 0;
   };
-
-  const io = new IntersectionObserver((entries) => {
-    visible = entries.some((e) => e.isIntersecting);
-    if (visible) start();
-    else stop();
-  });
-  io.observe(canvas);
-
-  const onVisibility = () => {
-    if (document.hidden) stop();
-    else start();
-  };
-  document.addEventListener("visibilitychange", onVisibility);
 
   const onContextLost = (e: Event) => {
     e.preventDefault();
     if (!disposed) onFallback();
   };
-  canvas.addEventListener("webglcontextlost", onContextLost);
+  canvas.addEventListener("webglcontextlost", onContextLost as EventListener);
 
   // Compila los shaders sin bloquear (KHR_parallel_shader_compile si
   // existe) y recién después muestra el canvas.
@@ -396,20 +402,38 @@ export function mountBurger(canvas: HTMLCanvasElement, { onReady, onFallback }: 
       if (!disposed) onFallback();
     });
 
-  return () => {
+  const dispose = () => {
     if (disposed) return;
     disposed = true;
     stop();
-    io.disconnect();
-    ro.disconnect();
-    document.removeEventListener("visibilitychange", onVisibility);
-    window.removeEventListener("pointermove", onPointer);
-    canvas.removeEventListener("webglcontextlost", onContextLost);
+    canvas.removeEventListener("webglcontextlost", onContextLost as EventListener);
     seeds.dispose();
     geometries.forEach((g) => g.dispose());
     materials.forEach((m) => m.dispose());
     gradient.dispose();
     renderer.dispose();
     renderer.forceContextLoss();
+  };
+
+  return {
+    resize: (w, h) => {
+      width = w;
+      height = h;
+      applySize();
+    },
+    pointer: (x, y) => {
+      if (!finePointer) return;
+      pointerX = clamp(x, -1, 1);
+      pointerY = clamp(y, -1, 1);
+    },
+    explode: (target) => {
+      explodeGoal = clamp(target, 0, 1);
+    },
+    setActive: (on) => {
+      active = on;
+      if (on) start();
+      else stop();
+    },
+    dispose,
   };
 }
