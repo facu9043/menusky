@@ -3,7 +3,7 @@
 Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada delegación
 y después de cada paso verificado.
 
-Última actualización: 2026-10-01, retomado tras la pausa. Paso actual: 4 (Seguridad).
+Última actualización: 2026-10-01, retomado tras la pausa. Paso actual: 5 (QA).
 Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 
 ## Tarea A: vulnerabilidad de Next.js — CERRADA
@@ -18,8 +18,8 @@ Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 | 2b. Cabeceras de seguridad (Backend) | HECHO | 0196514, merge 7d5d8a9 |
 | 3. Dirección de arte + construcción (Frontend) | HECHO | 40269c2 ... 66cc555 |
 | 3b. Pulido del Frontend (WIP 72c9651 verificado y completado) | HECHO | 2c36293, eaeaa15, 0e91e78 |
-| 4. Seguridad de la landing | **EN CURSO** | docs/security/ |
-| 5. QA de la landing | PENDIENTE | docs/qa/ |
+| 4. Seguridad de la landing | HECHO: **Apto** (0 hallazgos; 5 informativos SEC-L-01..05) | 8b6c943 docs/security/landing-2026-10-01.md |
+| 5. QA de la landing | **EN CURSO** | docs/qa/ |
 | 6. Correcciones y re-auditoría | PENDIENTE | |
 | 7. Informe final al Director | PENDIENTE | |
 
@@ -43,7 +43,7 @@ anclas OK, 3D reacciona al puntero/scroll, 0 tareas largas al cargar el 3D (work
    y requiere aprobación del Director.
 2. Sin probar en Safari/iOS real (camino del worker con fallback en página).
 3. QA: usar `textContent` (no `innerText`) para búsquedas de texto: `content-visibility` deja `innerText` vacío en secciones no pintadas.
-4. Seguridad de la landing aún no auditada.
+4. Seguridad: Apto. Informativos: SEC-L-01 el build publica el fuente de burger.worker.ts en /_next/static/media (sin secretos); SEC-L-02 sin CSP script-src; SEC-L-05 next start escucha en 0.0.0.0 (usar -H 127.0.0.1 en pruebas). Nota: en headless con SwiftShader el 3D no pasó a live: QA confirma en navegador real.
 
 ## Orden para retomar
 1. Seguridad audita `feat/landing-page` (enlaces externos, secretos, deps nuevas three/@types/three, npm audit, cabeceras, worker, sin peticiones a Supabase/api desde `/`).
