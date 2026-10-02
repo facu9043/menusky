@@ -3,7 +3,7 @@
 Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada delegación
 y después de cada paso verificado.
 
-Última actualización: 2026-10-01, retomado tras la pausa. Paso actual: 6 (corrección del Frontend, ciclo 1).
+Última actualización: 2026-10-01, retomado tras la pausa. Paso actual: 6 (re-auditoría del ciclo 1: Seguridad delta, luego QA).
 Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 
 ## Tarea A: vulnerabilidad de Next.js — CERRADA
@@ -20,7 +20,7 @@ Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 | 3b. Pulido del Frontend (WIP 72c9651 verificado y completado) | HECHO | 2c36293, eaeaa15, 0e91e78 |
 | 4. Seguridad de la landing | HECHO: **Apto** (0 hallazgos; 5 informativos SEC-L-01..05) | 8b6c943 docs/security/landing-2026-10-01.md |
 | 5. QA de la landing | HECHO: **Rechazado** (QA-01 contraste, QA-02 desborde <= 337 px) | 7936f65 docs/qa/landing-2026-10-01.md |
-| 6. Correcciones y re-auditoría | **EN CURSO ciclo 1**: Frontend corrige QA-01, QA-02 (+ QA-03 y SEC-L-01 si es simple); luego Seguridad (delta) y QA re-ejecuta 02, 03, 07 | |
+| 6. Correcciones y re-auditoría | Ciclo 1: Frontend corrigió QA-01 (9b19ade), QA-02 (84b192b), QA-03 (33fe415); SEC-L-01 sin cambio (no hay alternativa documentada). **EN CURSO: Seguridad delta y QA re-test** | |
 | 7. Informe final al Director | PENDIENTE | |
 
 ## Autoverificación del Frontend (no reemplaza a QA)
