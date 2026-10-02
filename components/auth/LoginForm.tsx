@@ -84,8 +84,9 @@ export function LoginForm({
   return (
     <main className="lg">
       <header className="lg-top">
-        {/* P-9 (a confirmar): el logo vuelve a la landing. */}
-        <Link href="/" className="lg-home" aria-label="MenuSky, ir al inicio">
+        {/* P-9 (a confirmar): el logo vuelve a la landing. Sin prefetch: no se
+            descarga la landing (JS, CSS, 3D) mientras alguien solo quiere entrar. */}
+        <Link href="/" prefetch={false} className="lg-home" aria-label="MenuSky, ir al inicio">
           <Logo size={36} />
         </Link>
       </header>
