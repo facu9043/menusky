@@ -46,6 +46,10 @@ export function FlowDemo() {
 
   // Arranca la secuencia la primera vez que entra en pantalla y la pausa
   // cuando sale (no consume CPU fuera de vista). Sin reduced-motion.
+  // Umbral 0 sobre la mitad central del viewport (rootMargin): un umbral por
+  // fracción del bloque (0.35) nunca se cumplía en anchos angostos, donde el
+  // bloque mide más que el viewport (QA-07). Se observa el bloque entero
+  // porque la lista de pasos también marca el avance de la secuencia.
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -59,7 +63,7 @@ export function FlowDemo() {
         }
         setRunning(entry.isIntersecting);
       },
-      { threshold: 0.35 },
+      { threshold: 0, rootMargin: "-25% 0px -25% 0px" },
     );
     io.observe(root);
     return () => io.disconnect();
