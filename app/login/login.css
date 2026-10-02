@@ -410,7 +410,11 @@
   width: auto;
   overflow: visible;
   transform-origin: 50% 100%;
-  animation: 3.4s ease-in-out 1.6s 3;
+  /* Longhands: el minificador reduce un shorthand sin nombre a "none". */
+  animation-duration: 3.4s;
+  animation-timing-function: ease-in-out;
+  animation-delay: 1.6s;
+  animation-iteration-count: 3;
 }
 .lg .m--1 {
   animation-name: m-idle-1;
