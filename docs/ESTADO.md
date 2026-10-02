@@ -3,7 +3,7 @@
 Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada delegación
 y después de cada paso verificado.
 
-Última actualización: 2026-10-01, retomado tras la pausa. Paso actual: 6, ciclo 2 (Frontend corrige QA-07). Retomado tras el 3er apagón (2026-10-02).
+Última actualización: 2026-10-01, retomado tras la pausa. Paso actual: 6, ciclo 2 (QA re-test de QA-07; fix 2531b5e). Retomado tras el 3er apagón (2026-10-02).
 Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 
 ## Tarea A: vulnerabilidad de Next.js — CERRADA
@@ -20,7 +20,7 @@ Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 | 3b. Pulido del Frontend (WIP 72c9651 verificado y completado) | HECHO | 2c36293, eaeaa15, 0e91e78 |
 | 4. Seguridad de la landing | HECHO: **Apto** (0 hallazgos; 5 informativos SEC-L-01..05) | 8b6c943 docs/security/landing-2026-10-01.md |
 | 5. QA de la landing | HECHO: **Rechazado** (QA-01 contraste, QA-02 desborde <= 337 px) | 7936f65 docs/qa/landing-2026-10-01.md |
-| 6. Correcciones y re-auditoría | Ciclo 1: Frontend corrigió QA-01 (9b19ade), QA-02 (84b192b), QA-03 (33fe415); SEC-L-01 sin cambio (no hay alternativa documentada). Seguridad delta: **Apto** (335ba52, SEC-L-06 info: ruta absoluta en docs/qa/scripts/04-dark-diff.mjs, dueño QA). QA re-test ciclo 1: **Aprobado con reservas** (b8daf64): QA-01/02/03 cerrados; nuevo QA-07 (Baja: FlowDemo no arranca a <= 260 px, umbral 0.35) y QA-08 (info, aviso de Firefox). **Ciclo 2 EN CURSO: Frontend corrige QA-07; luego QA re-ejecuta 16/17/02.** Seguridad no aplica (cambio de umbral sin impacto; el Líder revisa el diff). | |
+| 6. Correcciones y re-auditoría | Ciclo 1: Frontend corrigió QA-01 (9b19ade), QA-02 (84b192b), QA-03 (33fe415); SEC-L-01 sin cambio (no hay alternativa documentada). Seguridad delta: **Apto** (335ba52, SEC-L-06 info: ruta absoluta en docs/qa/scripts/04-dark-diff.mjs, dueño QA). QA re-test ciclo 1: **Aprobado con reservas** (b8daf64): QA-01/02/03 cerrados; nuevo QA-07 (Baja: FlowDemo no arranca a <= 260 px, umbral 0.35) y QA-08 (info, aviso de Firefox). Ciclo 2: Frontend corrigió QA-07 (2531b5e, IntersectionObserver threshold 0 + rootMargin -25%; diff revisado por el Líder). **EN CURSO: QA re-test de QA-07.** Seguridad no aplica (cambio de umbral sin impacto; el Líder revisa el diff). | |
 | 7. Informe final al Director | PENDIENTE | |
 
 ## Autoverificación del Frontend (no reemplaza a QA)
