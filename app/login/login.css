@@ -473,9 +473,9 @@
 /* Porcentajes de la capa de ojos (60 x 24 unidades del dibujo):
    10 % en x = 6 unidades, 10 % en y = 2,4 unidades. */
 .lg {
-  --lk-email: translate(-6.7%, 17%);
-  --lk-pass: translate(1.7%, 21%);
-  --lk-btn: translate(8.3%, 17%);
+  --lk-email: translate(-12%, 22%);
+  --lk-pass: translate(2%, 25%);
+  --lk-btn: translate(13%, 22%);
 }
 .lg-mascot[data-look="email"] .m-look {
   transform: var(--lk-email);
