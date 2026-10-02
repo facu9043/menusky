@@ -8,10 +8,11 @@
 // GPU las animaciones de cajas CSS; un <g> animado dentro de un SVG repinta
 // todo el SVG en cada cuadro. Lo que solo CAMBIA de pose (bocas, brazo en
 // alto, ojos felices) va en <g> con opacity fija, sin transición.
-//   .m          raíz: respiración (idle)
+//   .m          raíz (caja con la proporción del dibujo)
 //   .m-base     cuerpo, etiqueta, brazos, bocas, hamburguesa, gorra
-//   .m-look     mirada: se desplaza hacia el campo con foco
-//   .m-eyes     ojos y párpados: parpadeo (idle)
+//   .m-look     mirada: se desplaza hacia el campo con foco (solo la zona
+//               de los ojos, para que el repintado sea chico)
+//   .m-eyes     ojos y párpados: parpadeo y ojeada (idle)
 // Estados: data-mood / data-look / data-face en .lg-mascot (LoginForm.tsx),
 // estilos en app/login/login.css.
 
@@ -82,7 +83,9 @@ export function MascotPomo() {
         </g>
       </svg>
       <div className="m-look">
-        <svg viewBox={VIEWBOX} aria-hidden="true" focusable="false" className="m-l m-eyes">
+        {/* Recortada a la zona de los ojos (x 70-130, y 102-126 del dibujo):
+            al parpadear o mirar, el compositor solo redibuja ese recuadro. */}
+        <svg viewBox="70 102 60 24" aria-hidden="true" focusable="false" className="m-l m-eyes">
           <g fill="none" stroke="#2b1710" strokeLinecap="round" strokeLinejoin="round">
             <g className="m-eyes-open">
               <rect x="78" y="108" width="9" height="14" rx="4.5" fill="#2b1710" stroke="none" />

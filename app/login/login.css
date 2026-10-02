@@ -405,7 +405,6 @@
   position: relative;
   height: 100%;
   aspect-ratio: 200 / 240;
-  transform-origin: 50% 100%;
 }
 .lg .m-l {
   position: absolute;
@@ -415,37 +414,37 @@
   height: 100%;
   overflow: visible;
 }
+/* Capa de los ojos: solo el recuadro x 70-130, y 102-126 del dibujo de
+   200 x 240 (el <svg> interno tiene ese viewBox). */
 .lg .m-look {
   position: absolute;
-  inset: 0;
+  left: 35%;
+  top: 42.5%;
+  width: 30%;
+  height: 10%;
   transition: transform 180ms var(--ms-ease-out); /* CA-10.7: <= 200 ms */
 }
 .lg .m-eyes {
-  transform-origin: 50% 47.9%; /* línea media de los ojos (y = 115 de 240) */
+  transform-origin: 50% 54.2%; /* línea media de los ojos (y = 115) */
 }
 
-/* Idle (CA-10.6). Dos bucles, ambos finitos, ~90 s desde la carga:
-   respiración 4,5 s x 20 (0,7 s + 90 s) y parpadeo de 176 ms cada 5,5 s
-   x 16 (1,2 s + 88 s). Longhands: el minificador reduce un shorthand sin
-   nombre a "none". */
-.lg .m {
-  animation-name: m-breathe;
-  animation-duration: 4.5s;
-  animation-timing-function: ease-in-out;
-  animation-delay: 0.7s;
-  animation-iteration-count: 20;
-}
+/* Idle (CA-10.6): parpadeo de 176 ms cada 5,5 s, 16 veces (1,2 s + 88 s),
+   y se detiene solo. Un único elemento en bucle: la capa chica de los ojos.
+   Recortes según el orden de CA-10.11, medidos en la PC del Director
+   (Celeron N4020; tablas en docs/design/mascota/mascota.md):
+   - respiración (escala de toda la mascota): GPU ~11 % en reposo, fuera
+     de presupuesto -> quitada;
+   - una "ojeada" periódica hacia el formulario: GPU ~3,2 %, fuera de
+     presupuesto -> quitada;
+   - alargar el parpadeo a 7 s no baja el costo (~2 %, es el piso de tener
+     una animación viva) -> se deja 5,5 s.
+   Longhands: el minificador reduce un shorthand sin nombre a "none". */
 .lg .m-eyes {
   animation-name: m-blink;
   animation-duration: 5.5s;
   animation-timing-function: linear;
   animation-delay: 1.2s;
   animation-iteration-count: 16;
-}
-@keyframes m-breathe {
-  50% {
-    transform: scale(1.006, 1.014); /* <= 1,5 % */
-  }
 }
 @keyframes m-blink {
   0%,
@@ -460,9 +459,7 @@
 
 /* Sin idle mientras hay foco o una reacción: se pausa (no se reinicia, así
    el tope cuenta tiempo de idle real) y los ojos quedan abiertos. */
-.lg:focus-within .m,
 .lg:focus-within .m-eyes,
-.lg-mascot:not([data-mood="idle"]) .m,
 .lg-mascot:not([data-mood="idle"]) .m-eyes {
   animation-play-state: paused;
 }
@@ -473,10 +470,12 @@
 
 /* Mirada (CA-10.7). Cuatro poses; en una columna el formulario está abajo
    (mira hacia abajo), en dos paneles a la derecha (ver media query). */
+/* Porcentajes de la capa de ojos (60 x 24 unidades del dibujo):
+   10 % en x = 6 unidades, 10 % en y = 2,4 unidades. */
 .lg {
-  --lk-email: translate(-2%, 1.7%);
-  --lk-pass: translate(0.5%, 2.1%);
-  --lk-btn: translate(2.5%, 1.7%);
+  --lk-email: translate(-6.7%, 17%);
+  --lk-pass: translate(1.7%, 21%);
+  --lk-btn: translate(8.3%, 17%);
 }
 .lg-mascot[data-look="email"] .m-look {
   transform: var(--lk-email);
@@ -645,9 +644,9 @@
 @media (min-width: 1024px) {
   .lg {
     /* El formulario queda a la derecha: la mirada va a la derecha y abajo. */
-    --lk-email: translate(3%, -0.4%);
-    --lk-pass: translate(3%, 1%);
-    --lk-btn: translate(2.2%, 2.1%);
+    --lk-email: translate(10%, -4%);
+    --lk-pass: translate(10%, 10%);
+    --lk-btn: translate(7.3%, 21%);
     max-width: none;
     margin: 0;
     padding: 0;
