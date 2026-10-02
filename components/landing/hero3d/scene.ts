@@ -388,10 +388,21 @@ export function createBurger(init: BurgerInit, { onReady, onFallback }: BurgerEv
   canvas.addEventListener("webglcontextlost", onContextLost as EventListener);
 
   // Compila los shaders sin bloquear (KHR_parallel_shader_compile si
-  // existe) y recién después muestra el canvas.
+  // existe) y recién después muestra el canvas. Sin la extensión,
+  // compileAsync hace lo mismo que compile() pero three deja una advertencia
+  // en consola (QA-03): se consulta con extensions.has(), que no advierte.
   update(0, 0);
-  renderer
-    .compileAsync(scene, camera)
+  const compiled: Promise<unknown> = renderer.extensions.has("KHR_parallel_shader_compile")
+    ? renderer.compileAsync(scene, camera)
+    : new Promise((resolve, reject) => {
+        try {
+          renderer.compile(scene, camera);
+          setTimeout(resolve, 0);
+        } catch (err) {
+          reject(err);
+        }
+      });
+  compiled
     .then(() => {
       if (disposed) return;
       renderer.render(scene, camera);

@@ -11,9 +11,9 @@ function supportsWebGL() {
   try {
     const canvas = document.createElement("canvas");
     const gl = (canvas.getContext("webgl2") ?? canvas.getContext("webgl")) as WebGLRenderingContext | null;
-    if (!gl) return false;
-    gl.getExtension("WEBGL_lose_context")?.loseContext();
-    return true;
+    // Sin loseContext(): Firefox lo informa en consola como "WebGL context
+    // was lost" (QA-03). El contexto de prueba se libera con el canvas.
+    return !!gl;
   } catch {
     return false;
   }
