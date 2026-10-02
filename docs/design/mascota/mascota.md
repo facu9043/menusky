@@ -1,11 +1,63 @@
-# Mascota de MenuSky: 3 propuestas (etapa de propuesta)
+# Mascota de MenuSky: "Pomo" (elegida) e historial de propuestas
 
-Autor: Frontend. Fecha: 2026-10-02. Estado: **para elegir por el Director** (CA-3.1). Spec: `docs/specs/login.md`, HU-3 y HU-10.
-Ninguna tiene nombre visible en pantalla (P-13). El texto de la gorra, "Yo ♥ MenuSky", es provisorio (pregunta abierta 2).
+Autor: Frontend. Fecha: 2026-10-02. Estado: **elegida la propuesta 3, "Pomo"** (Director, `docs/ESTADO-LOGIN.md`, "Respuestas del Director", punto 1). Spec: `docs/specs/login.md` v1.1, HU-3 y HU-10.
+Sin nombre visible en pantalla (CA-3.13). Texto de la gorra: "Yo ♥ MenuSky" (default del equipo, el Director puede cambiarlo), dibujado como trazos.
 
-## Archivos
+## En la app (desde la v1.1)
 
-| Propuesta | SVG | PNG (para revisión y búsqueda inversa) | Silueta (prueba CA-3.4.2) | Componente del borrador |
+- Componente: `components/brand/mascot/MascotPomo.tsx` (exportado como `Mascot` desde `components/brand/mascot/index.tsx`). Solo se usa en `app/login/page.tsx` (CA-3.8). Server Component: el SVG viaja en el HTML, no en el JS.
+- Brioche y Pollito se quitaron del código y `?mascota=` ya no existe (CA-3.12). Sus SVG/PNG/siluetas quedan abajo como historial.
+- `MascotPomo.tsx` **se mantiene a mano**: parte del dibujo de `propuesta-3.svg`, separado en capas animables. `generar-mascotas.mjs` quedó como histórico: solo reescribe los SVG de las tres propuestas y **ya no escribe componentes** (no puede recrear los borrados).
+
+### Cómo se anima (HU-10)
+
+Técnica: solo CSS sobre `transform`/`opacity` (`app/login/login.css`); React solo cambia tres atributos de `.lg-mascot`: `data-mood` (idle, loading, error-a/error-b, success), `data-look` (none, email, pass, btn) y `data-face` (ok, oops, yay). Sin `requestAnimationFrame`, `setInterval` ni `setTimeout` de animación.
+
+Por qué capas: Chrome solo compone en la GPU las animaciones de cajas CSS; un `<g>` animado dentro de un SVG obliga a repintar el SVG (R-13). Por eso lo que se MUEVE es una caja propia:
+
+| Capa | Qué tiene | Qué hace |
+|---|---|---|
+| `.lg-mascot` (div) | toda la mascota | reacciones: inclinación "Entrando..." (280 ms), sacudida de error (460 ms, una vez por error), salto de éxito (380 ms) |
+| `.m-base` (svg) | pies, cuerpo y etiqueta (`.m-body`), brazos (`.m-arm-hip`, `.m-arm-up`, `.m-arm`), bocas (`.m-ok`, `.m-oops`, `.m-yay`), hamburguesa, gorra (`.m-cap`) | no se mueve; las poses cambian por `opacity` sin transición |
+| `.m-look` (div, solo el recuadro de los ojos: x 70-130, y 102-126) | ojos | mirada hacia el campo con foco (transición de 180 ms) |
+| `.m-eyes` (svg recortado, `viewBox="70 102 60 24"`) | ojos abiertos (`.m-eyes-open`) y felices (`.m-eyes-yay`) | parpadeo (idle) |
+
+Estados (prioridad: éxito > "Entrando..." > error > mirada > idle):
+
+| Estado | Qué hace Pomo |
+|---|---|
+| Idle (sin foco ni envío) | parpadeo de 176 ms cada 5,5 s, 16 veces (de 1,2 s a ~89 s desde la carga) y se detiene solo. Se pausa (no se reinicia) con foco o con una reacción; los ojos quedan abiertos. |
+| Foco en Email / Contraseña o "Mostrar contraseña" / "Entrar" | mira hacia ese elemento: en dos paneles a la derecha (y arriba, al medio o abajo); en una columna hacia abajo (izquierda, centro o derecha). Cuatro poses distintas (verificado por captura). |
+| "Entrando..." | se inclina hacia el formulario (traslado 4 % + giro 4°, 280 ms) y mira el botón. Sin bucle. |
+| Error (credenciales o red) | sacude una vez (460 ms) y queda con boca de "uy" hasta el próximo envío o hasta enfocar un campo. |
+| Éxito | salto de 380 ms, brazo en alto, ojos felices y boca abierta. Se fija en el mismo render que `router.push` (sin espera artificial). |
+| `prefers-reduced-motion: reduce` | cero animaciones y transiciones; las poses (mirada, inclinación, caras, brazo en alto) cambian de golpe. |
+
+### Recortes (orden de CA-10.11) y mediciones
+
+Medido en la PC del Director (Intel Celeron N4020, 2 núcleos, Intel UHD 600), Chrome 154 headless con GPU, build de producción (`next start -p 3200`), `/login` a 1440 x 900, 3 s después de cargar, sin foco. CPU en % de un núcleo, por `SystemInfo.getProcessInfo` (CDP); ventanas de 30 s salvo indicación.
+
+| Variante del idle | Renderer | GPU | Resultado |
+|---|---|---|---|
+| Sin animación (equivale a reduced-motion) | 0,15 | 0,03 | referencia |
+| Respiración (escala de toda la mascota, 4,5 s) + parpadeo | 4,45 | 11,4 | no cumple: **respiración quitada** |
+| Parpadeo + "ojeada" periódica al formulario | 2,4 | 2,7-3,2 | no cumple: **ojeada quitada** |
+| Parpadeo cada 7 s (en vez de 5,5 s) | 1,96-2,08 | 1,79-1,87 | igual que 5,5 s: alargar el período no baja el costo |
+| **Parpadeo cada 5,5 s (final)** | 1,97-2,02 | 1,85-2,16 | cumple (ver nota) |
+
+Nota: el costo del parpadeo (~2 puntos) es el piso de tener cualquier animación viva: el compositor produce cuadros mientras la animación corre aunque esté en la pausa entre parpadeos (traza: ~1250 eventos de cuadro en 10 s con el idle vivo, ~50 con foco). Diferencia contra reduced-motion en 3 pares alternados: renderer +1,82 a +1,87, GPU +1,81 a +2,12 (umbral <= 2): **queda al límite**. Si el Líder no acepta ese margen, el siguiente recorte es "idle solo en reacciones" (quitar el parpadeo: costo ~0).
+
+Resto de CA-10.11 (traza de 10 s en reposo, CPU 1x y 4x): 0 Layout, 0 Paint, 0 `FireAnimationFrame`, 0 `TimerFire`, 0 tareas largas, ninguna animación con "compositeFailed"; `ScriptDuration` 0,3-0,7 ms en 10 s. Con CPU 4x el % de CPU del renderer no sirve (la emulación de throttling inflaba también la página estática: ~55 %).
+
+### Peso (CA-3.5), medido sobre el HTML renderizado
+
+`.lg-mascot .m` (las dos capas): 4671 bytes, 1500 bytes gzip, 54 elementos SVG (56 contando los dos `div`), sin `<image>`, `href`, `url()`, `<text>`, `<script>`, `foreignObject`, filtros ni blur.
+
+## Historial: las 3 propuestas (etapa de propuesta)
+
+### Archivos
+
+| Propuesta | SVG | PNG (para revisión y búsqueda inversa) | Silueta (prueba CA-3.4.2) | Componente del borrador (borrado en v1.1, salvo Pomo) |
 |---|---|---|---|---|
 | 1 "Brioche" | `propuesta-1.svg` | `propuesta-1.png` | `propuesta-1-silueta.png` | `components/brand/mascot/MascotBrioche.tsx` |
 | 2 "Pollito" | `propuesta-2.svg` | `propuesta-2.png` | `propuesta-2-silueta.png` | `components/brand/mascot/MascotPollito.tsx` |
@@ -13,11 +65,11 @@ Ninguna tiene nombre visible en pantalla (P-13). El texto de la gorra, "Yo ♥ M
 
 Los nombres entre comillas son de trabajo, no nombres de la mascota (pregunta abierta 3).
 
-Las tres salen de un mismo archivo, `generar-mascotas.mjs` (`node docs/design/mascota/generar-mascotas.mjs`), que escribe los SVG y los componentes TSX. Así el SVG revisado y el que se ve en `/login` son el mismo dibujo. Los PNG se exportaron con Chrome headless desde los SVG (no son fuente: solo sirven para revisar).
+Las tres salen de un mismo archivo, `generar-mascotas.mjs` (`node docs/design/mascota/generar-mascotas.mjs`), que en la etapa de propuesta escribía los SVG y los componentes TSX (desde la v1.1 solo los SVG). Así el SVG revisado y el que se ve en `/login` son el mismo dibujo. Los PNG se exportaron con Chrome headless desde los SVG (no son fuente: solo sirven para revisar).
 
-Verlas en contexto: `/login?mascota=1`, `/login?mascota=2`, `/login?mascota=3` (selector de vista previa del borrador).
+(Hasta la elección había un selector `/login?mascota=1|2|3`; se quitó en la v1.1.)
 
-## Elementos comunes (pedido del Director)
+### Elementos comunes (pedido del Director)
 
 - Personaje cartoon amarillo (`--ms-cheddar` #FFC21A), contorno grueso color carne (`--ms-patty` #2B1710, 5 unidades sobre un viewBox de 200 x 240: unos 2,5 px a 120 px de alto y unos 9 px a 440 px).
 - Gorra roja (`--ms-tomato`, visera `--ms-ketchup`) con "Yo ♥ MenuSky". Las letras están **dibujadas como trazos**, letra por letra (no hay `<text>` ni fuentes); el corazón es un path relleno cheddar. La visera apunta a la derecha, hacia el formulario.
@@ -26,7 +78,7 @@ Verlas en contexto: `/login?mascota=1`, `/login?mascota=2`, `/login?mascota=3` (
 - Pose y mirada hacia la derecha (el formulario en escritorio).
 - Excepción de color a confirmar por el Líder: el verde de la lechuga **dentro del isotipo** es `#7CCB4E`, porque así está en `Logo.tsx` (ese verde no figura en la tabla de tokens). Si se prefiere, se cambia por `--ms-lettuce` en el generador.
 
-## Propuesta 1: "Brioche", el pan de la casa
+### Propuesta 1: "Brioche", el pan de la casa
 
 - Concepto: el pan de arriba de la hamburguesa hecho personaje. La cúpula del isotipo (que también es el sol del "Sky") se vuelve un bollo redondo, con semillas de sésamo en los costados. Es la que más se ata a la marca: el logo es una hamburguesa y este es su pan.
 - Personalidad: bonachón, servicial, "el que te recibe en la puerta de la cocina". Sostiene la hamburguesa con las dos manos frente al delantal, como quien la ofrece.
@@ -37,7 +89,7 @@ Verlas en contexto: `/login?mascota=1`, `/login?mascota=2`, `/login?mascota=3` (
   - "Entrando...": se inclina hacia el formulario (traslado 4 % + giro 4°, 280 ms).
   - Error: sacude una vez (460 ms) y cambia la boca por una línea ondulada de "uy" (cambio de `opacity`).
 
-## Propuesta 2: "Pollito", el pollito cocinero
+### Propuesta 2: "Pollito", el pollito cocinero
 
 - Concepto: un pollito con gorra y delantal que se escapó de la cocina con su hamburguesa. Es la más tierna y la más "cartoon".
 - Personalidad: entusiasta y un poco atolondrado; está comiendo (la hamburguesa ya tiene un mordisco).
@@ -48,7 +100,7 @@ Verlas en contexto: `/login?mascota=1`, `/login?mascota=2`, `/login?mascota=3` (
   - "Entrando...": misma inclinación hacia el formulario.
   - Error: sacude una vez; se apagan las mejillas y aparece una gota de sudor.
 
-## Propuesta 3: "Pomo", el pomo de mostaza
+### Propuesta 3: "Pomo", el pomo de mostaza
 
 - Concepto: un frasco de mostaza aplastable. **El delantal es la etiqueta del frasco** (con el isotipo) y el pico del frasco asoma por arriba de la gorra. Es la más gráfica y la más fácil de reconocer a 120 px.
 - Personalidad: canchero y rápido, el que "le pone onda" al servicio. Muestra la hamburguesa con el brazo extendido hacia el formulario y la otra mano en la cintura.
@@ -59,7 +111,7 @@ Verlas en contexto: `/login?mascota=1`, `/login?mascota=2`, `/login?mascota=3` (
   - "Entrando...": misma inclinación hacia el formulario.
   - Error: sacude una vez y la sonrisa pasa a boca de "uy".
 
-## Mediciones (CA-3.5: <= 12 KB, <= 4 KB gzip, <= 120 elementos, sin filtros)
+### Mediciones (CA-3.5: <= 12 KB, <= 4 KB gzip, <= 120 elementos, sin filtros)
 
 Comando (Git Bash, en `docs/design/mascota/`):
 
@@ -80,7 +132,7 @@ propuesta-3.svg bytes=3648 gzip=1298 elements=41 forbidden=0
 - Las tres quedan muy por debajo del presupuesto (~31 % del peso y ~37 % de los elementos permitidos).
 - En `/login` la mascota es un Server Component: su SVG viaja en el HTML (y en el payload RSC), no en el JS del cliente.
 
-## Fichas de originalidad (CA-3.4)
+### Fichas de originalidad (CA-3.4)
 
 Constancia del Frontend (punto 4, vale para las tres): las tres mascotas se dibujaron escribiendo a mano las coordenadas de cada forma en `generar-mascotas.mjs`. No se calcó, vectorizó ni usó como base ninguna imagen (ni la referencia del Director ni otra de terceros), y no se usó ningún generador de imágenes. Las letras de la gorra se diseñaron como trazos propios. Firmado: Frontend, 2026-10-02.
 
@@ -121,7 +173,7 @@ Lo que **no puedo hacer yo** y queda pendiente para el Líder/Director (no se ma
 | 5 | Búsqueda inversa sin coincidencias | **Pendiente** | Hacerla con `propuesta-3.png`. |
 | 6 | Solo los elementos pedidos | Sí | Gorra, delantal (que es la etiqueta) con isotipo, hamburguesa. El pico del frasco es parte del objeto, no un rasgo copiado. |
 
-## Recomendación del Frontend
+### Recomendación del Frontend
 
 **Propuesta 1, "Brioche"**, por tres motivos:
 1. Es la que más cuenta MenuSky: el isotipo es una hamburguesa cuya cúpula es a la vez pan y sol, y Brioche es ese pan. Logo y mascota dicen lo mismo.
@@ -130,9 +182,9 @@ Lo que **no puedo hacer yo** y queda pendiente para el Líder/Director (no se ma
 
 Segunda opción: **Pomo** (la silueta más reconocible a 120 px y la idea más graciosa: el delantal es la etiqueta). Si el Director prefiere algo más tierno, Pollito.
 
-## Lo que falta después de la elección
+### Estado después de la elección (2026-10-02, v1.1)
 
-- Borrar las dos propuestas no elegidas del generador y de `components/brand/mascot/`, y el selector `?mascota=` de `app/login/page.tsx` (marcado `BORRADOR`).
-- Texto final de la gorra (pregunta 2) y nombre (pregunta 3).
-- Pruebas de originalidad pendientes (puntos 2 y 5) con evidencia adjunta.
-- Línea en `docs/CREDITS.md` (CA-3.11, la agrega el Líder).
+- Hecho: Brioche y Pollito fuera de `components/brand/mascot/`, selector `?mascota=` quitado, generador limitado a los SVG (CA-3.12).
+- Hecho: gorra "Yo ♥ MenuSky" (default del equipo) y sin nombre visible (CA-3.13).
+- Hecho: línea en `docs/CREDITS.md` (CA-3.11).
+- **Pendiente (bloquea el release):** pruebas de originalidad de Pomo, puntos 2 (silueta con 3 personas, `propuesta-3-silueta.png`) y 5 (búsqueda inversa sobre `propuesta-3.png`). Las asigna el Líder al Director (decisión (d) de la spec v1.1). Las capas animadas no cambian el dibujo: los PNG siguen representando a Pomo (la cara de éxito y el brazo en alto son poses nuevas del mismo personaje).

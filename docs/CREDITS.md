@@ -38,6 +38,7 @@ Notas para el Frontend:
 
 - Tipografía: Geist / Geist Mono vía `next/font/google` (ya en la app, licencia SIL OFL; no requiere crédito).
 - Logo, isotipo y favicon de MenuSky: diseño propio del Frontend; no hay terceros.
+- Mascota de MenuSky: diseño original del equipo, SVG propio ("Pomo", nombre de trabajo; `components/brand/mascot/MascotPomo.tsx`, historial en `docs/design/mascota/`). Sin imágenes, calcos ni generadores de terceros (constancia en `docs/design/mascota/mascota.md`).
 - Mockups de la app: UI recreada en código/SVG con datos ficticios genéricos; sin marcas de terceros.
 
 ## Limitación de la verificación
