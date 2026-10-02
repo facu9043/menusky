@@ -9,7 +9,7 @@ cada delegación y después de cada paso verificado.
 - Puertos: 3000 y 53659 ocupados por otros procesos (no tocar). Este frente usa 3200+.
 - Env ficticias (ver docs/ESTADO.md, "Reglas operativas"): `NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co NEXT_PUBLIC_SUPABASE_ANON_KEY=dummy-anon-key NEXT_PUBLIC_SITE_URL=http://localhost:3200`.
 
-Última actualización: 2026-10-02. **Paso actual: 4a (PO: spec v1.1 con las respuestas del Director).**
+Última actualización: 2026-10-02. **Paso actual: 4b (Frontend: implementación final con Pomo).**
 
 | Paso | Estado | Evidencia |
 |---|---|---|
@@ -37,8 +37,8 @@ cada delegación y después de cada paso verificado.
 
 | Paso | Estado | Evidencia |
 |---|---|---|
-| 4a. Spec v1.1 (PO) | EN CURSO | |
-| 4b. Implementación final (Frontend) | PENDIENTE | |
+| 4a. Spec v1.1 (PO) | HECHO (aprobada; 3 preguntas residuales: tope 90 s del idle, PC de Lighthouse, R-2) | este commit |
+| 4b. Implementación final (Frontend) | EN CURSO | |
 | 5. Seguridad | PENDIENTE | |
 | 6. QA | PENDIENTE | |
 | 7. Informe de release | PENDIENTE | |
