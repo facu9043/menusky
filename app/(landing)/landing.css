@@ -1929,7 +1929,8 @@
   color: var(--ms-paper);
 }
 .ms-tile--cuenta .ms-tile__copy p {
-  color: rgba(255, 253, 248, 0.92);
+  /* paper 100% sobre tomato = 4,94:1 (con 0.92 de opacidad quedaba en 4,37) */
+  color: var(--ms-paper);
 }
 .ms-tile--cuenta .ms-tile__note {
   display: inline-block;
@@ -2489,8 +2490,8 @@
   align-self: flex-start;
   padding: 0.4rem 0.9rem;
   border-radius: 999px;
-  background: var(--t-accent);
-  color: #fff;
+  background: var(--t-btn, var(--t-accent));
+  color: var(--t-btn-text, #fff);
   font-size: 0.8rem;
   font-weight: 650;
 }

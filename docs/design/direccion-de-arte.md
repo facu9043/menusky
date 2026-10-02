@@ -62,6 +62,20 @@ Calculados con un script propio (luminancia relativa sRGB y `(L1+0.05)/(L2+0.05)
 
 Regla de oro: el amarillo nunca lleva texto claro; el texto sobre amarillo es siempre `patty`.
 
+Corrección QA-01 (2026-10-01): sobre bloque `tomato` el texto va siempre en `paper` al 100% (con opacidad 0.92 bajaba a 4,37:1). No usar texto claro semitransparente sobre rojo.
+
+Mockup "Temas de color" (colores reales de `lib/theme/presets.ts`, no de la marca): el botón "Ver pedido" (12,8 px) usa el texto del tema sobre el acento cuando cumple, y si no, un acento oscurecido solo en el botón (la miniatura y la muestra mantienen el acento real).
+
+| Tema | Texto del botón | Fondo del botón | Ratio |
+|---|---|---|---|
+| Default | `#1C1917` | `#E8590C` (acento real) | 4.88 |
+| Glaciar | `#0B2A3B` | `#0EA5C9` (acento real) | 5.14 |
+| Galaxia | `#FFFFFF` | `#AE2FDC` (acento `#C742F0` oscurecido) | 4.95 |
+| Madera | `#3B2A1E` | `#C98A2C` (acento real) | 4.66 |
+| Neobrutalista | `#FFFFFF` | `#D62B39` (acento `#E63946` oscurecido) | 4.93 |
+| Neumorfismo | `#FFFFFF` | `#A8603F` (acento `#C97B5A` oscurecido) | 4.76 |
+| Claymorfismo | `#2E2A3D` | `#FF6F61` (acento real) | 5.08 |
+
 Modo oscuro del sistema (CA-8.12): la landing fija `color-scheme: light` y no usa `.dark` ni `dark:`; con `prefers-color-scheme: dark` se ve igual.
 
 ## 3. Tipografía

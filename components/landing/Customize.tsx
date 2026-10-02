@@ -4,15 +4,19 @@ import { Check, Minus, Plus } from "lucide-react";
 import { StatusTracker } from "./mockups/Pieces";
 
 // Los 7 temas reales de lib/theme/presets.ts (nombre + 4 colores clave).
+// btn / btnText: colores del botón "Ver pedido" del mockup, elegidos para
+// contraste AA (>= 4,5:1) con texto de 12,8 px. Si el texto del tema ya
+// cumple sobre el acento se usa ese; si no, se oscurece el acento SOLO en el
+// botón (el acento real se sigue viendo en la miniatura y la muestra).
 const THEMES = [
-  { label: "Default", bg: "#F5EDE0", card: "#F5CDA0", text: "#1C1917", accent: "#E8590C" },
-  { label: "Glaciar", bg: "#DCEFF6", card: "#B9E4F0", text: "#0B2A3B", accent: "#0EA5C9" },
-  { label: "Galaxia", bg: "#0B0B14", card: "#16162B", text: "#F5F3FF", accent: "#C742F0" },
-  { label: "Madera", bg: "#EDDDC0", card: "#E7C48A", text: "#3B2A1E", accent: "#C98A2C" },
-  { label: "Neobrutalista", bg: "#FFF7E6", card: "#FFC53D", text: "#141414", accent: "#E63946" },
-  { label: "Neumorfismo", bg: "#E7E2D8", card: "#E7E2D8", text: "#3A362E", accent: "#C97B5A" },
-  { label: "Claymorfismo", bg: "#F4F1FB", card: "#FFD6A5", text: "#2E2A3D", accent: "#FF6F61" },
-];
+  { label: "Default", bg: "#F5EDE0", card: "#F5CDA0", text: "#1C1917", accent: "#E8590C", btnText: "#1C1917" }, // 4,88
+  { label: "Glaciar", bg: "#DCEFF6", card: "#B9E4F0", text: "#0B2A3B", accent: "#0EA5C9", btnText: "#0B2A3B" }, // 5,14
+  { label: "Galaxia", bg: "#0B0B14", card: "#16162B", text: "#F5F3FF", accent: "#C742F0", btn: "#AE2FDC" }, // 4,95
+  { label: "Madera", bg: "#EDDDC0", card: "#E7C48A", text: "#3B2A1E", accent: "#C98A2C", btnText: "#3B2A1E" }, // 4,66
+  { label: "Neobrutalista", bg: "#FFF7E6", card: "#FFC53D", text: "#141414", accent: "#E63946", btn: "#D62B39" }, // 4,93
+  { label: "Neumorfismo", bg: "#E7E2D8", card: "#E7E2D8", text: "#3A362E", accent: "#C97B5A", btn: "#A8603F" }, // 4,76
+  { label: "Claymorfismo", bg: "#F4F1FB", card: "#FFD6A5", text: "#2E2A3D", accent: "#FF6F61", btnText: "#2E2A3D" }, // 5,08
+] satisfies { label: string; bg: string; card: string; text: string; accent: string; btn?: string; btnText?: string }[];
 
 export function Customize() {
   return (
@@ -127,6 +131,8 @@ export function Customize() {
                         "--t-card": t.card,
                         "--t-text": t.text,
                         "--t-accent": t.accent,
+                        "--t-btn": "btn" in t ? t.btn : t.accent,
+                        "--t-btn-text": "btnText" in t ? t.btnText : "#fff",
                         "--t-i": i,
                       } as CSSProperties
                     }
