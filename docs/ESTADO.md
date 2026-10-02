@@ -3,7 +3,7 @@
 Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada delegación
 y después de cada paso verificado.
 
-Última actualización: 2026-10-01, retomado tras la pausa. Paso actual: 6, ciclo 2 (QA re-test de QA-07; fix 2531b5e). Retomado tras el 3er apagón (2026-10-02).
+Última actualización: 2026-10-01, retomado tras la pausa. Paso actual: 7 (informe final entregado al Director; esperando sus decisiones). Retomado tras el 3er apagón (2026-10-02).
 Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 
 ## Tarea A: vulnerabilidad de Next.js — CERRADA
@@ -20,8 +20,9 @@ Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 | 3b. Pulido del Frontend (WIP 72c9651 verificado y completado) | HECHO | 2c36293, eaeaa15, 0e91e78 |
 | 4. Seguridad de la landing | HECHO: **Apto** (0 hallazgos; 5 informativos SEC-L-01..05) | 8b6c943 docs/security/landing-2026-10-01.md |
 | 5. QA de la landing | HECHO: **Rechazado** (QA-01 contraste, QA-02 desborde <= 337 px) | 7936f65 docs/qa/landing-2026-10-01.md |
-| 6. Correcciones y re-auditoría | Ciclo 1: Frontend corrigió QA-01 (9b19ade), QA-02 (84b192b), QA-03 (33fe415); SEC-L-01 sin cambio (no hay alternativa documentada). Seguridad delta: **Apto** (335ba52, SEC-L-06 info: ruta absoluta en docs/qa/scripts/04-dark-diff.mjs, dueño QA). QA re-test ciclo 1: **Aprobado con reservas** (b8daf64): QA-01/02/03 cerrados; nuevo QA-07 (Baja: FlowDemo no arranca a <= 260 px, umbral 0.35) y QA-08 (info, aviso de Firefox). Ciclo 2: Frontend corrigió QA-07 (2531b5e, IntersectionObserver threshold 0 + rootMargin -25%; diff revisado por el Líder). **EN CURSO: QA re-test de QA-07.** Seguridad no aplica (cambio de umbral sin impacto; el Líder revisa el diff). | |
-| 7. Informe final al Director | PENDIENTE | |
+| 6. Correcciones y re-auditoría | Ciclo 1: Frontend corrigió QA-01 (9b19ade), QA-02 (84b192b), QA-03 (33fe415); SEC-L-01 sin cambio (no hay alternativa documentada). Seguridad delta: **Apto** (335ba52, SEC-L-06 info: ruta absoluta en docs/qa/scripts/04-dark-diff.mjs, dueño QA). QA re-test ciclo 1: **Aprobado con reservas** (b8daf64): QA-01/02/03 cerrados; nuevo QA-07 (Baja: FlowDemo no arranca a <= 260 px, umbral 0.35) y QA-08 (info, aviso de Firefox). Ciclo 2: Frontend corrigió QA-07 (2531b5e, IntersectionObserver threshold 0 + rootMargin -25%; diff revisado por el Líder). QA re-test ciclo 2: QA-07 cerrado; veredicto final **Aprobado con reservas** (8be3807). Seguridad no aplica (cambio de umbral sin impacto; el Líder revisa el diff). | |
+| 7. Informe final al Director | HECHO (2026-10-02) | Seguridad Apto, QA Aprobado con reservas |
+| 8. Release | **BLOQUEADO**: medición de rendimiento en otra PC + aprobaciones del Director | |
 
 ## Autoverificación del Frontend (no reemplaza a QA)
 OK: sin scroll horizontal (360/768/1440, antes y después del 3D), CLS 0, primera carga ~357 KiB / 20 requests,
@@ -51,7 +52,13 @@ anclas OK, 3D reacciona al puntero/scroll, 0 tareas largas al cargar el 3D (work
 - QA-03 (Baja): warnings de three en consola sin GPU (KHR_parallel_shader_compile, WebGL context was lost).
 - CA-9.6 no concluyente en este equipo: se mide junto con CA-9.1/9.2 en otra PC.
 
-## Orden para retomar
+## Próximos pasos (en orden)
+1. Medir CA-9.1, 9.2 y 9.6 en una PC más potente (Lighthouse móvil, mediana de 3, sobre build local). Si no cumple, ciclo de corrección (Frontend) + re-test.
+2. Decisiones del Director: 3D tras la primera interacción; textos del hero y CTA; CA-1.5 y CA-8.13 ("wow"); dudas abiertas de la spec (sección 12).
+3. Probar en iPhone/Safari real y abrir el WhatsApp en un celular (CA-2.2).
+4. Release: build verificado, notas de versión y plan de vuelta atrás; merge a master solo con autorización del Director.
+
+## Orden para retomar (histórico)
 1. Seguridad audita `feat/landing-page` (enlaces externos, secretos, deps nuevas three/@types/three, npm audit, cabeceras, worker, sin peticiones a Supabase/api desde `/`).
 2. QA prueba todos los CA de la spec v1.0 (incluye regresión /login, /kitchen, /floor, /admin, /m/{token} 404). Lighthouse según la decisión del punto 1 de hallazgos.
 3. Correcciones -> re-auditoría -> informe final al Director (con textos del hero para aprobar).
