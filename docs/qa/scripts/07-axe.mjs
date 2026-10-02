@@ -5,7 +5,7 @@ import fs from "node:fs";
 
 const br = await launch({ headless: true });
 const all = {};
-for (const [name, vp] of Object.entries(VIEWPORTS)) {
+for (const [name, vp] of Object.entries({ ...VIEWPORTS, w320: { width: 320, height: 640 }, w180: { width: 180, height: 640 } })) {
   for (const mode of ["default", "reduced"]) {
     const ctx = await br.newContext({ viewport: vp, reducedMotion: mode === "reduced" ? "reduce" : "no-preference" });
     const page = await ctx.newPage();
