@@ -1,6 +1,7 @@
 // Mide el peso de la primera carga de /login (HTML + JS/CSS/fuentes de /_next/static, gzip).
 // Uso: npm run build && npx next start -p 3200 -H 127.0.0.1, luego: node scripts/measure-login-weight.mjs [baseUrl]
 // No mide SVG inline (va dentro del HTML) ni la peticion de auth.
+// OJO: NO cuenta las fuentes (Next 16 las precarga por cabecera HTTP Link, no en el HTML). Medirlas aparte (DevTools Network o CDP).
 import zlib from "node:zlib";
 const base = process.argv[2] || "http://127.0.0.1:3200";
 const html = await (await fetch(base + "/login")).text();
