@@ -60,7 +60,6 @@ for (const [name, vp] of Object.entries(VIEWPORTS)) {
     const hero = document.querySelector("#inicio");
     const sub = hero.querySelector("p");
     const cta = [...hero.querySelectorAll("a")].find((a) => /Pedí una demo/.test(a.textContent));
-    const logo = document.querySelector("header a, header svg");
     return { h1: inView(h1), subtitle: inView(sub), subText: sub?.textContent.slice(0, 40), cta: inView(cta), ctaBottom: cta && Math.round(cta.getBoundingClientRect().bottom), logo: inView(document.querySelector("header")) && /MenuSky/.test(document.querySelector("header").textContent + (document.querySelector("header [aria-label]")?.getAttribute("aria-label") || "")), vh };
   });
   console.log(name, "FOLD", JSON.stringify(fold));

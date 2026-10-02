@@ -31,8 +31,8 @@ async function waitLive(page, ms = 20000) {
   await page.goto(BASE + "/", { waitUntil: "load" });
   await page.waitForTimeout(1500);
   check("CA-8.x 3D arranca en estado static (antes de interactuar)", (await state(page)) === "static", await state(page));
-  const threeBefore = await page.evaluate(() => performance.getEntriesByType("resource").filter((r) => /three|worker|burger/i.test(r.name)).map((r) => r.name));
-  console.log("3D-related resources before interaction:", threeBefore);
+  const jsBefore = await page.evaluate(() => performance.getEntriesByType("resource").filter((r) => /\.js/.test(r.name)).length);
+  console.log("JS chunks loaded before any interaction:", jsBefore);
   await page.mouse.move(700, 450);
   await page.mouse.move(720, 460, { steps: 4 });
   const live = await waitLive(page);
@@ -82,7 +82,7 @@ async function waitLive(page, ms = 20000) {
 
 // ---------- CA-8.2 mobile: 3D reacts to scroll or continuous animation ----------
 {
-  const { ctx, page, msgs } = await newPage({ viewport: { width: 360, height: 640 }, hasTouch: true, isMobile: true });
+  const { ctx, page } = await newPage({ viewport: { width: 360, height: 640 }, hasTouch: true, isMobile: true });
   await page.goto(BASE + "/", { waitUntil: "load" });
   await page.waitForTimeout(1500);
   await page.touchscreen.tap(180, 560).catch(() => {});
@@ -128,12 +128,10 @@ async function waitLive(page, ms = 20000) {
   await page.waitForLoadState("load", { timeout: 90000 });
   const tLoad = Date.now() - t0;
   const marks = await page.evaluate(() => window.__marks);
-  const threeBefore = reqLog.filter((r) => /chunks|worker|three/i.test(r.u) && r.t < tLoad).length;
   console.log("SLOW3G timings(ms): h1 visible", tH1, "CTA clicked", tCta, "readyState at click", loaded, "3D state at click", st, "load", tLoad, "paint marks", JSON.stringify(marks));
   check("CA-8.3 Slow 3G: h1 visible y CTA clickeable (abre WhatsApp) antes del load y con el 3D en static", !!popup && WA_RE.test(popup.url()) && st === "static", { tH1, tCta, readyStateAtClick: loaded, state3D: st, popup: popup?.url()?.slice(0, 40) });
   await page.waitForTimeout(3000);
   const stEnd = await state(page);
-  const tr = reqLog.map((r) => r.u).filter((u) => /\.js$|\.mjs$/.test(u) || /worker/i.test(u));
   check("CA-8.3 Slow 3G: sin interacción el 3D no se descarga ni arranca (state static tras load+3s)", stEnd === "static", { stEnd });
   await ctx.close();
 }
@@ -162,9 +160,13 @@ async function waitLive(page, ms = 20000) {
   // screen frames identical => nothing moves by itself
   const s1 = (await page.screenshot()).toString("base64"); await page.waitForTimeout(2500); const s2 = (await page.screenshot()).toString("base64");
   check("CA-8.4 reduced-motion: pantalla idéntica en dos capturas (nada se mueve solo)", s1 === s2, "equal=" + (s1 === s2));
-  // pointer should not move anything
-  await page.mouse.move(100, 100); const s3 = (await page.screenshot()).toString("base64"); await page.mouse.move(1300, 800, { steps: 6 }); await page.waitForTimeout(500); const s4 = (await page.screenshot()).toString("base64");
-  check("CA-8.4 reduced-motion: nada reacciona al puntero (se excluye hover de botones: capturas en zona sin controles)", true, "informativo: hover de CTA puede cambiar color; ver CA-8.8");
+  // pointer must not move anything in the hero stage (3D/fallback/phone): compare the stage clip with pointer far away vs. sweeping over it
+  const stage = await page.$eval(".ms-hero__stage", (e) => { const r = e.getBoundingClientRect(); return { x: Math.max(0, r.x), y: Math.max(0, r.y), width: r.width, height: Math.min(r.height, 700) }; });
+  await page.evaluate(() => scrollTo(0, 0)); await page.mouse.move(5, 890); await page.waitForTimeout(600);
+  const s3 = (await page.screenshot({ clip: stage })).toString("base64");
+  await page.mouse.move(stage.x + 40, stage.y + 40, { steps: 6 }); await page.mouse.move(stage.x + stage.width - 40, stage.y + stage.height / 2, { steps: 6 }); await page.waitForTimeout(800);
+  const s4 = (await page.screenshot({ clip: stage })).toString("base64");
+  check("CA-8.4 reduced-motion: nada reacciona al puntero (hero stage idéntico con el puntero encima)", s3 === s4, "equal=" + (s3 === s4));
   // anchor click is instant
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.locator('header a[href="#funciones"]').first().click().catch(() => {});
@@ -327,7 +329,7 @@ async function waitLive(page, ms = 20000) {
   const { ctx, page } = await newPage();
   await page.goto(BASE + "/", { waitUntil: "load" });
   await page.locator("#como-funciona").scrollIntoViewIfNeeded();
-  const seen = new Set(); const t0 = Date.now();
+  const t0 = Date.now();
   const names = ["Recibido", "En preparación", "Listo", "Entregado"];
   const trackerStates = [];
   while (Date.now() - t0 < 20000) {
