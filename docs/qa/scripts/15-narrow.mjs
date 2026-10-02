@@ -2,7 +2,7 @@
 import { launch, BASE, check } from "./lib.mjs";
 const WA = "https://wa.me/5493624105311?text=Hola%2C%20vi%20MenuSky%20y%20quiero%20pedir%20una%20demo%20para%20mi%20restaurante%2C%20bar%20o%20caf%C3%A9.";
 const br = await launch({ headless: true, args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
-const sizes = [[180, 640], [180, 320], [259, 640], [260, 640], [320, 256], [320, 640], [359, 640], [360, 640], [768, 1024], [1440, 900]];
+const sizes = [[180, 640], [180, 320], [259, 640], [260, 640], [290, 640], [320, 256], [320, 640], [359, 640], [360, 640], [768, 1024], [1440, 900]];
 async function sweep(page) {
   return page.evaluate(async () => {
     let m = 0; const iw = innerWidth;
