@@ -76,7 +76,7 @@ mascota: contorno patty vs bun (cúpula)          #2B1710 / #FFF5E1  15.74:1  OK
 línea de corte: crust vs paper (decorativa)      #8A5A3B / #FFFDF8  5.73:1  OK (min 3)
 ```
 
-Toast (estilo global, P-14): ver sección 8, medido con los colores computados en el navegador.
+Toast (estilo global, P-14): ver sección 8, medido con los colores computados en el navegador (19,8:1).
 
 Reglas que se respetan: texto sobre rojo siempre `paper` al 100 %; nada de cheddar sobre tomato como texto; el amarillo solo lleva texto `patty`. El anillo de foco (3 px tomato) siempre se dibuja separado del botón (offset 4 px), sobre paper.
 
@@ -117,13 +117,13 @@ Sin parpadeos (nada cambia más de 3 veces por segundo). Después del ocioso (~1
 - Logo enlazado a `/` con nombre "MenuSky, ir al inicio" (P-9, a confirmar), envolviendo `Logo` sin modificarlo.
 - Mascota `aria-hidden="true"`, sin foco, `pointer-events: none`. Todo lo que comunica (cargando, error) también está en texto.
 
-## 7. Comportamiento por tamaño (medido con Chrome headless, borrador en `next dev`)
+## 7. Comportamiento por tamaño (medido con Chrome headless sobre el build de producción)
 
 | Viewport | Scroll horizontal | Botón "Entrar" visible sin scroll | Mascota |
 |---|---|---|---|
 | 320 x 568 | no (scrollWidth 320) | sí (borde inferior en 481 px) | oculta (alto < 640, P-10) |
 | 360 x 640 | no (360) | sí (562 px) | 120 px |
-| 768 x 1024 | no (768) | sí (642 px) | 150 px |
+| 768 x 1024 | no (768) | sí (806 px; columna centrada en vertical) | 150 px |
 | 1440 x 900 | no (1440) | sí (644 px) | 440 px |
 | 180 x 320 (360 px al 200 %) | no (180) | no: scroll vertical, todo alcanzable | oculta |
 | 640 x 360 (1280 x 720 al 200 %, o celular horizontal) | no (640) | no: scroll vertical | oculta |
@@ -135,7 +135,30 @@ Igual para `?mascota=1`, `2` y `3`. Consola sin errores ni advertencias.
 - **Zoom 200 %**: el layout pasa a una columna con scroll vertical; nada se sale por los costados.
 - **Alturas < 640 px en una columna (P-10, CA-3.9)**: la mascota se oculta y el bloque rojo queda como una franja con la frase; el formulario gana. En escritorio (dos paneles) la mascota no empuja el formulario, así que se achica con la altura (44 vh por debajo de 700 px) en vez de ocultarse.
 
-## 8. Pendiente y a confirmar
+## 8. Peso y trabajo en segundo plano (build de producción con env ficticias, `next start -p 3200 -H 127.0.0.1`)
+
+`node scripts/measure-login-weight.mjs` (mismo método que la línea base):
+
+```
+{"files":14,"js_gzip_kb":250.8,"css_gzip_kb":17.3,"fonts_kb":0,"html_gzip_kb":5.7,"total_kb":273.7}
+```
+
+| | Línea base | Borrador | Presupuesto |
+|---|---|---|---|
+| JS gzip | 255,8 KB | **250,8 KB** (-5,0: se fue la lámpara) | <= 265,8 KB |
+| CSS gzip | 14,4 KB | 17,3 KB (+2,9: `login.css`) | - |
+| HTML gzip | 4,0 KB | 5,7 KB (+1,7: SVG de la mascota inline) | - |
+| Total | 274,2 KB | **273,7 KB** | <= 320 KB |
+
+**Ojo con las fuentes:** el script no las cuenta (`fonts_kb: 0`, también en la línea base): Next 16 las precarga por la cabecera HTTP `Link`, no por el HTML. Medido con Chrome headless (CDP, caché desactivada, 15 s): Bricolage Grotesque 75,6 KB (nueva en `/login`; es el mismo archivo que la landing, así que quien viene de la landing ya lo tiene en caché), Geist 29,1 KB y Geist Mono 23,1 KB (estas dos ya estaban: las precarga `app/layout.tsx`). Transferido real total: 374,3 KB, 18 peticiones, 0 de terceros. Con las fuentes, la línea base ya habría superado los 320 KB (274,2 + 52,2 de Geist), así que el presupuesto de CA-9.2 hay que redefinirlo. Lo decide el Líder (opciones en el informe).
+
+El logo enlaza a `/` con `prefetch={false}`: con prefetch, Next descargaba la landing entera (RSC, CSS y JS, ~100 KB más) mientras alguien solo quería entrar.
+
+Trabajo en segundo plano (CDP, `document.getAnimations()`): a los 2,5 s corre solo `m-idle-N` (1 elemento); al enfocar Email pasa a `paused`; a los ~17 s no queda ninguna animación (solo las de entrada, ya en `finished`). Con `prefers-reduced-motion: reduce` hay 0 animaciones.
+
+Toast (estilo global, P-14), color computado en el navegador: texto `lab(2.75 0 0)` sobre `lab(100 0 0)` (casi negro sobre blanco), unos 19,8:1.
+
+## 9. Pendiente y a confirmar
 
 - Elección de mascota (3 propuestas en `docs/design/mascota/mascota.md`); después se borra el selector `?mascota=`.
 - P-8 (mostrar contraseña) y P-9 (logo a `/`) están incluidos y marcados "a confirmar".
