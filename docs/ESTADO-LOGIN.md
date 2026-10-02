@@ -9,7 +9,7 @@ cada delegación y después de cada paso verificado.
 - Puertos: 3000 y 53659 ocupados por otros procesos (no tocar). Este frente usa 3200+.
 - Env ficticias (ver docs/ESTADO.md, "Reglas operativas"): `NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co NEXT_PUBLIC_SUPABASE_ANON_KEY=dummy-anon-key NEXT_PUBLIC_SITE_URL=http://localhost:3200`.
 
-Última actualización: 2026-10-02. **Paso actual: 4b (Frontend: implementación final con Pomo).**
+Última actualización: 2026-10-02. **PAUSA ORDENADA (pedido del Director, 2026-10-02). Paso actual: 4b TERMINADO; el próximo es 4c (decisión del Líder sobre el idle) y después 5 (Seguridad).**
 
 | Paso | Estado | Evidencia |
 |---|---|---|
@@ -38,7 +38,23 @@ cada delegación y después de cada paso verificado.
 | Paso | Estado | Evidencia |
 |---|---|---|
 | 4a. Spec v1.1 (PO) | HECHO (aprobada; 3 preguntas residuales: tope 90 s del idle, PC de Lighthouse, R-2) | este commit |
-| 4b. Implementación final (Frontend) | EN CURSO | |
+| 4b. Implementación final (Frontend) | HECHO. Verificado por el Líder: diff solo en archivos permitidos (13), `node scripts/check-safe-redirect.mjs` 34/34 OK, 0 toast en LoginForm, sin servidores propios. Mediciones del Frontend (en el Celeron): JS 252,5 KB gzip, total con fuentes 376,6/380 KB, idle +~2 pts CPU/GPU vs reduced-motion (al límite), 0 layout/paint en reposo | 449ba05..9150d24 |
+| 4c. Decidir idle: aceptar parpadeo cada 5,5 s (costo al límite del umbral de 2 pts) o recortar a "solo reacciones" (~0) | PENDIENTE (Líder) | docs/design/mascota/mascota.md |
 | 5. Seguridad | PENDIENTE | |
 | 6. QA | PENDIENTE | |
 | 7. Informe de release | PENDIENTE | |
+
+## Orden para retomar (tras la pausa)
+1. 4c: decidir el idle (Líder; si se recorta, delegar al Frontend).
+2. 5: Seguridad en primer plano sobre feat/login-redesign desde 9f19187: safeRedirect (R-1, CA-4.11..4.15), sin secretos, sin deps nuevas, que no se haya tocado auth fuera de lo autorizado, y EVALUAR R-2 (mozo -> /kitchen, /kitchen y /floor sin validar rol) con severidad y propuesta, sin cambiarlo.
+3. 6: QA en primer plano con spec v1.1, informe de Seguridad, scripts CDP del Frontend (carpeta temporal lt-fe-cdp, no commiteada: pedir que QA los reescriba en docs/qa/scripts si los necesita). Incluye NVDA/teclado si puede, R-15 (foco tras error), regresión de rutas.
+4. 7: informe de release al Director.
+
+## Hallazgos abiertos
+- Idle al límite del umbral CA-10.11 (decisión 4c). Respiración y seguimiento del cursor recortados por costo (medido).
+- Peso: margen de 3,4 KB hasta 380 KB.
+- Bloquean el release: Lighthouse en otra PC (CA-9.5); originalidad de Pomo CA-3.4 puntos 2 y 5 (tarea humana del Director).
+- Pregunta al Director: tope de 90 s del idle (default) vs indefinido con botón de pausa (WCAG 2.2.2).
+- R-2 pendiente de evaluación de Seguridad y decisión del Director.
+- Si staff_users falla por red, postgrest reintenta ~8 s con el botón en "Entrando..." (librería).
+- CA-4.17(d) (excepción dentro de la consulta a staff_users) sin probar: requiere stub aprobado.
