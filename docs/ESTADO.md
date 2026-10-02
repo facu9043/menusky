@@ -3,7 +3,7 @@
 Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada delegación
 y después de cada paso verificado.
 
-Última actualización: 2026-10-01, retomado tras la pausa. Paso actual: 6 (re-test de QA del ciclo 1; Seguridad delta Apto 335ba52).
+Última actualización: 2026-10-01, retomado tras la pausa. Paso actual: 6 (re-test de QA del ciclo 1: QA-01 OK en ef0abde; falta QA-02 y QA-03). Retomado tras el 3er apagón (2026-10-02).
 Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 
 ## Tarea A: vulnerabilidad de Next.js — CERRADA
@@ -57,7 +57,7 @@ anclas OK, 3D reacciona al puntero/scroll, 0 tareas largas al cargar el 3D (work
 3. Correcciones -> re-auditoría -> informe final al Director (con textos del hero para aprobar).
 
 ## Reglas operativas vigentes
-- El Director mira `next dev` en http://localhost:3000 (sesión principal): NO pararlo ni usar el puerto 3000. Build/start en 3100+ y parar solo lo propio.
+- El Director mira `next dev` en http://localhost:53659 (sesión principal). En el 3000 quedó un node viejo (PID 3784) de antes del apagón: NO tocar ninguno de los dos. Build/start en 3100+ y parar solo lo propio.
 - `next dev` escribe en `.next/dev`; no borrar `.next/dev`.
 - Commits chicos y frecuentes; nada de trabajo largo sin commit.
 - Delegaciones en primer plano.
