@@ -1,0 +1,158 @@
+{
+ "mobile-default": {
+  "passes": 44,
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "n": 3,
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "sample": [
+     ".ms-tile--cuenta > .ms-tile__copy > p:nth-child(2) :: Fix any of the following:   Element has insufficient color contrast of 4.37 (foreground color: #fcece7, background color: #d7261e, font size: 12.8pt (17px), font weight: normal). Expected contrast rat",
+     ".ms-tile__note :: Fix any of the following:   Element has insufficient color contrast of 4.37 (foreground color: #fcece7, background color: #d7261e, font size: 10.5pt (14px), font weight: normal). Expected contrast rat",
+     ".ms-themes__card:nth-child(1) > .ms-themes__btn :: Fix any of the following:   Element has insufficient color contrast of 3.58 (foreground color: #ffffff, background color: #e8590c, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ra"
+    ]
+   }
+  ],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "n": 72,
+    "sample": [
+     ".ms-hero__accent",
+     ".ms-hero__phone > .ms-phone__body > .ms-phone__screen > .ms-phone__status[aria-hidden=\"true\"] > span:nth-child(1)"
+    ]
+   }
+  ]
+ },
+ "mobile-reduced": {
+  "passes": 43,
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "n": 3,
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "sample": [
+     ".ms-tile--cuenta > .ms-tile__copy > p:nth-child(2) :: Fix any of the following:   Element has insufficient color contrast of 4.37 (foreground color: #fcece7, background color: #d7261e, font size: 12.8pt (17px), font weight: normal). Expected contrast rat",
+     ".ms-tile__note :: Fix any of the following:   Element has insufficient color contrast of 4.37 (foreground color: #fcece7, background color: #d7261e, font size: 10.5pt (14px), font weight: normal). Expected contrast rat",
+     ".ms-themes__card:nth-child(1) > .ms-themes__btn :: Fix any of the following:   Element has insufficient color contrast of 3.58 (foreground color: #ffffff, background color: #e8590c, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ra"
+    ]
+   }
+  ],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "n": 73,
+    "sample": [
+     ".ms-hero__accent",
+     ".ms-hero__phone > .ms-phone__body > .ms-phone__screen > .ms-phone__status[aria-hidden=\"true\"] > span:nth-child(1)"
+    ]
+   }
+  ]
+ },
+ "tablet-default": {
+  "passes": 44,
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "n": 3,
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "sample": [
+     ".ms-tile--cuenta > .ms-tile__copy > p:nth-child(2) :: Fix any of the following:   Element has insufficient color contrast of 4.37 (foreground color: #fcece7, background color: #d7261e, font size: 12.8pt (17px), font weight: normal). Expected contrast rat",
+     ".ms-tile__note :: Fix any of the following:   Element has insufficient color contrast of 4.37 (foreground color: #fcece7, background color: #d7261e, font size: 10.5pt (14px), font weight: normal). Expected contrast rat",
+     ".ms-themes__card:nth-child(1) > .ms-themes__btn :: Fix any of the following:   Element has insufficient color contrast of 3.58 (foreground color: #ffffff, background color: #e8590c, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ra"
+    ]
+   }
+  ],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "n": 79,
+    "sample": [
+     ".ms-hero__accent",
+     ".ms-hero__phone > .ms-phone__body > .ms-phone__screen > .ms-phone__status[aria-hidden=\"true\"] > span:nth-child(1)"
+    ]
+   }
+  ]
+ },
+ "tablet-reduced": {
+  "passes": 43,
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "n": 3,
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "sample": [
+     ".ms-tile--cuenta > .ms-tile__copy > p:nth-child(2) :: Fix any of the following:   Element has insufficient color contrast of 4.37 (foreground color: #fcece7, background color: #d7261e, font size: 12.8pt (17px), font weight: normal). Expected contrast rat",
+     ".ms-tile__note :: Fix any of the following:   Element has insufficient color contrast of 4.37 (foreground color: #fcece7, background color: #d7261e, font size: 10.5pt (14px), font weight: normal). Expected contrast rat",
+     ".ms-themes__card:nth-child(1) > .ms-themes__btn :: Fix any of the following:   Element has insufficient color contrast of 3.58 (foreground color: #ffffff, background color: #e8590c, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ra"
+    ]
+   }
+  ],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "n": 81,
+    "sample": [
+     ".ms-hero__accent",
+     ".ms-hero__phone > .ms-phone__body > .ms-phone__screen > .ms-phone__status[aria-hidden=\"true\"] > span:nth-child(1)"
+    ]
+   }
+  ]
+ },
+ "desktop-default": {
+  "passes": 44,
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "n": 3,
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "sample": [
+     ".ms-tile--cuenta > .ms-tile__copy > p:nth-child(2) :: Fix any of the following:   Element has insufficient color contrast of 4.37 (foreground color: #fcece7, background color: #d7261e, font size: 12.8pt (17px), font weight: normal). Expected contrast rat",
+     ".ms-tile__note :: Fix any of the following:   Element has insufficient color contrast of 4.37 (foreground color: #fcece7, background color: #d7261e, font size: 10.5pt (14px), font weight: normal). Expected contrast rat",
+     ".ms-themes__card:nth-child(1) > .ms-themes__btn :: Fix any of the following:   Element has insufficient color contrast of 3.58 (foreground color: #ffffff, background color: #e8590c, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ra"
+    ]
+   }
+  ],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "n": 85,
+    "sample": [
+     ".ms-hero__accent",
+     ".ms-hero__phone > .ms-phone__body > .ms-phone__screen > .ms-menu > .ms-menu__tabs > .ms-menu__tab--0.is-active.ms-menu__tab"
+    ]
+   }
+  ]
+ },
+ "desktop-reduced": {
+  "passes": 43,
+  "violations": [
+   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "n": 3,
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "sample": [
+     ".ms-tile--cuenta > .ms-tile__copy > p:nth-child(2) :: Fix any of the following:   Element has insufficient color contrast of 4.37 (foreground color: #fcece7, background color: #d7261e, font size: 12.8pt (17px), font weight: normal). Expected contrast rat",
+     ".ms-tile__note :: Fix any of the following:   Element has insufficient color contrast of 4.37 (foreground color: #fcece7, background color: #d7261e, font size: 10.5pt (14px), font weight: normal). Expected contrast rat",
+     ".ms-themes__card:nth-child(1) > .ms-themes__btn :: Fix any of the following:   Element has insufficient color contrast of 3.58 (foreground color: #ffffff, background color: #e8590c, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ra"
+    ]
+   }
+  ],
+  "incomplete": [
+   {
+    "id": "color-contrast",
+    "n": 89,
+    "sample": [
+     ".ms-hero__accent",
+     ".ms-hero__phone > .ms-phone__body > .ms-phone__screen > .ms-phone__status[aria-hidden=\"true\"] > span:nth-child(1)"
+    ]
+   }
+  ]
+ }
+}
