@@ -1,11 +1,16 @@
+// HISTÓRICO (2026-10-02): el Director eligió la propuesta 3, "Pomo".
+// Este script ya NO escribe componentes: solo regenera los SVG de las tres
+// propuestas en docs/design/mascota/ (historial). El componente de la app,
+// components/brand/mascot/MascotPomo.tsx, se mantiene a mano: parte del
+// dibujo de la propuesta 3, separado en capas animables (ver mascota.md).
+//
 // Genera las 3 propuestas de mascota de MenuSky a partir de una sola
-// descripción: los SVG de docs/design/mascota/ y los componentes TSX de
-// components/brand/mascot/. Dibujo 100 % propio: coordenadas escritas a
+// descripción: los SVG de docs/design/mascota/. Dibujo 100 % propio: coordenadas escritas a
 // mano, sin imágenes, sin calcos, sin fuentes (el texto de la gorra es un
 // trazo dibujado letra por letra).
 //
 // Uso (desde la raíz del repo): node docs/design/mascota/generar-mascotas.mjs
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 
 // Paleta: mismos HEX que los tokens --ms-* (app/(landing)/landing.css).
 const P = "#2b1710"; // patty: contorno, delantal
@@ -233,33 +238,7 @@ for (const v of VARIANTS) {
   writeFileSync(new URL(`./propuesta-${v.n}.svg`, import.meta.url), svg);
 }
 
-// Componentes TSX (Server Components: el SVG viaja en el HTML, no en el JS).
-const toJsx = (s) =>
-  s
-    .replace(/\bclass=/g, "className=")
-    .replace(/\bstroke-(width|linecap|linejoin)=/g, (_, p) => "stroke" + p[0].toUpperCase() + p.slice(1) + "=");
-
-const outDir = new URL("../../../components/brand/mascot/", import.meta.url);
-mkdirSync(outDir, { recursive: true });
-for (const v of VARIANTS) {
-  const tsx = `// ARCHIVO GENERADO por docs/design/mascota/generar-mascotas.mjs: no editar a mano.
-// Mascota de MenuSky, propuesta ${v.n} ("${v.name}"). Diseño original del equipo, SVG propio.
-// Decorativa: aria-hidden. Clases para animación CSS (app/login/login.css):
-// m (raíz, movimiento ocioso), m-eyes, m-ok / m-oops (cara normal / de error).
-
-export function Mascot${v.name}({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="${VIEWBOX}"
-      aria-hidden="true"
-      focusable="false"
-      className={\`m m--${v.n} \${className ?? ""}\`}
-    >
-      ${toJsx(compact(v.body)).replace(/></g, ">\n      <")}
-    </svg>
-  );
-}
-`;
-  writeFileSync(new URL(`./Mascot${v.name}.tsx`, outDir), tsx);
-}
+// (Hasta la elección del Director también escribía Mascot<Nombre>.tsx en
+// components/brand/mascot/. Se quitó para no recrear los componentes
+// borrados de Brioche y Pollito, CA-3.12.)
 console.log("ok");
