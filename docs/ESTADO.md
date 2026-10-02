@@ -3,7 +3,7 @@
 Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada delegación
 y después de cada paso verificado.
 
-Última actualización: 2026-10-01, retomado tras la pausa. Paso actual: 5 (QA).
+Última actualización: 2026-10-01, retomado tras la pausa. Paso actual: 6 (corrección del Frontend, ciclo 1).
 Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 
 ## Tarea A: vulnerabilidad de Next.js — CERRADA
@@ -19,8 +19,8 @@ Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 | 3. Dirección de arte + construcción (Frontend) | HECHO | 40269c2 ... 66cc555 |
 | 3b. Pulido del Frontend (WIP 72c9651 verificado y completado) | HECHO | 2c36293, eaeaa15, 0e91e78 |
 | 4. Seguridad de la landing | HECHO: **Apto** (0 hallazgos; 5 informativos SEC-L-01..05) | 8b6c943 docs/security/landing-2026-10-01.md |
-| 5. QA de la landing | **EN CURSO** | docs/qa/ |
-| 6. Correcciones y re-auditoría | PENDIENTE | |
+| 5. QA de la landing | HECHO: **Rechazado** (QA-01 contraste, QA-02 desborde <= 337 px) | 7936f65 docs/qa/landing-2026-10-01.md |
+| 6. Correcciones y re-auditoría | **EN CURSO ciclo 1**: Frontend corrige QA-01, QA-02 (+ QA-03 y SEC-L-01 si es simple); luego Seguridad (delta) y QA re-ejecuta 02, 03, 07 | |
 | 7. Informe final al Director | PENDIENTE | |
 
 ## Autoverificación del Frontend (no reemplaza a QA)
@@ -44,6 +44,12 @@ anclas OK, 3D reacciona al puntero/scroll, 0 tareas largas al cargar el 3D (work
 2. Sin probar en Safari/iOS real (camino del worker con fallback en página).
 3. QA: usar `textContent` (no `innerText`) para búsquedas de texto: `content-visibility` deja `innerText` vacío en secciones no pintadas.
 4. Seguridad: Apto. Informativos: SEC-L-01 el build publica el fuente de burger.worker.ts en /_next/static/media (sin secretos); SEC-L-02 sin CSP script-src; SEC-L-05 next start escucha en 0.0.0.0 (usar -H 127.0.0.1 en pruebas). Nota: en headless con SwiftShader el 3D no pasó a live: QA confirma en navegador real.
+
+## Defectos abiertos de QA (ciclo 1)
+- QA-01 (Media): contraste 4,37:1 en tarjeta "Pedir la cuenta" (#fcece7 sobre #d7261e) y 3,58:1 en botón "Ver pedido" del mockup de temas (#fff sobre #e8590c). axe serious.
+- QA-02 (Media): ancho mínimo del encabezado 337 px -> scroll horizontal en 320 px y en 360 px con zoom 200% (CA-10.4).
+- QA-03 (Baja): warnings de three en consola sin GPU (KHR_parallel_shader_compile, WebGL context was lost).
+- CA-9.6 no concluyente en este equipo: se mide junto con CA-9.1/9.2 en otra PC.
 
 ## Orden para retomar
 1. Seguridad audita `feat/landing-page` (enlaces externos, secretos, deps nuevas three/@types/three, npm audit, cabeceras, worker, sin peticiones a Supabase/api desde `/`).
