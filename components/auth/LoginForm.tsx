@@ -1,64 +1,58 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { CircleAlert, Eye, EyeOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { cn } from "@/lib/utils";
+import { Logo } from "@/components/landing/brand/Logo";
 
-// Basado en el template "Login Form Lamp" que pasó el usuario: se tira de la
-// cadena de una lámpara para "encender la luz" y recién ahí aparece el
-// formulario. Reimplementado sin GSAP/Draggable (esa librería requiere
-// licencia paga para uso comercial) con eventos de puntero simples, y sin el
-// sonido de clic del original (apuntaba a un asset de Codepen, no algo para
-// depender en producción). Paleta recoloreada a tonos cálidos de cocina
-// (naranja/rojo) en vez del dorado/neutro original.
-const MAX_PULL = 60;
-const PULL_THRESHOLD = MAX_PULL * 0.5;
-
-export function LoginForm({ redirectTo }: { redirectTo: string | null }) {
+// Login de MenuSky: "la comanda del turno" (docs/design/login-direccion.md).
+// Panel de marca con la mascota + ticket de comanda con el formulario.
+// La lógica de handleSubmit es la de siempre; solo se suma estado de UI
+// (mensaje de error persistente, reacción de la mascota, mostrar contraseña).
+export function LoginForm({
+  redirectTo,
+  mascot,
+}: {
+  redirectTo: string | null;
+  mascot?: React.ReactNode;
+}) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [on, setOn] = useState(false);
-  const [dragY, setDragY] = useState(0);
-  const [dragging, setDragging] = useState(false);
-  const startY = useRef(0);
+  // Estado de UI (no toca la autenticación).
+  const [showError, setShowError] = useState(false);
+  const [failures, setFailures] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
+  const submitRef = useRef<HTMLButtonElement>(null);
 
-  const handlePointerDown = (e: React.PointerEvent<SVGCircleElement>) => {
-    startY.current = e.clientY;
-    setDragging(true);
-    e.currentTarget.setPointerCapture(e.pointerId);
+  const clearFailure = () => setShowError(false);
+  const markFailure = () => {
+    setShowError(true);
+    setFailures((n) => n + 1);
+    setShowPassword(false);
   };
 
-  const handlePointerMove = (e: React.PointerEvent<SVGCircleElement>) => {
-    if (!dragging) return;
-    setDragY(Math.max(0, Math.min(MAX_PULL, e.clientY - startY.current)));
-  };
-
-  const finishPull = () => {
-    setDragging(false);
-    if (dragY > PULL_THRESHOLD) setOn(true);
-    setDragY(0);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<SVGCircleElement>) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      setOn(true);
-    }
-  };
+  // Tras un error, el foco vuelve al botón "Entrar" (P-12). Corre después
+  // del render en que el botón ya está habilitado.
+  useEffect(() => {
+    if (failures > 0) submitRef.current?.focus();
+  }, [failures]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    clearFailure();
     const supabase = createClient();
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error || !data.user) {
       setLoading(false);
       toast.error("Email o contraseña incorrectos");
+      markFailure();
       return;
     }
 
@@ -77,103 +71,46 @@ export function LoginForm({ redirectTo }: { redirectTo: string | null }) {
     router.refresh();
   };
 
+  // Dos nombres de animación alternados para que la sacudida se repita en
+  // cada error seguido.
+  const mood = loading
+    ? "loading"
+    : showError
+      ? failures % 2 === 0
+        ? "error-b"
+        : "error-a"
+      : "idle";
+
   return (
-    <div className="fixed inset-0 flex flex-wrap items-center justify-center gap-16 overflow-hidden bg-[#170f0c] p-8 transition-colors duration-500">
-      {/* Resplandor ambiente cuando la luz está encendida */}
-      <div
-        className="pointer-events-none absolute inset-0 transition-opacity duration-500"
-        style={{
-          opacity: on ? 1 : 0,
-          background:
-            "radial-gradient(circle at 50% 40%, rgba(232,89,12,0.35), transparent 70%)",
-        }}
-      />
+    <main className="lg">
+      <header className="lg-top">
+        {/* P-9 (a confirmar): el logo vuelve a la landing. */}
+        <Link href="/" className="lg-home" aria-label="MenuSky, ir al inicio">
+          <Logo size={36} />
+        </Link>
+      </header>
 
-      {/* Lámpara */}
-      <div className="relative z-10 flex h-[380px] w-[260px] justify-center">
-        <svg viewBox="0 0 200 300" className="h-full w-full overflow-visible">
-          <ellipse
-            cx="100"
-            cy="110"
-            rx="60"
-            ry="30"
-            fill="#ff7a30"
-            style={{
-              filter: "blur(15px)",
-              opacity: on ? 0.6 : 0,
-              transition: "opacity 0.5s",
-            }}
-          />
-          <rect x="92" y="100" width="16" height="160" rx="8" fill="#3a2a22" />
-          <rect x="60" y="250" width="80" height="12" rx="6" fill="#3a2a22" />
-
-          <line
-            x1="130"
-            y1="110"
-            x2="130"
-            y2={180 + dragY}
-            stroke="#8a7568"
-            strokeWidth="2"
-            style={{ transition: dragging ? "none" : "y2 0.3s" }}
-          />
-          <circle
-            cx="130"
-            cy={190 + dragY}
-            r="6"
-            fill="#E8590C"
-            style={{ transition: dragging ? "none" : "cy 0.3s" }}
-          />
-          <circle
-            cx="130"
-            cy={190 + dragY}
-            r="25"
-            fill="transparent"
-            role="button"
-            tabIndex={0}
-            aria-label="Tirar de la cadena para encender la luz e ingresar"
-            className="cursor-pointer outline-none focus-visible:fill-white/10"
-            style={{ transition: dragging ? "none" : "cy 0.3s" }}
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={finishPull}
-            onPointerCancel={finishPull}
-            onKeyDown={handleKeyDown}
-          />
-
-          <path
-            d="M30 110 C 30 50, 170 50, 170 110 C 170 125, 30 125, 30 110 Z"
-            fill={on ? "#fff3e6" : "#efe6da"}
-            style={{
-              filter: on ? "drop-shadow(0 0 30px rgba(255,150,60,0.5))" : "none",
-              transition: "fill 0.5s, filter 0.5s",
-            }}
-          />
-        </svg>
-
-        {!on && (
-          <p className="absolute -bottom-2 text-center text-xs text-white/40 motion-safe:animate-pulse">
-            Tirá de la cadena para ingresar
-          </p>
-        )}
+      <div className="lg-brand">
+        <p className="lg-brand__claim">Cocina, salón y administración, en un solo lugar.</p>
+        {mascot ? (
+          <div className="lg-stage" aria-hidden="true">
+            <div className="lg-mascot" data-mood={mood}>
+              {mascot}
+            </div>
+          </div>
+        ) : null}
       </div>
 
-      {/* Formulario */}
-      <div
-        className={cn(
-          "relative z-10 w-[340px] rounded-[30px] border border-white/10 bg-white/5 p-10 shadow-2xl backdrop-blur-xl transition-all duration-700",
-          on
-            ? "translate-y-0 opacity-100"
-            : "pointer-events-none translate-y-8 opacity-0"
-        )}
-      >
-        <h2 className="mb-1 text-center text-xl font-semibold text-white">Ingresar</h2>
-        <p className="mb-6 text-center text-sm text-white/50">
-          Acceso para el equipo del restaurante
-        </p>
+      <section className="lg-ticket" aria-labelledby="lg-title">
+        <h1 id="lg-title" className="lg-title">
+          Ingresar
+        </h1>
+        <p className="lg-lead">Acceso para el equipo del restaurante</p>
+        <div className="lg-perf" aria-hidden="true" />
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div>
-            <label htmlFor="email" className="mb-1.5 ml-1 block text-xs text-white/60">
+        <form onSubmit={handleSubmit} className="lg-form">
+          <div className="lg-field">
+            <label htmlFor="email" className="lg-label">
               Email
             </label>
             <input
@@ -183,32 +120,55 @@ export function LoginForm({ redirectTo }: { redirectTo: string | null }) {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-2xl border border-transparent bg-white/[0.07] px-4 py-3.5 text-white outline-none transition focus:border-[#E8590C] focus:bg-white/[0.12]"
+              className="lg-input"
             />
           </div>
-          <div>
-            <label htmlFor="password" className="mb-1.5 ml-1 block text-xs text-white/60">
+          <div className="lg-field">
+            <label htmlFor="password" className="lg-label">
               Contraseña
             </label>
-            <input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-2xl border border-transparent bg-white/[0.07] px-4 py-3.5 text-white outline-none transition focus:border-[#E8590C] focus:bg-white/[0.12]"
-            />
+            <div className="lg-pass">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="lg-input lg-input--pass"
+              />
+              {/* P-8 (a confirmar): mostrar contraseña. */}
+              <button
+                type="button"
+                className="lg-eye"
+                aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                onClick={() => setShowPassword((v) => !v)}
+              >
+                {showPassword ? (
+                  <EyeOff aria-hidden="true" focusable="false" />
+                ) : (
+                  <Eye aria-hidden="true" focusable="false" />
+                )}
+              </button>
+            </div>
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-2 rounded-2xl bg-[linear-gradient(135deg,#E8590C,#FF8A3D,#B23A1E,#FF8A3D,#8C2E13)] py-4 font-semibold text-[#170f0c] transition hover:scale-[1.02] disabled:pointer-events-none disabled:opacity-60"
-          >
+
+          {/* P-5: el error queda escrito (el toast se va solo). La región existe
+              siempre para que el lector de pantalla anuncie el cambio. */}
+          <div role="alert" className="lg-alert">
+            {showError ? (
+              <>
+                <CircleAlert aria-hidden="true" focusable="false" className="lg-alert__icon" />
+                <span>Email o contraseña incorrectos</span>
+              </>
+            ) : null}
+          </div>
+
+          <button ref={submitRef} type="submit" disabled={loading} className="lg-submit">
             {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

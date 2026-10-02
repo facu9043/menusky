@@ -1,0 +1,667 @@
+/* ==========================================================================
+   MenuSky: login (/login). Dirección: docs/design/login-direccion.md
+   Tokens --ms-* con los MISMOS valores que app/(landing)/landing.css
+   (duplicados a propósito, ver docs/STACK.md; deuda: archivo de marca común).
+   Movimiento liviano (PC viejas): solo transform y opacity, sin filtros,
+   sin blur, sin backdrop-filter, bucles finitos. Un único aspecto.
+   ========================================================================== */
+
+.ms-login {
+  /* Paleta "hamburguesa completa" */
+  --ms-bun: #fff5e1;
+  --ms-paper: #fffdf8;
+  --ms-toasted: #f4d9a6;
+  --ms-crust: #8a5a3b;
+  --ms-cheddar: #ffc21a;
+  --ms-mustard: #e3a008;
+  --ms-tomato: #d7261e;
+  --ms-ketchup: #a8141b;
+  --ms-lettuce: #4c9a2a;
+  --ms-lettuce-dark: #2e6b1a;
+  --ms-patty: #2b1710;
+  --ms-patty-soft: #6a4a3c;
+  --ms-line: rgba(43, 23, 16, 0.14);
+
+  /* Tipografía */
+  --ms-font-display: var(--font-ms-display), var(--font-geist-sans), system-ui, sans-serif;
+  --ms-font-body: var(--font-geist-sans), system-ui, sans-serif;
+  --ms-font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Forma */
+  --ms-radius-s: 8px;
+  --ms-radius: 14px;
+  --ms-radius-l: 24px;
+  --ms-radius-xl: 36px;
+  --ms-shadow-stamp: 0 4px 0 0 var(--ms-patty);
+
+  /* Movimiento */
+  --ms-dur-fast: 160ms;
+  --ms-dur: 280ms;
+  --ms-dur-reveal: 560ms;
+  --ms-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ms-ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Propios del login */
+  --lg-pad: clamp(12px, 4vw, 24px);
+
+  color-scheme: light;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--ms-bun);
+  color: var(--ms-patty);
+  font-family: var(--ms-font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ms-login *,
+.ms-login *::before,
+.ms-login *::after {
+  box-sizing: border-box;
+}
+
+.ms-login ::selection {
+  background: var(--ms-cheddar);
+  color: var(--ms-patty);
+}
+
+/* Foco visible: anillo tomate de 3 px (4,64:1 sobre bun, 4,94:1 sobre paper). */
+.ms-login :focus-visible {
+  outline: 3px solid var(--ms-tomato);
+  outline-offset: 3px;
+}
+
+/* Logo (mismas reglas que la landing; Logo.tsx se importa sin cambios). */
+.ms-login .ms-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1;
+}
+.ms-login .ms-logo svg {
+  flex: none;
+}
+.ms-login .ms-logo__word {
+  font-family: var(--ms-font-display);
+  font-weight: 800;
+  font-size: 1.375rem;
+  letter-spacing: -0.04em;
+  color: var(--ms-patty);
+}
+.ms-login .ms-logo__sky {
+  color: var(--ms-tomato);
+}
+
+/* --------------------------------------------------------------------------
+   Composición. Móvil primero: una columna (logo / marca / ticket).
+   Escritorio (>= 1024 px): dos paneles, marca a la izquierda.
+   -------------------------------------------------------------------------- */
+.lg {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "top"
+    "brand"
+    "ticket";
+  align-content: start;
+  gap: 12px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 10px var(--lg-pad) 24px;
+}
+
+.lg-top {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+.lg-home {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 4px;
+  margin-left: -4px;
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Panel de marca: bloque tomate, frase en paper (4,94:1) y la mascota
+   parada sobre el borde inferior, con la cúpula del pan (el "sol" del
+   isotipo) asomando detrás. */
+.lg-brand {
+  grid-area: brand;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px 6px 0 16px;
+  background: var(--ms-tomato);
+  border: 2px solid var(--ms-patty);
+  border-radius: var(--ms-radius-l);
+}
+.lg-brand__claim {
+  align-self: center;
+  margin: 0;
+  padding-bottom: 10px;
+  max-width: 15ch;
+  min-width: 0;
+  font-family: var(--ms-font-display);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ms-paper);
+  overflow-wrap: break-word;
+}
+
+.lg-stage {
+  position: relative;
+  z-index: 0;
+  flex: none;
+  height: 120px; /* CA-3.9: <= 120 px en móvil */
+  aspect-ratio: 200 / 240;
+  animation: lg-stage-in 520ms var(--ms-ease-out) 120ms both;
+}
+.lg-stage::before {
+  /* Cúpula: círculo de 1,8 x el ancho de la mascota, centrado en sus pies. */
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -40%;
+  width: 180%;
+  aspect-ratio: 1;
+  bottom: -75%;
+  border-radius: 50%;
+  background: var(--ms-bun);
+  border: 2px solid var(--ms-patty);
+}
+
+.lg-mascot {
+  height: 100%;
+  transform-origin: 50% 100%;
+  transition: transform var(--ms-dur) var(--ms-ease-out);
+  pointer-events: none;
+}
+
+/* Ticket de comanda con el formulario. */
+.lg-ticket {
+  grid-area: ticket;
+  position: relative;
+  min-width: 0;
+  padding: 18px 18px 20px;
+  background: var(--ms-paper);
+  border: 2px solid var(--ms-patty);
+  border-radius: 18px;
+  box-shadow: 6px 6px 0 0 var(--ms-patty);
+  animation: lg-rise 420ms var(--ms-ease-out) both;
+}
+
+.lg-title {
+  margin: 0;
+  font-family: var(--ms-font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 8vw, 2.75rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ms-patty);
+}
+.lg-lead {
+  margin: 6px 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  color: var(--ms-patty-soft);
+}
+
+/* Línea de corte de la comanda con dos muescas. */
+.lg-perf {
+  position: relative;
+  margin: 14px -18px;
+  border-top: 2px dashed var(--ms-crust);
+}
+.lg-perf::before,
+.lg-perf::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ms-bun);
+  border: 2px solid var(--ms-patty);
+}
+.lg-perf::before {
+  left: -13px;
+}
+.lg-perf::after {
+  right: -13px;
+}
+
+.lg-form {
+  display: grid;
+  gap: 14px;
+}
+.lg-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.lg-label {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  color: var(--ms-patty);
+}
+
+/* Sin transiciones de color (CA-5.1): el cambio es inmediato. */
+.lg-input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 14px;
+  font: inherit;
+  font-size: 1rem; /* >= 16 px: sin zoom automático en iOS */
+  color: var(--ms-patty);
+  background: var(--ms-bun);
+  border: 2px solid var(--ms-patty-soft);
+  border-radius: 12px;
+  outline: none;
+}
+.lg-input:hover {
+  border-color: var(--ms-patty);
+}
+.lg-input:focus-visible,
+.lg-input:focus {
+  border-color: var(--ms-patty);
+  background: var(--ms-paper);
+  outline: 3px solid var(--ms-tomato);
+  outline-offset: 2px;
+}
+.lg-input:-webkit-autofill {
+  -webkit-text-fill-color: var(--ms-patty);
+  -webkit-box-shadow: 0 0 0 100px var(--ms-bun) inset;
+  caret-color: var(--ms-patty);
+}
+
+.lg-pass {
+  position: relative;
+}
+.lg-input--pass {
+  padding-right: 52px;
+}
+.lg-eye {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  bottom: 2px;
+  width: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ms-patty-soft);
+  cursor: pointer;
+}
+.lg-eye:hover {
+  color: var(--ms-patty);
+}
+.lg-eye:focus-visible {
+  outline-offset: -4px;
+  color: var(--ms-patty);
+}
+.lg-eye svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Error persistente (P-5). Vacío no ocupa lugar, pero sigue en el árbol
+   de accesibilidad para que role="alert" anuncie el texto al aparecer. */
+.lg-alert:not(:empty) {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 2px solid var(--ms-ketchup);
+  border-left-width: 6px;
+  border-radius: 12px;
+  background: var(--ms-bun);
+  color: var(--ms-ketchup);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+}
+.lg-alert__icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -1px;
+}
+
+/* Botón "Entrar": CTA cheddar con sombra dura de sello, como .ms-btn. */
+.lg-submit {
+  margin-top: 4px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0.75rem 1.25rem;
+  border: 2px solid var(--ms-patty);
+  border-radius: 999px;
+  background: var(--ms-cheddar);
+  color: var(--ms-patty);
+  font-family: var(--ms-font-body);
+  font-weight: 650;
+  font-size: 1.0625rem;
+  line-height: 1.1;
+  box-shadow: 0 4px 0 0 var(--ms-patty);
+  cursor: pointer;
+  transition: transform var(--ms-dur-fast) var(--ms-ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.lg-submit:hover {
+  background: #ffcd3f; /* mismo hover que .ms-btn--cheddar de la landing */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 0 var(--ms-patty);
+}
+.lg-submit:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 0 var(--ms-patty);
+}
+.lg-submit:focus-visible {
+  outline-offset: 4px;
+}
+.lg-submit:disabled {
+  /* "Entrando..." se sigue leyendo: patty sobre mustard 7,54:1 */
+  background: var(--ms-mustard);
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 0 var(--ms-patty);
+  cursor: progress;
+}
+
+/* --------------------------------------------------------------------------
+   Movimiento. Entrada única, ocioso finito (3 repeticiones, >= 3 s),
+   reacciones a "Entrando..." y a error. Todo en transform/opacity.
+   -------------------------------------------------------------------------- */
+@keyframes lg-rise {
+  from {
+    transform: translateY(14px);
+  }
+}
+@keyframes lg-stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(24%);
+  }
+}
+
+/* Ocioso: se anima la raíz <svg> (una capa compuesta, sin repintar el
+   dibujo). Se pausa si algo del login tiene el foco (CA-5.5). */
+.lg .m {
+  display: block;
+  height: 100%;
+  width: auto;
+  overflow: visible;
+  transform-origin: 50% 100%;
+  animation: 3.4s ease-in-out 1.6s 3;
+}
+.lg .m--1 {
+  animation-name: m-idle-1;
+}
+.lg .m--2 {
+  animation-name: m-idle-2;
+}
+.lg .m--3 {
+  animation-name: m-idle-3;
+}
+.lg:focus-within .m,
+.lg-mascot:not([data-mood="idle"]) .m {
+  animation-play-state: paused;
+}
+
+/* Brioche: rebote blando (aplastar y estirar). */
+@keyframes m-idle-1 {
+  0%,
+  30%,
+  100% {
+    transform: none;
+  }
+  8% {
+    transform: scale(1.04, 0.95);
+  }
+  16% {
+    transform: translateY(-5%) scale(0.98, 1.03);
+  }
+  24% {
+    transform: scale(1.02, 0.98);
+  }
+}
+/* Pollito: cabeceo hacia la hamburguesa. */
+@keyframes m-idle-2 {
+  0%,
+  34%,
+  100% {
+    transform: none;
+  }
+  10% {
+    transform: rotate(4deg);
+  }
+  18% {
+    transform: rotate(-1.5deg);
+  }
+  26% {
+    transform: rotate(2.5deg);
+  }
+}
+/* Pomo: saltito con apretón al caer. */
+@keyframes m-idle-3 {
+  0%,
+  32%,
+  100% {
+    transform: none;
+  }
+  10% {
+    transform: translateY(-7%) rotate(-2deg);
+  }
+  20% {
+    transform: scale(1.05, 0.94);
+  }
+  26% {
+    transform: scale(0.99, 1.02);
+  }
+}
+
+/* "Entrando...": se inclina hacia el formulario y espera. */
+.lg-mascot[data-mood="loading"] {
+  transform: translateX(4%) rotate(4deg);
+}
+/* Error: sacude una vez (460 ms) y queda con cara de "uy". */
+.lg-mascot[data-mood="error-a"] {
+  animation: lg-shake-a 460ms var(--ms-ease-out) 1;
+}
+.lg-mascot[data-mood="error-b"] {
+  animation: lg-shake-b 460ms var(--ms-ease-out) 1;
+}
+@keyframes lg-shake-a {
+  20% {
+    transform: rotate(-6deg);
+  }
+  45% {
+    transform: rotate(5deg);
+  }
+  70% {
+    transform: rotate(-3deg);
+  }
+  90% {
+    transform: rotate(1deg);
+  }
+}
+@keyframes lg-shake-b {
+  20% {
+    transform: rotate(-6deg);
+  }
+  45% {
+    transform: rotate(5deg);
+  }
+  70% {
+    transform: rotate(-3deg);
+  }
+  90% {
+    transform: rotate(1deg);
+  }
+}
+.lg-mascot[data-mood^="error"] .m-ok {
+  opacity: 0;
+}
+.lg-mascot[data-mood^="error"] .m-oops {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+/* Muy angosto (320 px, zoom 200 %): menos relleno. */
+@media (max-width: 359px) {
+  .lg-ticket {
+    padding: 16px 14px 18px;
+  }
+  .lg-perf {
+    margin: 12px -14px;
+  }
+  .lg-brand {
+    padding-left: 12px;
+  }
+  .lg-brand__claim {
+    font-size: 0.9375rem;
+  }
+}
+
+/* Alturas < 640 px en una columna: la mascota se oculta y el formulario
+   gana (P-10, CA-3.9). */
+@media (max-width: 1023px) and (max-height: 639px) {
+  .lg-stage {
+    display: none;
+  }
+  .lg-brand {
+    padding-bottom: 10px;
+  }
+  .lg-brand__claim {
+    padding-bottom: 0;
+    max-width: none;
+  }
+}
+
+/* Tablet: misma columna, un poco más de aire y mascota mediana. */
+@media (min-width: 640px) {
+  .lg {
+    max-width: 520px;
+    padding-top: 24px;
+    gap: 16px;
+  }
+  .lg-brand {
+    padding: 14px 16px 0 24px;
+  }
+  .lg-brand__claim {
+    font-size: 1.375rem;
+  }
+  .lg-stage {
+    height: 150px;
+  }
+  .lg-ticket {
+    padding: 26px 28px 28px;
+  }
+  .lg-perf {
+    margin: 16px -28px;
+  }
+}
+
+/* Escritorio: dos paneles. */
+@media (min-width: 1024px) {
+  .lg {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "brand top"
+      "brand ticket";
+  }
+  .lg-top {
+    padding: 28px clamp(32px, 5vw, 72px) 0;
+  }
+  .lg-brand {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding: clamp(40px, 7vh, 80px) clamp(40px, 5vw, 80px) 0;
+    border: 0;
+    border-right: 2px solid var(--ms-patty);
+    border-radius: 0;
+  }
+  .lg-brand__claim {
+    align-self: flex-start;
+    max-width: 13ch;
+    padding: 0;
+    font-weight: 800;
+    font-size: clamp(2.25rem, 3.4vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .lg-stage {
+    align-self: center;
+    height: min(52vh, 440px);
+  }
+  .lg-ticket {
+    align-self: center;
+    justify-self: center;
+    width: min(440px, 100% - 64px);
+    margin: 24px 0 56px;
+    padding: 32px 32px 34px;
+    box-shadow: 8px 8px 0 0 var(--ms-patty);
+  }
+  .lg-perf {
+    margin: 18px -32px;
+  }
+}
+
+/* Escritorio bajo (notebooks de 600-700 px): la mascota achica. */
+@media (min-width: 1024px) and (max-height: 700px) {
+  .lg-stage {
+    height: 44vh;
+  }
+  .lg-ticket {
+    margin: 12px 0 24px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   prefers-reduced-motion: todo estático; los estados siguen visibles
+   (cara de error, colores, borde, texto) sin movimiento (CA-8.1/8.2).
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .ms-login *,
+  .ms-login *::before,
+  .ms-login *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .lg-mascot[data-mood="loading"],
+  .lg-submit:hover,
+  .lg-submit:active,
+  .lg-submit:disabled {
+    transform: none;
+  }
+}
