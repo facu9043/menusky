@@ -230,7 +230,7 @@ export function LoginForm({
           </div>
 
           {/* Único canal del error (CA-6.6, CA-6.14): mensaje en línea y
-              persistente, sin toast. La región existe siempre para que el
+              persistente, sin avisos flotantes. La región existe siempre para que el
               lector de pantalla anuncie el cambio una sola vez. */}
           <div role="alert" className="lg-alert">
             {failure ? (
