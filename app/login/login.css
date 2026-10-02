@@ -563,6 +563,7 @@
 @media (min-width: 640px) {
   .lg {
     max-width: 520px;
+    align-content: center;
     padding-top: 24px;
     gap: 16px;
   }
