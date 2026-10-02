@@ -82,10 +82,14 @@ export function FlowDemo() {
       const s = stage.getBoundingClientRect();
       const a = from.getBoundingClientRect();
       const b = to.getBoundingClientRect();
-      stage.style.setProperty("--from-x", `${a.left + a.width / 2 - s.left}px`);
-      stage.style.setProperty("--from-y", `${a.top + a.height / 2 - s.top}px`);
-      stage.style.setProperty("--fly-x", `${b.left + b.width / 2 - (a.left + a.width / 2)}px`);
-      stage.style.setProperty("--fly-y", `${b.top + 24 - (a.top + a.height / 2)}px`);
+      // En pantallas < 260 px el mockup tiene CSS zoom (QA-02): los rects
+      // vienen escalados y las longitudes CSS se vuelven a escalar, así que
+      // se pasan a px sin zoom.
+      const z = (stage as HTMLElement & { currentCSSZoom?: number }).currentCSSZoom || 1;
+      stage.style.setProperty("--from-x", `${(a.left + a.width / 2 - s.left) / z}px`);
+      stage.style.setProperty("--from-y", `${(a.top + a.height / 2 - s.top) / z}px`);
+      stage.style.setProperty("--fly-x", `${(b.left + b.width / 2 - (a.left + a.width / 2)) / z}px`);
+      stage.style.setProperty("--fly-y", `${(b.top + 24 * z - (a.top + a.height / 2)) / z}px`);
     };
     // No se mide al montar: la sección todavía está salteada por
     // content-visibility y medirla obligaría a maquetarla entera durante

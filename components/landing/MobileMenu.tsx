@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, MessageCircle, X } from "lucide-react";
+import { EXTERNAL_LINK_PROPS, WHATSAPP_DEMO_URL } from "./contact";
 
 // Menú del encabezado en móvil. Es un <details> nativo: funciona sin JS
 // (abre y cierra con el teclado y el mouse). El script solo agrega lo que
@@ -61,6 +62,15 @@ export function MobileMenu({
               </a>
             </li>
           ))}
+          {/* Solo visible en pantallas muy angostas (< 260 px, p. ej. 360 px
+              con zoom 200%), donde el botón del encabezado no entra (QA-02). */}
+          <li className="ms-mmenu__item--demo">
+            <a href={WHATSAPP_DEMO_URL} {...EXTERNAL_LINK_PROPS} className="ms-mmenu__link ms-mmenu__link--demo">
+              <MessageCircle aria-hidden="true" className="ms-mmenu__link-icon" />
+              <span>Pedí una demo</span>
+              <span className="ms-sr-only"> (abre WhatsApp en una pestaña nueva)</span>
+            </a>
+          </li>
           <li>
             <Link href="/login" className="ms-mmenu__link ms-mmenu__link--login">
               Ingresar

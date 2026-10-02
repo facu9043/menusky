@@ -567,6 +567,73 @@
   color: var(--ms-patty-soft) !important;
   font-weight: 500;
 }
+.ms-mmenu__item--demo {
+  display: none;
+}
+.ms-mmenu__link--demo {
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  background: var(--ms-cheddar);
+  color: var(--ms-patty) !important;
+}
+.ms-mmenu__link--demo:hover {
+  background: #ffcd3f;
+}
+.ms-mmenu__link-icon {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
+}
+
+/* Pantallas angostas (QA-02, CA-10.4). El ancho mínimo del encabezado era
+   337 px. De 260 a 359 px el CTA queda como botón de ícono de 44x44 (el
+   texto sigue como nombre accesible); por debajo de 260 px (360 px con zoom
+   200%) el CTA pasa al menú y se achican logo y márgenes. */
+@media (max-width: 359px) {
+  .ms-header__cta {
+    width: 44px;
+    padding: 0;
+    gap: 0;
+  }
+  .ms-header__cta .ms-btn__icon {
+    display: block;
+    width: 20px;
+    height: 20px;
+  }
+  .ms-header__cta > span:not(.ms-sr-only) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+@media (max-width: 259px) {
+  .ms-landing {
+    --ms-gutter: 0.75rem;
+  }
+  .ms-header__inner {
+    gap: 0.375rem;
+  }
+  .ms-header__cta {
+    display: none;
+  }
+  .ms-mmenu__item--demo {
+    display: list-item;
+  }
+  .ms-header .ms-logo {
+    gap: 0.375rem;
+  }
+  .ms-header .ms-logo__word {
+    font-size: 1.0625rem;
+  }
+  .ms-header .ms-logo svg {
+    width: 26px;
+    height: 26px;
+  }
+}
 
 @keyframes ms-pop-in {
   from {
@@ -1367,6 +1434,7 @@
 }
 .ms-admin__table {
   display: flex;
+  flex-wrap: wrap; /* < 290 px el botón "Descargar QR" baja de línea (QA-02) */
   align-items: center;
   gap: 0.75em;
   padding: 0.6em;
@@ -3101,5 +3169,68 @@
   }
   .ms-flow__pause {
     display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Pantallas muy angostas (< 260 px de ancho CSS: 360 px con zoom 200%,
+   CA-10.4 / QA-02). Solo se ajusta lo necesario para que nada quede
+   cortado ni genere scroll horizontal; de 260 px en adelante no cambia.
+   -------------------------------------------------------------------------- */
+@media (max-width: 259px) {
+  .ms-hero__grid,
+  .ms-flow,
+  .ms-flow__steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ms-hero__title {
+    font-size: 1.75rem;
+  }
+  .ms-h2 {
+    font-size: 1.625rem;
+  }
+  .ms-h3 {
+    font-size: 1.125rem;
+  }
+  .ms-hero__title,
+  .ms-h2,
+  .ms-h3 {
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  .ms-btn {
+    white-space: normal;
+    text-align: center;
+  }
+  /* Número arriba y texto a todo el ancho: con el número al costado la
+     columna de texto quedaba de ~100 px. */
+  .ms-benefits__item,
+  .ms-flow__step {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+  .ms-panel {
+    padding: 1rem;
+  }
+  .ms-panel__head {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .ms-panel__head > div {
+    min-width: 0;
+  }
+  .ms-floor {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* Los mockups son ilustraciones (role="img" con aria-label): se reducen
+     en bloque para que entren sin recortarse. */
+  .ms-flow__stage,
+  .ms-tile__visual,
+  .ms-floor__panel,
+  .ms-admin,
+  .ms-sheet,
+  .ms-trackcard,
+  .ms-themes {
+    zoom: 0.7;
   }
 }
