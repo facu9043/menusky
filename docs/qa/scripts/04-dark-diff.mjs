@@ -1,7 +1,7 @@
 // CA-8.12: pixel diff between prefers-color-scheme light and dark (desktop + mobile, several scroll positions, reduced motion to freeze animations)
 import { launch, BASE, check } from "./lib.mjs";
 import { createRequire } from "node:module";
-const require = createRequire("C:/Users/Windows10/Desktop/menusky/package.json");
+const require = createRequire(new URL("../../../package.json", import.meta.url));
 const sharp = require("sharp"); // sharp is already in the app's node_modules (next dependency); no new dependency
 
 const br = await launch({ headless: true });
