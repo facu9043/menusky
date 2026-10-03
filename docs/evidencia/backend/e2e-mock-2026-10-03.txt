@@ -48,7 +48,7 @@ PASS  Realtime: pedido nuevo llega al staff por postgres_changes
 PASS  Realtime: llamado de mozo llega al staff
 PASS  Realtime: el anónimo NO recibe eventos de orders (RLS)
 PASS  sondeo: get_public_order_status = received
-PASS  sondeo: tras el cambio el RPC devuelve in_kitchen (14 ms)
+PASS  sondeo: tras el cambio el RPC devuelve in_kitchen (11 ms)
 PASS  Realtime: el cambio de estado llega al staff
 PASS  sondeo: token de otra mesa -> null
 PASS  POST /api/waiter-calls -> 2xx

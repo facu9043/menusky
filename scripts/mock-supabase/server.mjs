@@ -23,6 +23,9 @@ if (!Number.isInteger(PORT) || PORT < 1 || PORT > 65535) {
   process.exit(1);
 }
 
+// MOCK_LEGACY=1: imita la base ANTES de la migración 0004 (políticas de 0001, sin las
+// funciones RPC). Sirve para probar el fallback TEMP-COMPAT-0004 del código nuevo.
+const LEGACY = process.env.MOCK_LEGACY === "1";
 const JWT_SECRET = "mock-jwt-secret-no-es-real";
 export const MOCK_PASSWORD = "demo-1234";
 
@@ -239,6 +242,11 @@ function allowed(ctx, table, op, row) {
   const r = restaurantOf(table, row);
   const isStaff = !!ctx.staff && ctx.staff.restaurant_id === r && r !== undefined;
   const isAdmin = isStaff && ctx.staff.role === "admin";
+  if (LEGACY) {
+    if (CARTA.has(table)) return op === "select" ? true : isStaff;
+    if (table === "orders") return op === "select" || op === "insert" ? true : op === "update" ? isStaff : false;
+    if (table === "order_items") return op === "select" || op === "insert";
+  }
   if (CARTA.has(table) || table === "tables") return op === "select" ? true : isAdmin;
   switch (table) {
     case "restaurants": return op === "select" ? true : op === "update" ? isAdmin : false;
@@ -621,6 +629,7 @@ function getPublicOrder(qrToken, orderId) {
 
 function handleRpc(url, body) {
   const fn = url.pathname.slice("/rest/v1/rpc/".length);
+  if (LEGACY) throw new PgError(404, "PGRST202", `Could not find the function public.${fn} in the schema cache`);
   switch (fn) {
     case "create_order": return { status: 200, body: createOrder(body?.p_qr_token, body?.p_items) };
     case "get_public_order": return { status: 200, body: getPublicOrder(body?.p_qr_token, body?.p_order_id) };
