@@ -169,7 +169,7 @@
   flex: none;
   height: 120px; /* CA-3.9: <= 120 px en móvil */
   aspect-ratio: 200 / 240;
-  animation: lg-stage-in 520ms var(--ms-ease-out) 120ms backwards;
+  animation: lg-stage-in 480ms var(--ms-ease-out) 120ms backwards;
 }
 .lg-stage::before {
   /* Cúpula: círculo de 1,8 x el ancho de la mascota, centrado en sus pies. */
