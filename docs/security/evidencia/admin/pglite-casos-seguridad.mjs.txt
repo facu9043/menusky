@@ -1,0 +1,131 @@
+// Seguridad (TEMPORAL): casos propios sobre 0004 con PGlite. No forma parte del repo.
+import { createRequire } from "node:module";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+const ROOT = "C:/Users/Windows10/Desktop/menusky-admin-sec";
+const req = createRequire(join(ROOT, "supabase/tests/rls/x.cjs"));
+const { PGlite } = req("@electric-sql/pglite");
+const { pgcrypto } = req("@electric-sql/pglite/contrib/pgcrypto");
+const sql = (p) => readFileSync(join(ROOT, p), "utf8");
+const db = new PGlite({ extensions: { pgcrypto } });
+const out = (id, ok, msg) => console.log(`${ok ? "OK  " : "NOTE"} ${id.padEnd(10)} ${msg}`);
+const U = { adminA: "00000000-0000-4000-8000-0000000000a1", waiterA: "00000000-0000-4000-8000-0000000000a2", kitchenA: "00000000-0000-4000-8000-0000000000a3", adminB: "00000000-0000-4000-8000-0000000000b1", noStaff: "00000000-0000-4000-8000-0000000000c1" };
+const ACT = { anon: ["anon", ""], waiterA: ["authenticated", U.waiterA], kitchenA: ["authenticated", U.kitchenA], adminA: ["authenticated", U.adminA], adminB: ["authenticated", U.adminB], noStaff: ["authenticated", U.noStaff] };
+async function as(actor, q, p = []) {
+  const [role, uid] = ACT[actor];
+  await db.query(`select set_config('request.jwt.claim.sub', $1, false)`, [uid]);
+  await db.query(`set role ${role}`);
+  try { const r = await db.query(q, p); return { rows: r.rows, n: r.affectedRows ?? r.rows.length, err: null }; }
+  catch (e) { return { rows: [], n: 0, err: e }; }
+  finally { await db.query("reset role"); }
+}
+const su = async (q, p = []) => (await db.query(q, p)).rows;
+await db.exec(`
+  create role anon nologin; create role authenticated nologin;
+  create schema auth; create table auth.users (id uuid primary key, email text);
+  create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
+  create schema storage; create table storage.buckets (id text primary key, name text, public boolean);
+  create table storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text, name text);
+  alter table storage.objects enable row level security;
+  create publication supabase_realtime;
+  grant usage on schema public, auth, storage to anon, authenticated;
+  grant all on all tables in schema storage to anon, authenticated;
+  alter default privileges in schema public grant all on tables to anon, authenticated;
+  alter default privileges in schema public grant all on sequences to anon, authenticated;
+  alter default privileges in schema public grant all on functions to anon, authenticated;`);
+await db.query(`insert into auth.users (id) values ($1),($2),($3),($4),($5)`, [U.adminA, U.waiterA, U.kitchenA, U.adminB, U.noStaff]);
+for (const f of ["0001_init", "0002_restaurant_theme", "0003_menu_photos_storage"]) await db.exec(sql(`supabase/migrations/${f}.sql`));
+await db.exec(sql("supabase/seed.sql"));
+const A = (await su(`select id from restaurants where name='El Buen Sabor'`))[0].id;
+const B = "00000000-0000-4000-8000-00000000bb00";
+await db.exec(`insert into restaurants (id, name) values ('${B}','Restaurante B');
+  insert into categories (id, restaurant_id, name) values ('00000000-0000-4000-8000-00000000bb01','${B}','Cat B');
+  insert into menu_items (id, category_id, name, price) values ('00000000-0000-4000-8000-00000000bb02','00000000-0000-4000-8000-00000000bb01','Plato B',1000);
+  insert into tables (id, restaurant_id, label, qr_token) values ('00000000-0000-4000-8000-00000000bb03','${B}','Mesa B1','mesa-b-token');`);
+await db.query(`insert into staff_users (restaurant_id, auth_user_id, name, role) values ($1,$2,'Admin A','admin'),($1,$3,'Mozo A','waiter'),($1,$4,'Cocina A','kitchen'),($5,$6,'Admin B','admin')`, [A, U.adminA, U.waiterA, U.kitchenA, B, U.adminB]);
+await db.exec(sql("supabase/migrations/0004_role_policies.sql"));
+const itemB = "00000000-0000-4000-8000-00000000bb02";
+const prov = (await su(`select id from menu_items where name='Provoleta'`))[0].id;
+const bife = (await su(`select id from menu_items where name='Bife de chorizo'`))[0].id;
+const jugoso = (await su(`select c.id from item_option_choices c join item_option_groups g on g.id=c.option_group_id where c.name='Jugoso'`))[0].id;
+const papas = (await su(`select c.id from item_option_choices c join item_option_groups g on g.id=c.option_group_id where c.name='Papas fritas' and g.name='Guarnición'`))[0].id;
+const tokA = (await su(`select qr_token from tables where restaurant_id=$1 order by label limit 1`, [A]))[0].qr_token;
+
+console.log("=== SEC-AD: casos propios de Seguridad (PGlite 0.5.8, datos ficticios) ===");
+// 1. Lectura pública de qr_token
+let r = await as("anon", `select restaurant_id, label, qr_token from tables`);
+out("TOKENS", true, `anon lee ${r.rows.length} mesas con qr_token de ${new Set(r.rows.map((x) => x.restaurant_id)).size} restaurantes (ej. B: ${r.rows.find((x) => x.restaurant_id === B)?.qr_token})`);
+// 2. Ráfaga de create_order directo (sin /api/orders)
+const items = JSON.stringify([{ menu_item_id: itemB, quantity: 99 }]);
+let created = 0; const t0 = Date.now();
+for (let i = 0; i < 100; i++) { const x = await as("anon", `select create_order($1, $2::jsonb) as id`, ["mesa-b-token", items]); if (!x.err) created++; }
+const tot = await su(`select count(*)::int n, sum(total) s from orders where restaurant_id=$1`, [B]);
+out("FLOOD", true, `100 llamadas seguidas a create_order (anon, token de B leído de tables): ${created} pedidos creados en ${Date.now() - t0} ms; B tiene ${tot[0].n} pedidos por ${tot[0].s}. Sin límite en la base.`);
+// 3. Variantes de cantidad
+for (const q of ["1e2", "99.0", '"5"', "true", "1E1", "0.5e1"]) {
+  const x = await as("anon", `select create_order('mesa-b-token', $1::jsonb) as id`, [`[{"menu_item_id":"${itemB}","quantity":${q}}]`]);
+  const t = x.err ? null : (await su(`select total from orders where id=$1`, [x.rows[0].id]))[0].total;
+  out("QTY", true, `quantity=${q}: ${x.err ? "rechazado (" + x.err.message + ")" : "aceptado, total=" + t}`);
+}
+// 4. choice_ids repetidos
+let x = await as("anon", `select create_order($1, $2::jsonb) as id`, [tokA, JSON.stringify([{ menu_item_id: bife, quantity: 1, choice_ids: [jugoso, papas, papas, papas.toUpperCase()] }])]);
+if (x.err) out("DUPCHOICE", true, `error ${x.err.message}`);
+else { const o = (await su(`select o.total, oi.selected_options from orders o join order_items oi on oi.order_id=o.id where o.id=$1`, [x.rows[0].id]))[0]; out("DUPCHOICE", true, `mismo choice x3 (incluye mayúsculas): total ${o.total}, opciones registradas ${o.selected_options.length}`); }
+// 5. Notas no-string y con HTML
+x = await as("anon", `select create_order('mesa-b-token', $1::jsonb) as id`, [JSON.stringify([{ menu_item_id: itemB, quantity: 1, note: { a: 1 } }, { menu_item_id: itemB, quantity: 1, note: "<img src=x onerror=alert(1)>" }])]);
+out("NOTE", !x.err, x.err ? x.err.message : `notas guardadas: ${JSON.stringify((await su(`select note from order_items where order_id=$1`, [x.rows[0].id])).map((r) => r.note))}`);
+// 6. Claves extra
+x = await as("anon", `select create_order('mesa-b-token', $1::jsonb) as id`, [JSON.stringify([{ menu_item_id: itemB, quantity: 1, subtotal: 1, total: 1, order_id: "00000000-0000-4000-8000-000000000000", status: "delivered", price: 0 }])]);
+const o6 = (await su(`select o.total, o.status, oi.subtotal from orders o join order_items oi on oi.order_id=o.id where o.id=$1`, [x.rows[0].id]))[0];
+out("EXTRAKEYS", o6.total == 1000 && o6.status === "received", `claves extra (subtotal, total, order_id, status, price) ignoradas: total ${o6.total}, status ${o6.status}, subtotal ${o6.subtotal}`);
+// 7. Overflow numeric(10,2)
+await su(`update menu_items set price = 99999999.99 where id=$1`, [itemB]);
+x = await as("anon", `select create_order('mesa-b-token', $1::jsonb) as id`, [JSON.stringify([{ menu_item_id: itemB, quantity: 99 }])]);
+out("OVERFLOW", !!x.err, `precio 99999999.99 x 99: ${x.err ? "error " + x.err.code + " (" + x.err.message + "), sin filas" : "aceptado"}`);
+await su(`update menu_items set price = 1000 where id=$1`, [itemB]);
+// 8. Lectura cruzada
+const ordA = (await as("anon", `select create_order($1, $2::jsonb) as id`, [tokA, JSON.stringify([{ menu_item_id: prov, quantity: 1 }])])).rows[0].id;
+x = await as("anon", `select get_public_order('mesa-b-token', $1) as j, get_public_order_status('mesa-b-token', $1) as s`, [ordA]);
+out("XREST", x.rows[0].j === null && x.rows[0].s === null, `token de B + pedido de A: order=${x.rows[0].j} status=${x.rows[0].s}`);
+x = await as("anon", `select get_public_order(null, $1) as j, get_public_order($2, null) as k`, [ordA, tokA]);
+out("NULLS", x.rows[0].j === null && x.rows[0].k === null, `token null / id null: ${x.rows[0].j} / ${x.rows[0].k}`);
+x = await as("adminB", `select get_public_order($1, $2) as j`, [tokA, ordA]);
+out("TOKEN+ID", true, `token de A (público) + id del pedido: ${x.rows[0].j ? "lo lee (el id uuid v4 es el único secreto real)" : "null"}`);
+// 9. Inyección
+x = await as("anon", `select create_order($1, '[{"menu_item_id":"${itemB}","quantity":1}]'::jsonb) as id`, ["x' or '1'='1"]);
+out("SQLI", !!x.err && /table_not_found/.test(x.err.message), `create_order token "x' or '1'='1": ${x.err?.message}`);
+x = await as("anon", `select get_public_order($1, $2) as j`, ["' or 1=1 --", ordA]);
+out("SQLI", x.rows[0]?.j === null, `get_public_order token "' or 1=1 --": ${x.err ? x.err.message : JSON.stringify(x.rows[0].j)}`);
+x = await as("anon", `select create_order($1, $2::jsonb) as id`, [tokA, JSON.stringify([{ menu_item_id: "00000000-0000-4000-8000-000000000000'; drop table orders; --", quantity: 1 }])]);
+out("SQLI", !!x.err, `menu_item_id con SQL: ${x.err?.message}`);
+// 10. search_path / esquema
+x = await as("anon", `create function public.btrim(text) returns text language sql as $$ select 'x' $$`);
+out("SCHEMA", !!x.err, `anon CREATE en public (stub PGlite, PG ${(await su("show server_version"))[0].server_version}): ${x.err ? "denegado: " + x.err.message : "PERMITIDO"}`);
+const cfg = await su(`select proname, prosecdef, proconfig, provolatile from pg_proc where proname in ('create_order','get_public_order','get_public_order_status') order by 1`);
+out("DEFINER", true, JSON.stringify(cfg));
+const grants = await su(`select p.proname, p.proacl::text acl from pg_proc p where p.proname in ('create_order','get_public_order','get_public_order_status') order by 1`);
+out("GRANTS", true, JSON.stringify(grants));
+// 11. Preexistente: staff update orders
+x = await as("waiterA", `update orders set total = 1 where id=$1 returning total`, [ordA]);
+out("PRE-TOTAL", true, `waiter A cambia total de un pedido de A: ${x.err ? "rechazado " + x.err.message : x.n + " fila(s), total=" + x.rows[0]?.total}`);
+x = await as("waiterA", `update orders set table_id='00000000-0000-4000-8000-00000000bb03' where id=$1 returning table_id`, [ordA]);
+out("PRE-TABLE", true, `waiter A mueve pedido de A a una mesa de B: ${x.err ? "rechazado " + x.err.message : x.n + " fila(s)"}`);
+await su(`update orders set table_id=(select id from tables where qr_token=$1) where id=$2`, [tokA, ordA]);
+// 12. Realtime
+out("REALTIME", true, `publicación supabase_realtime: ${JSON.stringify((await su(`select tablename from pg_publication_tables where pubname='supabase_realtime' order by 1`)).map((r) => r.tablename))}`);
+// 13. Escrituras de staff sobre pedidos
+x = await as("kitchenA", `delete from orders where id=$1 returning id`, [ordA]);
+out("DELETE", x.n === 0, `kitchen A borra pedido: ${x.err ? x.err.message : x.n + " filas"}`);
+x = await as("adminA", `insert into order_items (order_id, menu_item_id, quantity, subtotal) values ($1,$2,1,0) returning id`, [ordA, prov]);
+out("OI-INS", !!x.err || x.n === 0, `admin A agrega renglón a un pedido: ${x.err ? "rechazado (" + x.err.message + ")" : x.n + " filas"}`);
+x = await as("adminA", `update order_items set subtotal=0 where order_id=$1 returning id`, [ordA]);
+out("OI-UPD", x.n === 0, `admin A cambia subtotal de un renglón: ${x.err ? "rechazado" : x.n + " filas"}`);
+// 14. Preexistente: Storage (stub)
+await su(`insert into storage.objects (bucket_id, name) values ('menu-photos', 'itemA-123.jpg')`);
+x = await as("adminB", `delete from storage.objects where bucket_id='menu-photos' and name='itemA-123.jpg' returning name`);
+out("PRE-STOR", true, `admin B borra la foto de un plato de A (stub de Storage, política 0003): ${x.err ? "rechazado " + x.err.message : x.n + " fila(s)"}`);
+// 15. Reversa + reaplicar conserva pedidos
+const nBefore = (await su(`select count(*)::int n from orders`))[0].n;
+await db.exec(sql("supabase/rollback/0004_role_policies_down.sql"));
+await db.exec(sql("supabase/migrations/0004_role_policies.sql"));
+out("ROLLBACK", (await su(`select count(*)::int n from orders`))[0].n === nBefore, `reversa + reaplicación conserva los ${nBefore} pedidos`);
