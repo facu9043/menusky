@@ -9,7 +9,7 @@ cada delegación y después de cada paso verificado.
 - Puertos: 3000 y 53659 ocupados por otros procesos (no tocar). Este frente usa 3200+.
 - Env ficticias (ver docs/ESTADO.md, "Reglas operativas"): `NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co NEXT_PUBLIC_SUPABASE_ANON_KEY=dummy-anon-key NEXT_PUBLIC_SITE_URL=http://localhost:3200`.
 
-Última actualización: 2026-10-02. **Retomado 2026-10-02. Paso actual: 5 (Seguridad).** La sesión principal tiene un `next dev` en el 3300 de este worktree: NO tocar.
+Última actualización: 2026-10-02. **Retomado 2026-10-02. Paso actual: 5b (Frontend corrige SEC-LG-01 y SEC-LG-02; luego re-auditoría delta de Seguridad).** La sesión principal tiene un `next dev` en el 3300 de este worktree: NO tocar.
 
 | Paso | Estado | Evidencia |
 |---|---|---|
@@ -40,7 +40,8 @@ cada delegación y después de cada paso verificado.
 | 4a. Spec v1.1 (PO) | HECHO (aprobada; 3 preguntas residuales: tope 90 s del idle, PC de Lighthouse, R-2) | este commit |
 | 4b. Implementación final (Frontend) | HECHO. Verificado por el Líder: diff solo en archivos permitidos (13), `node scripts/check-safe-redirect.mjs` 34/34 OK, 0 toast en LoginForm, sin servidores propios. Mediciones del Frontend (en el Celeron): JS 252,5 KB gzip, total con fuentes 376,6/380 KB, idle +~2 pts CPU/GPU vs reduced-motion (al límite), 0 layout/paint en reposo | 449ba05..9150d24 |
 | 4c. Decidir idle: aceptar parpadeo cada 5,5 s (costo al límite del umbral de 2 pts) o recortar a "solo reacciones" (~0) | HECHO: se acepta el parpadeo (ver Decisiones del Líder (f) en la spec) | docs/specs/login.md |
-| 5. Seguridad | EN CURSO | |
+| 5. Seguridad | HECHO: **Apto con reservas** (SEC-LG-01 Baja: safeRedirect acepta /.//evil, reproducido por el Líder; SEC-LG-02 Info contraseña visible en éxito; SEC-LG-03 Baja braces vía shadcn, preexistente; SEC-LG-06/07 Media potencial RLS preexistentes, fuera de alcance; R-2 Baja con propuesta) | docs/security/login-2026-10-02.md |
+| 5b. Corrección SEC-LG-01/02 (Frontend) + re-auditoría | EN CURSO (ciclo 1) | spec CA-4.20, CA-4.21 |
 | 6. QA | PENDIENTE | |
 | 7. Informe de release | PENDIENTE | |
 
