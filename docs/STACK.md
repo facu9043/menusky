@@ -227,3 +227,46 @@ Implementado en `feat/login-redesign`: `app/login/{layout.tsx,login.css,page.tsx
 `scripts/check-safe-redirect.mjs`, `scripts/measure-login-weight.mjs` (no cuenta fuentes: medir fuentes por CDP).
 Pruebas QA en `docs/qa/scripts/login/`. Costo de animación medido en el Celeron con CDP `SystemInfo.getProcessInfo` (ver docs/design/mascota/mascota.md).
 Deuda: tokens `--ms-*` duplicados en `app/(landing)/landing.css` y `app/login/login.css` (unificar en un archivo de marca cuando se integre la landing); Bricolage cargada en dos layouts; Geist Mono se precarga en /login sin usarse (layout raíz).
+
+## Arquitectura de la fase Admin — decisión del Líder Técnico (2026-10-03)
+
+Rama `feat/admin-redesign` (desde `feat/login-redesign` @ 93fd493), worktree
+`C:\Users\Windows10\Desktop\menusky-admin`. Spec: `docs/specs/admin.md` v1.0. Contratos: `docs/api/admin.md`.
+Estado: `docs/ESTADO-ADMIN.md`. Decisiones técnicas: `docs/DECISIONES.md`. Boceto aprobado:
+`docs/design/admin-boceto-aprobado.md`.
+
+### Seguridad de datos (Backend)
+- Migración `supabase/migrations/0004_role_policies.sql` + reversa `supabase/rollback/0004_role_policies_down.sql`.
+  Carta: escrituras solo `is_admin_of`. Pedidos: sin insert/select públicos; lectura para staff; creación por la
+  RPC `create_order` (security definer, recalcula el total); lectura del pedido propio por `get_public_order` /
+  `get_public_order_status` (exigen qr_token + id). Sin clave de servicio (D-3).
+- El cliente sigue su pedido por sondeo de 3 s (D-4). Roles: `/kitchen` y `/floor` redirigen por rol; el login manda al mozo a `/floor`.
+- Verificación sin base real: `supabase/tests/rls/` (Postgres embebido) y `scripts/mock-supabase/` (Supabase
+  simulado para UI y E2E). Ambos con `package.json` propio: la app no suma dependencias (D-5).
+
+### Marca unificada (Frontend)
+| Qué | Dónde |
+|---|---|
+| Tokens `--ms-*` (paleta, tipografía, forma, movimiento) | `app/brand.css`, bajo la clase `.ms-brand` (único lugar donde se definen) |
+| Fuente display Bricolage Grotesque | `components/brand/fonts.ts` (única llamada a `Bricolage_Grotesque(`), exporta `brandDisplay` |
+| Estilos propios | `app/(landing)/landing.css` (`.ms-landing`), `app/login/login.css` (`.ms-login`), `app/admin/admin.css` (`.ms-admin`): usan los tokens, no los redefinen |
+| Pomo | `components/brand/mascot/`; los estilos que necesite fuera del login viven junto al componente o en `app/brand.css`, no en `login.css` |
+| Tema predeterminado de la carta | `lib/theme/presets.ts`: preset `menusky` primero; `DEFAULT_THEME` = MenuSky; el viejo `default` se conserva (clave igual, etiqueta "Clásico") |
+
+Cada layout (landing, login, admin) envuelve en `ms-brand ms-<zona> ${brandDisplay.variable}`.
+
+### Admin (Frontend)
+- `app/admin/layout.tsx`: deja `StaffShell` (tema oscuro del restaurante) y usa un shell propio de marca
+  (`components/admin/shell/*`): menú lateral (>= 768 px) y barra de pestañas inferior (< 768 px). El admin se ve
+  SIEMPRE con la paleta MenuSky (CA-5.1). Valida rol como hoy (`NoStaffAccess` / `NotAdminAccess`).
+- El layout lee `getAdminLiveSnapshot` una vez y monta `AdminLiveProvider` (UNA suscripción Realtime para todo el
+  admin). Las páginas (`/admin` Inicio, `/admin/menu`, `/admin/mesas`, `/admin/apariencia`,
+  `/admin/menu/[itemId]`, `/admin/mesas/imprimir`) leen sus datos en el servidor y tienen `loading.tsx` y `error.tsx`.
+- Componentes: `components/admin/**` (se reemplazan o rediseñan los actuales; las funciones de `lib/admin/*`
+  conservan su firma). Hojas inferiores y diálogos con las primitivas ya instaladas (`components/ui/sheet.tsx`,
+  `dialog.tsx`, base-ui). Íconos `lucide-react`. Sin librerías nuevas (ni de animación ni de UI).
+- Animaciones: CSS sobre `transform`/`opacity` con los tokens de movimiento; `prefers-reduced-motion` las apaga.
+  No se limitan por el Celeron (decisión del Director); la medición se hace en la PC de 16 GB.
+- "Imprimir todos": página `/admin/mesas/imprimir` con CSS `@media print`, QR desde `/api/qr/[qrToken]`.
+- Fuera de límites para el Frontend en esta fase: `supabase/**`, `app/api/**`, `proxy.ts`, `lib/supabase/**`,
+  `/kitchen`, `/floor`, `/m/*` (salvo que el tema por defecto se vea en la carta), la apariencia de landing y login.
