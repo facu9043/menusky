@@ -147,6 +147,8 @@ check("HU-12 sin reduce hay animación al abrir la hoja e interruptor", normal["
 // ---------- axe (CA-13.10) ----------
 const axeRuns = [];
 async function axe(p, label, include) {
+  // Tras la navegación cliente desde /login el router pone el <title> un instante después del render.
+  await p.waitForFunction(() => document.title.trim().length > 0, null, { timeout: 5000 });
   let builder = new AxeBuilder({ page: p }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]);
   if (include) builder = builder.include(include);
   const r = await builder.analyze();
@@ -163,6 +165,7 @@ for (const [w, h] of [
   const p = await ctx.newPage();
   await login(p, "admin@demo.test", "/admin/menu");
   await p.waitForSelector(".adm-dish");
+  check(`CA-13.10 la carta analizada incluye la tarjeta "Sin stock hoy" (contraste d92f920) ${w}`, (await p.locator(".adm-dish", { hasText: "Sin stock hoy" }).count()) >= 1);
   await axe(p, `carta ${w}`);
   await p.locator(".adm-dish", { hasText: "Bife de chorizo" }).locator(".adm-dish__open").click();
   await p.getByRole("dialog").waitFor();

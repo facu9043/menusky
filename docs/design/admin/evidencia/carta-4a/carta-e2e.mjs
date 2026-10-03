@@ -295,7 +295,7 @@ const stat = async (label) =>
   const conf = page.getByRole("alertdialog");
   await conf.waitFor();
   check("CA-NR.18 confirmación '¿Eliminar el grupo \"Salsas\"?'", (await conf.innerText()).includes('¿Eliminar el grupo "Salsas"?'));
-  check("CA-7.12 foco inicial en Cancelar", (await page.evaluate(() => document.activeElement?.textContent)) === "Cancelar");
+  check("CA-7.12 foco inicial en Cancelar", await until(async () => (await page.evaluate(() => document.activeElement?.textContent)) === "Cancelar", 2000));
   await conf.getByRole("button", { name: "Cancelar" }).click();
   await conf.waitFor({ state: "hidden" });
   check("CA-NR.18 cancelar no borra", (await item("Flan casero")).item_option_groups.length === 1);
@@ -303,6 +303,8 @@ const stat = async (label) =>
   await conf.getByRole("button", { name: "Eliminar grupo" }).click();
   await until(async () => (await item("Flan casero")).item_option_groups.length === 0);
   check("CA-NR.18 confirmar borra el grupo", (await item("Flan casero")).item_option_groups.length === 0);
+  // Con el build de producción el Escape llegaba mientras la confirmación todavía se cerraba.
+  await conf.waitFor({ state: "hidden" });
   await page.keyboard.press("Escape");
   await sheet.waitFor({ state: "hidden" });
 }
@@ -460,7 +462,7 @@ const stat = async (label) =>
   const conf = page.getByRole("alertdialog");
   await conf.waitFor();
   check("CA-NR.15 confirmación '¿Eliminar \"Flan casero\" de la carta?'", (await conf.innerText()).includes('¿Eliminar "Flan casero" de la carta?'));
-  check("CA-7.12 foco inicial en Cancelar", (await page.evaluate(() => document.activeElement?.textContent)) === "Cancelar");
+  check("CA-7.12 foco inicial en Cancelar", await until(async () => (await page.evaluate(() => document.activeElement?.textContent)) === "Cancelar", 2000));
   await page.keyboard.press("Escape");
   await conf.waitFor({ state: "hidden" });
   check("CA-NR.15 cancelar (Escape) no borra y la hoja sigue", (await item("Flan casero")) !== undefined && (await sheet.isVisible()));
@@ -553,6 +555,8 @@ await ctx.close();
   const tabs = await p.locator(".adm-tabbar a").allTextContents();
   check("CA-5.3 4 pestañas Inicio/Carta/Mesas/Estilo", JSON.stringify(tabs.map((t) => t.trim())) === JSON.stringify(["Inicio", "Carta", "Mesas", "Estilo"]), JSON.stringify(tabs));
   check("CA-5.6 pestaña Carta activa", (await p.locator(".adm-tabbar [aria-current='page']").innerText()).includes("Carta"));
+  // La píldora activa entra con adm-pop (scale 0.94 -> 1): medir con las animaciones terminadas.
+  await p.evaluate(() => Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().endTime !== Infinity).map((a) => a.finished.catch(() => {}))));
   for (const sel of [".adm-tabbar a", ".adm-pill", ".adm-dish .adm-switch", ".adm-fab", ".adm-account-btn"]) {
     const boxes = await p.locator(sel).evaluateAll((els) => els.filter((e) => e.offsetParent || e.getClientRects().length).map((e) => { const r = e.getBoundingClientRect(); return [r.width, r.height]; }));
     const small = boxes.filter(([w, h]) => w < 44 || h < 44);
