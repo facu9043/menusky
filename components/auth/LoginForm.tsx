@@ -90,6 +90,8 @@ export function LoginForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // CA-4.21 (SEC-LG-02): al enviar, la contraseña vuelve a quedar oculta.
+    setShowPassword(false);
     setLoading(true);
     setFailure(null);
     setOops(false);
