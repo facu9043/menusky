@@ -1,4 +1,7 @@
-// Esqueleto de la Carta (CA-11.4): la misma forma que el contenido real
+// Esqueleto de la Carta (CA-11.4). Vive en el grupo (lista) para que NO
+// envuelva a /admin/menu/[itemId]: así ese notFound() responde 404 real
+// (con loading.tsx arriba la respuesta ya saldría en streaming con 200).
+// Esqueleto: la misma forma que el contenido real
 // (encabezado, 3 datos rápidos, píldoras, platos), sin spinner a pantalla
 // completa. El encabezado es real porque no depende de datos.
 export default function AdminMenuLoading() {

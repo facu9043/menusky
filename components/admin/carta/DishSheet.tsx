@@ -464,7 +464,7 @@ export function DishSheet({
     >
       <Dialog.Portal className={portalClass}>
         <Dialog.Backdrop className="adm-backdrop" />
-        <Dialog.Popup className="adm-sheet" finalFocus={finalFocus}>
+        <Dialog.Popup className="adm-sheet" finalFocus={finalFocus} aria-modal="true">
           <div className="adm-sheet__grab" aria-hidden="true" />
           <div className="adm-sheet__head">
             <Dialog.Title className="adm-sheet__title">{title}</Dialog.Title>

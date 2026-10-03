@@ -58,7 +58,7 @@ export function CategoryFormDialog({
     >
       <Dialog.Portal className={portalClass}>
         <Dialog.Backdrop className="adm-dialog-backdrop" />
-        <Dialog.Popup className="adm-dialog">
+        <Dialog.Popup className="adm-dialog" aria-modal="true">
           <form onSubmit={handleSubmit} noValidate>
             <Dialog.Title className="adm-dialog__title">Nueva categoría</Dialog.Title>
             <Dialog.Description className="adm-dialog__desc">

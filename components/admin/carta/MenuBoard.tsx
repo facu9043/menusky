@@ -290,13 +290,12 @@ export function MenuBoard({
                 type="button"
                 className="adm-pill"
                 aria-pressed={effectiveActive === ALL}
+                aria-label={`Todas, ${totalDishes} ${platos(totalDishes)}`}
                 onClick={() => setActive(ALL)}
               >
                 Todas
                 <span aria-hidden="true">·</span>
-                <span className="sr-only">, </span>
                 <span className="adm-pill__count">{totalDishes}</span>
-                <span className="sr-only"> {platos(totalDishes)}</span>
               </button>
             </li>
             {view.map((c) => (
@@ -305,13 +304,12 @@ export function MenuBoard({
                   type="button"
                   className="adm-pill"
                   aria-pressed={effectiveActive === c.id}
+                  aria-label={`${c.name}, ${c.items.length} ${platos(c.items.length)}`}
                   onClick={() => setActive(c.id)}
                 >
                   {c.name}
                   <span aria-hidden="true">·</span>
-                  <span className="sr-only">, </span>
                   <span className="adm-pill__count">{c.items.length}</span>
-                  <span className="sr-only"> {platos(c.items.length)}</span>
                 </button>
               </li>
             ))}

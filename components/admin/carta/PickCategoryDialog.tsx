@@ -29,7 +29,7 @@ export function PickCategoryDialog({
     >
       <Dialog.Portal className={portalClass}>
         <Dialog.Backdrop className="adm-dialog-backdrop" />
-        <Dialog.Popup className="adm-dialog">
+        <Dialog.Popup className="adm-dialog" aria-modal="true">
           <Dialog.Title className="adm-dialog__title">¿En qué categoría va?</Dialog.Title>
           <Dialog.Description className="adm-dialog__desc">
             El plato nuevo se suma al final de la categoría que elijas.

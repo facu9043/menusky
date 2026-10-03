@@ -42,7 +42,7 @@ export function ConfirmDialog({
     >
       <AlertDialog.Portal className={portalClass}>
         <AlertDialog.Backdrop className="adm-dialog-backdrop" />
-        <AlertDialog.Popup className="adm-dialog" initialFocus={cancelRef}>
+        <AlertDialog.Popup className="adm-dialog" initialFocus={cancelRef} aria-modal="true">
           <div className="adm-dialog__top">
             <BrandPomo face="oops" size="s" />
             <div style={{ minWidth: 0 }}>
