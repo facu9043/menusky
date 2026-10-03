@@ -44,7 +44,8 @@ cada delegación y después de cada paso verificado.
 | 5b. Corrección SEC-LG-01/02 (Frontend) | HECHO ciclo 1: check-safe-redirect 40/40 (verificado por el Líder) | f54e920, bfbb1a7 |
 | 5c. Re-auditoría delta de Seguridad | HECHO: **Apto para el alcance login** (SEC-LG-01/02 cerrados; SEC-LG-03, 06, 07 y R-2 preexistentes, fuera de alcance, decide el Director; 06/07 bloquean un release a producción de la app, no el merge del login) | este commit |
 | 6. QA | HECHO: **Aprobado con reservas** (QA-LG-01 Baja: entrada de la mascota 640 ms > 600 ms CA-5.3; QA-LG-02 Baja: GPU 5-11 % los primeros 10-40 s en Chrome recién abierto, a confirmar por el Director con Shift+Esc; CA-10.11.4 +2,05 en una corrida, dentro de la tolerancia del Líder) | docs/qa/login-2026-10-02.md, 9679768 |
-| 6b. Corrección QA-LG-01 + re-test delta | EN CURSO | |
+| 6b. Corrección QA-LG-01 (Frontend) | HECHO: .lg-stage 480+120 ms. Solo CSS de una animación: sin superficie de seguridad, el Líder decide NO re-auditar Seguridad | 4ccb8b1 |
+| 6c. Re-test delta de QA | EN CURSO | |
 | 7. Informe de release | PENDIENTE | |
 
 ## Orden para retomar (tras la pausa)
