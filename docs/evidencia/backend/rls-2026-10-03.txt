@@ -1,0 +1,169 @@
+Prueba de RLS - 2026-10-03 - PGlite 0.5.8 - node v24.19.0
+Comando: node supabase/tests/rls/run.mjs
+
+=== Politicas ANTES de 0004 (0001) ===
+  categories: public read categories (SELECT)
+  categories: staff manage categories (ALL)
+  item_option_choices: public read option choices (SELECT)
+  item_option_choices: staff manage option choices (ALL)
+  item_option_groups: public read option groups (SELECT)
+  item_option_groups: staff manage option groups (ALL)
+  menu_items: public read menu_items (SELECT)
+  menu_items: staff manage menu_items (ALL)
+  order_items: public insert order_items (INSERT)
+  order_items: public read order_items (SELECT)
+  orders: public insert orders (INSERT)
+  orders: public read orders (SELECT)
+  orders: staff update orders (UPDATE)
+PASS  BASE-1    anon          ANTES de 0004: el anonimo lee pedidos (2 filas): SEC-LG-07 reproducido
+PASS  BASE-2    waiterA       ANTES de 0004: el mozo cambia un precio (1 fila): SEC-LG-06 reproducido
+PASS  CA-1.10   superuser     0004 se aplica dos veces sin error (idempotente)
+PASS  CA-1.10   superuser     conteo de filas por tabla igual antes y despues: {"restaurants":2,"tables":4,"categories":4,"menu_items":8,"item_option_groups":4,"item_option_choices":11,"staff_users":4,"orders":2,"order_items":2,"waiter_calls":1}
+PASS  CA-1.10   superuser     contenido de todas las tablas identico antes y despues (volcado completo)
+PASS  CA-1.1    adminA        las 12 operaciones (4 tipos x crear/modificar/borrar) se aplican
+PASS  CA-1.1    adminA        modificar precio: el valor queda guardado
+PASS  CA-1.2    waiterA       waiter A: las 12 operaciones sobre la carta de A rechazadas
+PASS  CA-1.2    waiterA       waiter A: datos de la carta idénticos después
+PASS  CA-1.2    kitchenA      kitchen A: las 12 operaciones sobre la carta de A rechazadas
+PASS  CA-1.2    kitchenA      kitchen A: datos de la carta idénticos después
+PASS  CA-1.3    anon          anónimo: las 12 operaciones sobre la carta de A rechazadas
+PASS  CA-1.3    anon          anónimo: datos de la carta idénticos después
+PASS  CA-1.4    noStaff       autenticado sin staff: las 12 operaciones sobre la carta de A rechazadas
+PASS  CA-1.4    noStaff       autenticado sin staff: datos de la carta idénticos después
+PASS  CA-1.5    adminB        admin B sobre datos de A: las 12 operaciones sobre la carta de A rechazadas
+PASS  CA-1.5    adminB        admin B sobre datos de A: datos de la carta idénticos después
+PASS  CA-1.5    adminB        mover un plato de A a una categoría de B (admin B): rechazado
+PASS  CA-1.5    adminB        mover un plato propio (B) a una categoría de A: rechazado (with check)
+PASS  CA-1.5    adminB        crear en A un plato apuntando a una categoría de A (admin B): rechazado
+PASS  CA-1.5    adminA        admin A mueve un plato suyo a una categoría de B: rechazado (with check)
+PASS  CA-1.5    adminA        admin A mueve una categoría suya al restaurante B: rechazado (with check)
+PASS  CA-1.5    adminA        admin A mueve un grupo de opciones a un plato de B: rechazado
+PASS  CA-1.5    adminA        admin A mueve una opción a un grupo de B / sin destino: no se aplica
+PASS  CA-1.5    superuser     los datos de la carta quedaron idénticos tras los intentos de mover
+PASS  CA-1.6    anon          lee todas las filas de carta, restaurantes y mesas (lectura pública)
+PASS  CA-1.6    noStaff       lee todas las filas de carta, restaurantes y mesas (lectura pública)
+PASS  CA-1.6    waiterA       lee todas las filas de carta, restaurantes y mesas (lectura pública)
+PASS  CA-1.6    kitchenA      lee todas las filas de carta, restaurantes y mesas (lectura pública)
+PASS  CA-1.6    adminA        lee todas las filas de carta, restaurantes y mesas (lectura pública)
+PASS  CA-1.6    adminB        lee todas las filas de carta, restaurantes y mesas (lectura pública)
+PASS  CA-1.8    waiterA       cambia el estado de un pedido de A
+PASS  CA-1.8    waiterA       atiende un llamado de A
+PASS  CA-1.8    kitchenA      cambia el estado de un pedido de A
+PASS  CA-1.8    kitchenA      atiende un llamado de A
+PASS  CA-1.9    superuser     políticas de Storage intactas (4): admin delete menu photos, admin update menu photos, admin upload menu photos, public read menu photos (lógica en stub; pendiente de confirmar en la base real)
+PASS  CA-1.9    adminA        admin sube objeto a menu-photos (stub)
+PASS  CA-1.9    waiterA       mozo no sube a menu-photos (stub)
+
+=== HU-2 ===
+PASS  CA-2.1    anon          orders y order_items: 0 filas sin filtro y filtrando por el id de un pedido real
+PASS  CA-2.10   noStaff       orders y order_items: 0 filas sin filtro y filtrando por el id de un pedido real
+PASS  CA-2.2    anon          insert directo en orders/order_items (total 0, 1, 999999; restaurantes A y B): rechazado y sin filas nuevas
+PASS  CA-2.2    noStaff       insert directo en orders/order_items (total 0, 1, 999999; restaurantes A y B): rechazado y sin filas nuevas
+PASS  CA-2.2    waiterA       insert directo en orders/order_items (total 0, 1, 999999; restaurantes A y B): rechazado y sin filas nuevas
+PASS  CA-2.2    kitchenA      insert directo en orders/order_items (total 0, 1, 999999; restaurantes A y B): rechazado y sin filas nuevas
+PASS  CA-2.2    adminA        insert directo en orders/order_items (total 0, 1, 999999; restaurantes A y B): rechazado y sin filas nuevas
+PASS  CA-2.2    adminB        insert directo en orders/order_items (total 0, 1, 999999; restaurantes A y B): rechazado y sin filas nuevas
+PASS  CA-2.3    anon          create_order como anónimo devuelve un id
+PASS  CA-2.4    anon          total recalculado = 2*12500 + (3800+500) = 29300 (obtenido 29300.00); campos extra ignorados
+PASS  CA-2.4    anon          status 'received', restaurante y mesa tomados del qr_token (no del cliente)
+PASS  CA-2.4    anon          2 renglones; subtotales 25000 y 4300; nota recortada y vacía -> null
+PASS  CA-2.4    anon          selected_options con la forma {groupId, groupName, choiceId, choiceName, extraPrice}
+PASS  CA-2.4    anon          choice_ids que no son uuid o que no pertenecen al plato se ignoran (Puré no es de empanadas)
+PASS  CA-2.4    anon          se crearon exactamente 1 pedido y 2 renglones
+PASS  CA-2.5    anon          create_order mesa inexistente: 'table_not_found' (P0002), sin filas nuevas
+PASS  CA-2.5    anon          create_order plato de otro restaurante (B) con token de A: 'item_unavailable' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order plato inexistente: 'item_unavailable' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order grupo obligatorio sin elegir (Bife sin guarnición): 'missing_required' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order grupo single con 2 (papas + puré): 'single_choice_exceeded' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order cantidad 0: 'invalid_items' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order cantidad 100: 'invalid_items' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order cantidad 1.5: 'invalid_items' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order cantidad negativa: 'invalid_items' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order cantidad como texto: 'invalid_items' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order menu_item_id no uuid: 'invalid_items' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order lista vacía: 'invalid_items' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order 51 renglones: 'invalid_items' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order items no es lista: 'invalid_items' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order un renglón válido y otro inválido (atómico): 'invalid_items' (P0001), sin filas nuevas
+PASS  CA-2.5    anon          create_order plato is_available=false: 'item_unavailable'
+PASS  CA-2.4    anon          nota de 600 caracteres se recorta a 500; subtotal 3 x 2000
+PASS  CA-2.3    noStaff       create_order disponible para authenticated
+PASS  CA-2.6    anon          get_public_order con qr_token + id: devuelve el pedido con la forma del contrato
+PASS  CA-2.6    anon          renglones traen el nombre del plato
+PASS  CA-2.6    anon          token de OTRA mesa + id válido: null (igual que 'no existe')
+PASS  CA-2.6    anon          id inexistente: null
+PASS  CA-2.6    anon          token vacío: null
+PASS  CA-2.7    anon          get_public_order_status devuelve 'received'
+PASS  CA-2.7    anon          tras el cambio de cocina el sondeo devuelve 'in_kitchen'
+PASS  CA-2.6    anon          status con token ajeno: null
+PASS  SEC-LG-07 superuser     las 3 funciones existen
+PASS  SEC-LG-07 superuser     security definer y search_path fijo = public
+PASS  SEC-LG-07 superuser     execute: anon y authenticated sí; PUBLIC no
+PASS  CA-2.8    waiterA       ve los 4 pedidos de A y ninguno de B
+PASS  CA-2.8    waiterA       order_items: ve solo los 5 renglones de A
+PASS  CA-2.8    waiterA       waiter_calls: ve los llamados de A
+PASS  CA-2.8    kitchenA      ve los 4 pedidos de A y ninguno de B
+PASS  CA-2.8    kitchenA      order_items: ve solo los 5 renglones de A
+PASS  CA-2.8    kitchenA      waiter_calls: ve los llamados de A
+PASS  CA-2.8    adminA        ve los 4 pedidos de A y ninguno de B
+PASS  CA-2.8    adminA        order_items: ve solo los 5 renglones de A
+PASS  CA-2.8    adminA        waiter_calls: ve los llamados de A
+PASS  CA-2.8    adminB        ve solo los 1 pedidos de B
+PASS  CA-2.8    adminB        no ve renglones de pedidos de A (ni con filtro por id)
+PASS  CA-2.8    adminB        no ve un pedido de A pidiéndolo por id
+PASS  CA-2.8    adminB        no puede cambiar el estado de un pedido de A
+PASS  CA-2.8    waiterA       no puede cambiar el estado de un pedido de B
+PASS  CA-2.8    adminB        no ve llamados de A
+PASS  CA-2.9    waiterA       cambia el estado de un pedido de A
+PASS  CA-2.9    kitchenA      cambia el estado de un pedido de A
+PASS  CA-2.9    adminA        cambia el estado de un pedido de A
+PASS  CA-2.9    noStaff       sin staff no cambia estados
+PASS  CA-2.9    anon          anónimo no cambia estados
+PASS  CA-2.9    waiterA       no puede mover un pedido a otro restaurante (with check)
+PASS  CA-2.11   anon          el anónimo sigue creando llamados al mozo (waiter_calls no se tocó)
+PASS  CA-2.11   anon          el anónimo no lee llamados (igual que antes de 0004)
+PASS  RNF-S9    adminB        admin B no modifica mesas de A
+PASS  RNF-S9    waiterA       mozo no crea mesas
+
+=== Políticas DESPUÉS de 0004 ===
+  categories: admin delete categories, admin insert categories, admin update categories, public read categories
+  menu_items: admin delete menu_items, admin insert menu_items, admin update menu_items, public read menu_items
+  item_option_groups: admin delete option groups, admin insert option groups, admin update option groups, public read option groups
+  item_option_choices: admin delete option choices, admin insert option choices, admin update option choices, public read option choices
+  orders: staff read orders, staff update orders
+  order_items: staff read order_items
+  waiter_calls: public insert waiter_calls, staff manage waiter_calls, staff read waiter_calls select
+  tables: admin delete tables, admin insert tables, admin update tables, public read tables
+  restaurants: admin update restaurants, public read restaurants
+  staff_users: admin manage staff, staff read own row
+PASS  1.1/1.2   superuser     las 8 políticas viejas ya no existen
+PASS  1.1/1.2   superuser     waiter_calls/tables/restaurants/staff_users conservan sus políticas de 0001
+
+=== Reversa ===
+PASS  REVERSA   superuser     la reversa restituye exactamente el conjunto de políticas de 0001
+PASS  REVERSA   superuser     la reversa borra las 3 funciones
+PASS  REVERSA   superuser     la reversa no modifica filas
+PASS  REVERSA   anon          con la reversa el anónimo vuelve a leer pedidos (5): estado de 0001
+PASS  REVERSA   waiterA       con la reversa el mozo vuelve a poder editar la carta: estado de 0001
+PASS  REVERSA   anon          con la reversa el anónimo vuelve a poder insertar pedidos: estado de 0001
+PASS  REVERSA   superuser     reaplicar 0004 después de la reversa deja las mismas políticas
+PASS  REVERSA   anon          tras reaplicar, el anónimo vuelve a no leer pedidos
+
+=== Resumen por actor ===
+  anon         OK= 44  FALLAN=0
+  waiterA      OK= 16  FALLAN=0
+  superuser    OK= 14  FALLAN=0
+  adminA       OK= 13  FALLAN=0
+  kitchenA     OK= 10  FALLAN=0
+  noStaff      OK=  7  FALLAN=0
+  adminB       OK= 13  FALLAN=0
+
+TOTAL: 117/117 OK
+
+Pendiente de confirmar en la base real (no reproducible con PGlite):
+  - Realtime con RLS (postgres_changes entrega solo eventos de filas que el rol puede leer).
+  - Storage real (las 3 pruebas de menu-photos usan una tabla stub; solo prueban la lógica de las políticas).
+  - Roles y grants por defecto reales de Supabase (acá se imitan con alter default privileges).
+  - PostgREST: códigos HTTP de los errores de las funciones (PGRST202 si la función no existe).
+
+exit code: 0

@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { getStaffUser } from "@/lib/auth/getStaffUser";
 import { getFloorTables } from "@/lib/floor/getFloorTables";
 import { getFloorOrders } from "@/lib/orders/getFloorOrders";
@@ -11,6 +12,8 @@ import { FloorBoard } from "@/components/floor/FloorBoard";
 export default async function FloorPage() {
   const staff = await getStaffUser();
   if (!staff) return <NoStaffAccess />;
+  // R-2: cocina va a su panel; admin y mozo ven este (sin bucles).
+  if (staff.role === "kitchen") redirect("/kitchen");
 
   const [tables, orders, calls, tableTotals] = await Promise.all([
     getFloorTables(staff.restaurantId),

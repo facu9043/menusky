@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { assertNoDbError } from "@/lib/admin/errors";
 import type { AdminCategory, AdminMenuItem } from "@/lib/types/adminMenu";
 
 type MenuItemRow = {
@@ -40,7 +41,7 @@ const sortBy = <T extends { sort_order: number }>(rows: T[]) =>
 export async function getAdminMenu(restaurantId: string): Promise<AdminCategory[]> {
   const supabase = await createClient();
 
-  const { data: categoryRows } = await supabase
+  const { data: categoryRows, error } = await supabase
     .from("categories")
     .select(
       `id, name, sort_order,
@@ -54,6 +55,7 @@ export async function getAdminMenu(restaurantId: string): Promise<AdminCategory[
     )
     .eq("restaurant_id", restaurantId)
     .returns<CategoryRow[]>();
+  assertNoDbError(error, "carta");
 
   return sortBy(categoryRows ?? []).map((category) => {
     const items: AdminMenuItem[] = sortBy(category.menu_items).map((item) => ({

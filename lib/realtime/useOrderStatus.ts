@@ -4,31 +4,82 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { OrderStatus } from "@/lib/types/database.types";
 
-export function useOrderStatus(orderId: string, initialStatus: OrderStatus) {
+// Cada cuánto se consulta el estado mientras la pestaña está visible. Peor caso
+// de demora para el cliente: este intervalo + lo que tarde la respuesta (< 5 s,
+// CA-2.7). Sondeo en vez de Realtime porque, sin lectura pública de `orders`, el
+// anónimo no recibe eventos postgres_changes (docs/DECISIONES.md D-4).
+export const ORDER_STATUS_POLL_MS = 3000;
+
+const VALID: OrderStatus[] = ["received", "in_kitchen", "ready", "delivered", "cancelled"];
+const isFinal = (s: OrderStatus) => s === "delivered" || s === "cancelled";
+
+export function useOrderStatus(
+  qrToken: string,
+  orderId: string,
+  initialStatus: OrderStatus
+): OrderStatus {
   const [status, setStatus] = useState(initialStatus);
 
   useEffect(() => {
+    if (isFinal(initialStatus)) return;
+
     const supabase = createClient();
-    const channel = supabase
-      .channel(`order-status-${orderId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "orders",
-          filter: `id=eq.${orderId}`,
-        },
-        (payload) => {
-          setStatus((payload.new as { status: OrderStatus }).status);
+    let stopped = false;
+    let inFlight = false; // sin solapar consultas
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    const clearTimer = () => {
+      if (timer) clearTimeout(timer);
+      timer = null;
+    };
+
+    const schedule = () => {
+      clearTimer();
+      if (stopped || document.visibilityState !== "visible") return;
+      timer = setTimeout(poll, ORDER_STATUS_POLL_MS);
+    };
+
+    async function poll() {
+      timer = null;
+      if (stopped || inFlight || document.visibilityState !== "visible") return;
+      inFlight = true;
+      try {
+        const { data, error } = await supabase.rpc("get_public_order_status", {
+          p_qr_token: qrToken,
+          p_order_id: orderId,
+        });
+        if (stopped) return;
+        if (!error && typeof data === "string" && VALID.includes(data as OrderStatus)) {
+          setStatus(data as OrderStatus);
+          if (isFinal(data as OrderStatus)) {
+            stopped = true;
+            return;
+          }
         }
-      )
-      .subscribe();
+      } catch {
+        // Falla de red: se reintenta en el próximo ciclo.
+      } finally {
+        inFlight = false;
+      }
+      schedule();
+    }
+
+    const onVisibility = () => {
+      clearTimer();
+      // Al volver a la pestaña: consulta inmediata (si hay una en vuelo, el
+      // ciclo siguiente la retoma al terminar).
+      if (document.visibilityState === "visible") void poll();
+    };
+
+    document.addEventListener("visibilitychange", onVisibility);
+    schedule();
 
     return () => {
-      supabase.removeChannel(channel);
+      stopped = true;
+      clearTimer();
+      document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [orderId]);
+  }, [qrToken, orderId, initialStatus]);
 
   return status;
 }

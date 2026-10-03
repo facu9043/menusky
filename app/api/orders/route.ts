@@ -42,8 +42,14 @@ export async function POST(request: Request) {
     !qrToken ||
     !Array.isArray(items) ||
     items.length === 0 ||
+    items.length > 50 ||
     items.some(
-      (i) => !i.menuItemId || !Number.isInteger(i.quantity) || i.quantity < 1
+      (i) =>
+        !i ||
+        !i.menuItemId ||
+        !Number.isInteger(i.quantity) ||
+        i.quantity < 1 ||
+        i.quantity > 99
     )
   ) {
     return NextResponse.json({ error: "Faltan datos del pedido" }, { status: 400 });
@@ -140,11 +146,55 @@ export async function POST(request: Request) {
       menu_item_id: menuItem.id,
       quantity: input.quantity,
       selected_options: selectedOptions,
-      note: input.note?.trim() || null,
+      note: (typeof input.note === "string" ? input.note.trim() : "") || null,
       subtotal,
     });
   }
 
+  // 0004: el pedido se crea con la función create_order, que recalcula el total
+  // en la base (el total de arriba solo sirve para validar). Los campos que no
+  // están en este mapeo (total, status, restaurant_id...) nunca llegan a la base.
+  const { data: orderId, error: rpcError } = await supabase.rpc("create_order", {
+    p_qr_token: qrToken,
+    p_items: items.map((i) => ({
+      menu_item_id: i.menuItemId,
+      quantity: i.quantity,
+      choice_ids: Array.isArray(i.choiceIds) ? i.choiceIds : [],
+      note: typeof i.note === "string" ? i.note : null,
+    })),
+  });
+
+  if (!rpcError && orderId) {
+    return NextResponse.json({ orderId });
+  }
+
+  if (rpcError && !isMissingFunction(rpcError)) {
+    // Nunca se devuelve rpcError.message al cliente (RNF-S3).
+    switch (rpcError.message) {
+      case "item_unavailable":
+        return NextResponse.json(
+          { error: "Uno de los platos ya no está disponible" },
+          { status: 409 }
+        );
+      case "table_not_found":
+        return NextResponse.json({ error: "Mesa no encontrada" }, { status: 404 });
+      case "invalid_items":
+      case "missing_required":
+      case "single_choice_exceeded":
+        return NextResponse.json({ error: "Faltan datos del pedido" }, { status: 400 });
+      default:
+        return NextResponse.json({ error: "No se pudo crear el pedido" }, { status: 500 });
+    }
+  }
+
+  if (!rpcError) {
+    return NextResponse.json({ error: "No se pudo crear el pedido" }, { status: 500 });
+  }
+
+  // TEMP-COMPAT-0004: la función create_order todavía no existe (base sin la
+  // migración 0004). Camino viejo: insert directo. Con la base ya migrada este
+  // camino no se ejecuta (y RLS lo bloquearía). Quitar cuando 0004 esté
+  // aplicada en producción (docs/releases/admin-migracion-0004.md).
   const { data: order, error: orderError } = await supabase
     .from("orders")
     .insert({ table_id: table.id, restaurant_id: table.restaurant_id, total })
@@ -164,4 +214,10 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ orderId: order.id });
+}
+
+// PostgREST responde PGRST202 cuando la función no existe en el schema cache;
+// Postgres directo, 42883 (undefined_function).
+function isMissingFunction(error: { code?: string }): boolean {
+  return error.code === "PGRST202" || error.code === "42883";
 }

@@ -1,3 +1,4 @@
+import { assertNoDbError } from "@/lib/admin/errors";
 import { createClient } from "@/lib/supabase/server";
 
 export interface AdminTable {
@@ -9,11 +10,12 @@ export interface AdminTable {
 export async function getAdminTables(restaurantId: string): Promise<AdminTable[]> {
   const supabase = await createClient();
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("tables")
     .select("id, label, qr_token")
     .eq("restaurant_id", restaurantId)
     .order("label", { ascending: true });
+  assertNoDbError(error, "mesas");
 
   return (data ?? []).map((t) => ({ id: t.id, label: t.label, qrToken: t.qr_token }));
 }
