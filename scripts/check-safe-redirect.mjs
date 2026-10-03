@@ -1,5 +1,6 @@
 // Verifica safeRedirect (components/auth/safeRedirect.ts) contra la tabla de
-// casos de docs/specs/login.md, CA-4.12 (válidos) y CA-4.13 (inválidos).
+// casos de docs/specs/login.md, CA-4.12 (válidos), CA-4.13 (inválidos) y
+// CA-4.20 (normalización con new URL, SEC-LG-01).
 // Sin dependencias: Node >= 23.6 importa el .ts directamente (type stripping).
 // Uso: node scripts/check-safe-redirect.mjs   (sale con código 1 si algo falla)
 // Node avisa MODULE_TYPELESS_PACKAGE_JSON al importar el .ts (package.json no
@@ -45,6 +46,14 @@ const cases = [
   [["/admin", "//evil.example"], null, "valor múltiple (array)"],
   [null, null, "sin ?redirect="],
   [undefined, null, "undefined"],
+  // CA-4.20 (SEC-LG-01): new URL los normaliza a //evil.example
+  ["/.//evil.example", null, "punto: normaliza a //"],
+  ["/a/..//evil.example", null, "dos puntos: normaliza a //"],
+  ["/%2e//evil.example", null, "%2e: normaliza a //"],
+  ["/%2E%2E//evil.example", null, "%2E%2E: normaliza a //"],
+  ["/./%2F/evil.example", null, "punto + %2F: decodificado //"],
+  // CA-4.20: válido, se devuelve la forma normalizada
+  ["/admin/../kitchen", "/kitchen", "normaliza a /kitchen"],
 ];
 
 // JSON.stringify no escapa U+007F ni existe para undefined: se muestra a mano.
