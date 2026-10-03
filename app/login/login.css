@@ -368,32 +368,11 @@
 
 /* Pomo en capas (components/brand/mascot/MascotPomo.tsx): cada parte que se
    mueve es una caja propia, así la animación corre en el compositor y no
-   repinta el dibujo. */
-.lg .m {
-  position: relative;
-  height: 100%;
-  aspect-ratio: 200 / 240;
-}
-.lg .m-l {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-/* Capa de los ojos: solo el recuadro x 70-130, y 102-126 del dibujo de
-   200 x 240 (el <svg> interno tiene ese viewBox). */
+   repinta el dibujo. El armado estático de las capas (.m, .m-l, .m-look,
+   .m-eyes) está en app/brand.css para poder mostrarlo en otras zonas; acá
+   solo el movimiento y las poses del login. */
 .lg .m-look {
-  position: absolute;
-  left: 35%;
-  top: 42.5%;
-  width: 30%;
-  height: 10%;
   transition: transform 180ms var(--ms-ease-out); /* CA-10.7: <= 200 ms */
-}
-.lg .m-eyes {
-  transform-origin: 50% 54.2%; /* línea media de los ojos (y = 115) */
 }
 
 /* Idle (CA-10.6): parpadeo de 176 ms cada 5,5 s, 16 veces (1,2 s + 88 s),
