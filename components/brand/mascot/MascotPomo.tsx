@@ -14,7 +14,9 @@
 //               de los ojos, para que el repintado sea chico)
 //   .m-eyes     ojos y párpados: parpadeo y ojeada (idle)
 // Estados: data-mood / data-look / data-face en .lg-mascot (LoginForm.tsx),
-// estilos en app/login/login.css.
+// estilos en app/login/login.css. El armado estático de las capas está en
+// app/brand.css: dentro de cualquier .ms-brand se ve quieto, del alto de su
+// contenedor (p. ej. estados vacíos del admin), sin depender de login.css.
 
 const VIEWBOX = "0 0 200 240";
 
