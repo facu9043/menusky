@@ -17,6 +17,7 @@ Comando: node supabase/tests/rls/run.mjs
   orders: staff update orders (UPDATE)
 PASS  BASE-1    anon          ANTES de 0004: el anonimo lee pedidos (2 filas): SEC-LG-07 reproducido
 PASS  BASE-2    waiterA       ANTES de 0004: el mozo cambia un precio (1 fila): SEC-LG-06 reproducido
+PASS  SEC-AD-05 superuser     ANTES de 0004 el bucket menu-photos no tiene límites del lado del servidor (null, null)
 PASS  CA-1.10   superuser     0004 se aplica dos veces sin error (idempotente)
 PASS  CA-1.10   superuser     conteo de filas por tabla igual antes y despues: {"restaurants":2,"tables":4,"categories":4,"menu_items":8,"item_option_groups":4,"item_option_choices":11,"staff_users":4,"orders":2,"order_items":2,"waiter_calls":1}
 PASS  CA-1.10   superuser     contenido de todas las tablas identico antes y despues (volcado completo)
@@ -97,18 +98,29 @@ PASS  CA-2.7    anon          get_public_order_status devuelve 'received'
 PASS  CA-2.7    anon          tras el cambio de cocina el sondeo devuelve 'in_kitchen'
 PASS  CA-2.6    anon          status con token ajeno: null
 PASS  SEC-LG-07 superuser     las 3 funciones existen
-PASS  SEC-LG-07 superuser     security definer y search_path fijo = public
+PASS  SEC-AD-06 superuser     security definer y search_path vacío (search_path = '')
+PASS  SEC-AD-06 superuser     las funciones no usan tablas sin calificar (todo es public.<tabla>)
+PASS  SEC-AD-01 superuser     create_order toma un lock por mesa (pg_advisory_xact_lock) antes de contar
 PASS  SEC-LG-07 superuser     execute: anon y authenticated sí; PUBLIC no
-PASS  CA-2.8    waiterA       ve los 4 pedidos de A y ninguno de B
-PASS  CA-2.8    waiterA       order_items: ve solo los 5 renglones de A
+PASS  SEC-AD-01 anon          los pedidos hasta completar 10 en la ventana pasan (10 nuevos, 10 en total)
+PASS  SEC-AD-01 anon          el pedido 11 de la misma mesa falla con 'rate_limited' (errcode P0429) y no crea filas
+PASS  SEC-AD-01 noStaff       también para un autenticado: el pedido 11 falla
+PASS  SEC-AD-01 anon          con la mesa en el límite, un pedido inválido también da rate_limited (el límite va primero)
+PASS  SEC-AD-01 anon          otra mesa (Mesa 3) no se ve afectada
+PASS  SEC-AD-01 anon          otro restaurante (B) no se ve afectado
+PASS  SEC-AD-01 anon          tras 'pasar' la ventana para 5 pedidos (quedan 5), vuelve a pasar
+PASS  SEC-AD-01 anon          con toda la ventana vencida pasan 10 de nuevo y el 11 vuelve a fallar
+PASS  SEC-AD-01 anon          los pedidos cancelados también cuentan para el límite
+PASS  CA-2.8    waiterA       ve los 26 pedidos de A y ninguno de B
+PASS  CA-2.8    waiterA       order_items: ve solo los 27 renglones de A
 PASS  CA-2.8    waiterA       waiter_calls: ve los llamados de A
-PASS  CA-2.8    kitchenA      ve los 4 pedidos de A y ninguno de B
-PASS  CA-2.8    kitchenA      order_items: ve solo los 5 renglones de A
+PASS  CA-2.8    kitchenA      ve los 26 pedidos de A y ninguno de B
+PASS  CA-2.8    kitchenA      order_items: ve solo los 27 renglones de A
 PASS  CA-2.8    kitchenA      waiter_calls: ve los llamados de A
-PASS  CA-2.8    adminA        ve los 4 pedidos de A y ninguno de B
-PASS  CA-2.8    adminA        order_items: ve solo los 5 renglones de A
+PASS  CA-2.8    adminA        ve los 26 pedidos de A y ninguno de B
+PASS  CA-2.8    adminA        order_items: ve solo los 27 renglones de A
 PASS  CA-2.8    adminA        waiter_calls: ve los llamados de A
-PASS  CA-2.8    adminB        ve solo los 1 pedidos de B
+PASS  CA-2.8    adminB        ve solo los 2 pedidos de B
 PASS  CA-2.8    adminB        no ve renglones de pedidos de A (ni con filtro por id)
 PASS  CA-2.8    adminB        no ve un pedido de A pidiéndolo por id
 PASS  CA-2.8    adminB        no puede cambiar el estado de un pedido de A
@@ -138,32 +150,36 @@ PASS  RNF-S9    waiterA       mozo no crea mesas
   staff_users: admin manage staff, staff read own row
 PASS  1.1/1.2   superuser     las 8 políticas viejas ya no existen
 PASS  1.1/1.2   superuser     waiter_calls/tables/restaurants/staff_users conservan sus políticas de 0001
+PASS  SEC-AD-05 superuser     DESPUÉS de 0004 el bucket menu-photos limita a jpeg/png/webp/gif y 5242880 bytes
 
 === Reversa ===
 PASS  REVERSA   superuser     la reversa restituye exactamente el conjunto de políticas de 0001
 PASS  REVERSA   superuser     la reversa borra las 3 funciones
 PASS  REVERSA   superuser     la reversa no modifica filas
-PASS  REVERSA   anon          con la reversa el anónimo vuelve a leer pedidos (5): estado de 0001
+PASS  REVERSA   superuser     la reversa deja el bucket menu-photos como estaba (null, null)
+PASS  REVERSA   anon          con la reversa el anónimo vuelve a leer pedidos (28): estado de 0001
 PASS  REVERSA   waiterA       con la reversa el mozo vuelve a poder editar la carta: estado de 0001
 PASS  REVERSA   anon          con la reversa el anónimo vuelve a poder insertar pedidos: estado de 0001
 PASS  REVERSA   superuser     reaplicar 0004 después de la reversa deja las mismas políticas
 PASS  REVERSA   anon          tras reaplicar, el anónimo vuelve a no leer pedidos
 
 === Resumen por actor ===
-  anon         OK= 44  FALLAN=0
+  anon         OK= 52  FALLAN=0
   waiterA      OK= 16  FALLAN=0
-  superuser    OK= 14  FALLAN=0
+  superuser    OK= 19  FALLAN=0
   adminA       OK= 13  FALLAN=0
   kitchenA     OK= 10  FALLAN=0
-  noStaff      OK=  7  FALLAN=0
+  noStaff      OK=  8  FALLAN=0
   adminB       OK= 13  FALLAN=0
 
-TOTAL: 117/117 OK
+TOTAL: 131/131 OK
 
 Pendiente de confirmar en la base real (no reproducible con PGlite):
   - Realtime con RLS (postgres_changes entrega solo eventos de filas que el rol puede leer).
   - Storage real (las 3 pruebas de menu-photos usan una tabla stub; solo prueban la lógica de las políticas).
   - Roles y grants por defecto reales de Supabase (acá se imitan con alter default privileges).
+  - Storage: que el servicio rechace de verdad tipos/tamaños fuera del límite del bucket (SEC-AD-05; acá solo se prueba la configuración).
+  - Concurrencia del límite de tasa: PGlite tiene una sola conexión; el lock por mesa (pg_advisory_xact_lock) se verifica por lectura del código, no con dos conexiones simultáneas.
   - PostgREST: códigos HTTP de los errores de las funciones (PGRST202 si la función no existe).
 
 exit code: 0

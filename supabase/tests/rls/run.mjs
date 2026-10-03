@@ -63,7 +63,7 @@ await db.exec(`
   create function auth.uid() returns uuid language sql stable as
     $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
   create schema storage;
-  create table storage.buckets (id text primary key, name text, public boolean);
+  create table storage.buckets (id text primary key, name text, public boolean, allowed_mime_types text[], file_size_limit bigint);
   create table storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text, name text);
   alter table storage.objects enable row level security;
   create publication supabase_realtime;
@@ -149,6 +149,11 @@ console.log(polOld.filter((p) => /orders|order_items|categories|menu_items|optio
   const w = await as("waiterA", `update menu_items set price = 0 where id = $1 returning id`, [ITEM.provoleta]);
   record("BASE-2", "waiterA", `ANTES de 0004: el mozo cambia un precio (${w.count} fila): SEC-LG-06 reproducido`, w.count === 1);
   await db.query(`update menu_items set price = 5200 where id = $1`, [ITEM.provoleta]);
+}
+
+{
+  const b = (await su(`select allowed_mime_types, file_size_limit from storage.buckets where id='menu-photos'`))[0];
+  record("SEC-AD-05", "superuser", "ANTES de 0004 el bucket menu-photos no tiene límites del lado del servidor (null, null)", b.allowed_mime_types === null && b.file_size_limit === null);
 }
 
 // ---------------------------------------------------------------- aplicar 0004
@@ -405,8 +410,51 @@ let newOrderId;
     from pg_proc p join pg_namespace n on n.oid=p.pronamespace
     where n.nspname='public' and p.proname in ('create_order','get_public_order','get_public_order_status') order by 1`);
   record("SEC-LG-07", "superuser", "las 3 funciones existen", f.length === 3);
-  record("SEC-LG-07", "superuser", "security definer y search_path fijo = public", f.every((x) => x.prosecdef && (x.proconfig ?? []).includes("search_path=public")), JSON.stringify(f.map((x) => x.proconfig)));
+  record("SEC-AD-06", "superuser", "security definer y search_path vacío (search_path = '')", f.every((x) => x.prosecdef && (x.proconfig ?? []).includes('search_path=""')), JSON.stringify(f.map((x) => x.proconfig)));
+  const src = (await su(`select string_agg(prosrc, ' ') s from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('create_order','get_public_order','get_public_order_status')`))[0].s;
+  record("SEC-AD-06", "superuser", "las funciones no usan tablas sin calificar (todo es public.<tabla>)", !/\b(from|join|into)\s+(tables|menu_items|categories|item_option_groups|item_option_choices|orders|order_items)\b/i.test(src));
+  record("SEC-AD-01", "superuser", "create_order toma un lock por mesa (pg_advisory_xact_lock) antes de contar", /pg_advisory_xact_lock/.test(src) && src.indexOf("pg_advisory_xact_lock") < src.indexOf("rate_limited"));
   record("SEC-LG-07", "superuser", "execute: anon y authenticated sí; PUBLIC no", f.every((x) => x.anon_x && x.auth_x && Number(x.public_grants) === 0), JSON.stringify(f.map((x) => x.acl)));
+}
+
+// SEC-AD-01 / D-14: límite de tasa por mesa dentro de create_order (10 pedidos por mesa en 10 minutos)
+{
+  const mesa2 = (await su(`select id, qr_token from tables where restaurant_id=$1 and label='Mesa 2'`, [A]))[0];
+  const mesa3 = (await su(`select id, qr_token from tables where restaurant_id=$1 and label='Mesa 3'`, [A]))[0];
+  const one = [{ menu_item_id: ITEM.agua, quantity: 1 }];
+  const recent = async (t) => Number((await su(`select count(*)::int n from orders where table_id=$1 and created_at > now() - interval '10 minutes'`, [t.id]))[0].n);
+  const base = await recent(mesa2);
+  let okCount = 0, firstFail = null;
+  for (let i = 0; i < 10 - base; i++) { const r = await CALL("anon", mesa2.qr_token, one); if (!r.err) okCount++; else firstFail ??= r.err; }
+  record("SEC-AD-01", "anon", `los pedidos hasta completar 10 en la ventana pasan (${okCount} nuevos, 10 en total)`, okCount === 10 - base && !firstFail && (await recent(mesa2)) === 10, firstFail?.message);
+  const n0 = await counts();
+  const r11 = await CALL("anon", mesa2.qr_token, one);
+  const n1 = await counts();
+  record("SEC-AD-01", "anon", "el pedido 11 de la misma mesa falla con 'rate_limited' (errcode P0429) y no crea filas", r11.err?.message === "rate_limited" && r11.err?.code === "P0429" && JSON.stringify(n0) === JSON.stringify(n1), r11.err ? `${r11.err.code} ${r11.err.message}` : "sin error");
+  const r11b = await CALL("noStaff", mesa2.qr_token, one);
+  record("SEC-AD-01", "noStaff", "también para un autenticado: el pedido 11 falla", r11b.err?.message === "rate_limited");
+  const rInv = await CALL("anon", mesa2.qr_token, [{ menu_item_id: ITEM.agua, quantity: 0 }]);
+  record("SEC-AD-01", "anon", "con la mesa en el límite, un pedido inválido también da rate_limited (el límite va primero)", rInv.err?.message === "rate_limited");
+  const rOther = await CALL("anon", mesa3.qr_token, one);
+  record("SEC-AD-01", "anon", "otra mesa (Mesa 3) no se ve afectada", !rOther.err, rOther.err?.message);
+  const rOtherRest = await CALL("anon", "mesa-b-token", [{ menu_item_id: T.itemB, quantity: 1 }]);
+  record("SEC-AD-01", "anon", "otro restaurante (B) no se ve afectado", !rOtherRest.err, rOtherRest.err?.message);
+  // Simular el paso del tiempo: se envejecen 5 de los 10 pedidos a hace 11 minutos (quedan 5 en la ventana)
+  await db.query(`update orders set created_at = now() - interval '11 minutes' where id in (select id from orders where table_id=$1 and created_at > now() - interval '10 minutes' order by id limit 5)`, [mesa2.id]);
+  const rPart = await CALL("anon", mesa2.qr_token, one);
+  record("SEC-AD-01", "anon", "tras 'pasar' la ventana para 5 pedidos (quedan 5), vuelve a pasar", !rPart.err, rPart.err?.message);
+  // Ahora hay 6 en la ventana; se envejecen todos
+  await db.query(`update orders set created_at = now() - interval '11 minutes' where table_id=$1`, [mesa2.id]);
+  const rAll = [];
+  for (let i = 0; i < 10; i++) rAll.push((await CALL("anon", mesa2.qr_token, one)).err);
+  const rAfter = await CALL("anon", mesa2.qr_token, one);
+  record("SEC-AD-01", "anon", "con toda la ventana vencida pasan 10 de nuevo y el 11 vuelve a fallar", rAll.every((e) => !e) && rAfter.err?.message === "rate_limited");
+  // Los cancelados cuentan (si no, bastaría cancelarlos para saltear el límite)
+  await db.query(`update orders set status='cancelled' where table_id=$1`, [mesa2.id]);
+  const rCancel = await CALL("anon", mesa2.qr_token, one);
+  record("SEC-AD-01", "anon", "los pedidos cancelados también cuentan para el límite", rCancel.err?.message === "rate_limited");
+  // Dejar la mesa libre para el resto de la matriz
+  await db.query(`update orders set created_at = now() - interval '11 minutes' where table_id=$1`, [mesa2.id]);
 }
 
 // CA-2.8 aislamiento entre restaurantes
@@ -482,6 +530,12 @@ for (const actor of ["waiterA", "kitchenA", "adminA"]) {
     names("staff_users") === polOld.filter((p) => p.tablename === "staff_users").map((p) => p.policyname).sort().join(", "));
 }
 
+{
+  const b = (await su(`select allowed_mime_types, file_size_limit from storage.buckets where id='menu-photos'`))[0];
+  record("SEC-AD-05", "superuser", "DESPUÉS de 0004 el bucket menu-photos limita a jpeg/png/webp/gif y 5242880 bytes",
+    JSON.stringify(b.allowed_mime_types) === JSON.stringify(["image/jpeg", "image/png", "image/webp", "image/gif"]) && Number(b.file_size_limit) === 5242880, JSON.stringify(b));
+}
+
 // ---------------------------------------------------------------- reversa
 console.log("\n=== Reversa ===");
 {
@@ -493,6 +547,8 @@ console.log("\n=== Reversa ===");
   const fn = await su(`select count(*)::int n from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('create_order','get_public_order','get_public_order_status')`);
   record("REVERSA", "superuser", "la reversa borra las 3 funciones", fn[0].n === 0);
   record("REVERSA", "superuser", "la reversa no modifica filas", dumpPre === (await dump()));
+  const bb = (await su(`select allowed_mime_types, file_size_limit from storage.buckets where id='menu-photos'`))[0];
+  record("REVERSA", "superuser", "la reversa deja el bucket menu-photos como estaba (null, null)", bb.allowed_mime_types === null && bb.file_size_limit === null, JSON.stringify(bb));
   const r = await as("anon", `select id from orders`);
   record("REVERSA", "anon", `con la reversa el anónimo vuelve a leer pedidos (${r.rows.length}): estado de 0001`, r.rows.length > 0);
   const w = await as("waiterA", `update menu_items set price=1 where id=$1 returning id`, [ITEM.provoleta]);
@@ -522,6 +578,8 @@ Pendiente de confirmar en la base real (no reproducible con PGlite):
   - Realtime con RLS (postgres_changes entrega solo eventos de filas que el rol puede leer).
   - Storage real (las 3 pruebas de menu-photos usan una tabla stub; solo prueban la lógica de las políticas).
   - Roles y grants por defecto reales de Supabase (acá se imitan con alter default privileges).
+  - Storage: que el servicio rechace de verdad tipos/tamaños fuera del límite del bucket (SEC-AD-05; acá solo se prueba la configuración).
+  - Concurrencia del límite de tasa: PGlite tiene una sola conexión; el lock por mesa (pg_advisory_xact_lock) se verifica por lectura del código, no con dos conexiones simultáneas.
   - PostgREST: códigos HTTP de los errores de las funciones (PGRST202 si la función no existe).
 `);
 process.exit(failures ? 1 : 0);
