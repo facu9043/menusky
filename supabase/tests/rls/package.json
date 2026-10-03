@@ -1,0 +1,8 @@
+{
+  "name": "menusky-rls-tests",
+  "private": true,
+  "type": "module",
+  "description": "Prueba de politicas RLS sin base real (PGlite). No es parte de la app.",
+  "scripts": { "test": "node run.mjs" },
+  "dependencies": { "@electric-sql/pglite": "0.5.8" }
+}
