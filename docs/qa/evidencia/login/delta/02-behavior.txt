@@ -1,0 +1,114 @@
+PASA   CA-1.1/6.1/4.7 360x640 h1 unico "Ingresar", main, titulo, textos :: {"h1":1,"h1t":"Ingresar","main":1,"title":"Ingresar | MenuSky","lead":"Acceso para el equipo del restaurante","labels":["Email","Contraseña"],"btn":"Entrar","visibleAll":[true,true,true,true],"noScrollY":true,"logoVisible":true,"opacity":["1/auto","1/auto","1/auto"],"roleBtn":0,"lang":"es-AR"}
+PASA   CA-1.1 360x640 campos y boton operables de entrada (opacity 1, pointer-events auto, logo visible) :: ["1/auto","1/auto","1/auto"]
+PASA   CA-1.4 360x640 h1, campos y Entrar visibles sin scroll vertical :: {"visibleAll":[true,true,true,true],"noScrollY":true}
+PASA   CA-1.1/6.1/4.7 1440x900 h1 unico "Ingresar", main, titulo, textos :: {"h1":1,"h1t":"Ingresar","main":1,"title":"Ingresar | MenuSky","lead":"Acceso para el equipo del restaurante","labels":["Email","Contraseña"],"btn":"Entrar","visibleAll":[true,true,true,true],"noScrollY":true,"logoVisible":true,"opacity":["1/auto","1/auto","1/auto"],"roleBtn":0,"lang":"es-AR"}
+PASA   CA-1.1 1440x900 campos y boton operables de entrada (opacity 1, pointer-events auto, logo visible) :: ["1/auto","1/auto","1/auto"]
+PASA   CA-1.1 1440x900 visibles sin scroll :: [true,true,true,true]
+PASA   CA-1.1/6.1/4.7 320x568 h1 unico "Ingresar", main, titulo, textos :: {"h1":1,"h1t":"Ingresar","main":1,"title":"Ingresar | MenuSky","lead":"Acceso para el equipo del restaurante","labels":["Email","Contraseña"],"btn":"Entrar","visibleAll":[true,true,true,true],"noScrollY":true,"logoVisible":true,"opacity":["1/auto","1/auto","1/auto"],"roleBtn":0,"lang":"es-AR"}
+PASA   CA-1.1 320x568 campos y boton operables de entrada (opacity 1, pointer-events auto, logo visible) :: ["1/auto","1/auto","1/auto"]
+PASA   CA-1.1/6.1/4.7 768x1024 h1 unico "Ingresar", main, titulo, textos :: {"h1":1,"h1t":"Ingresar","main":1,"title":"Ingresar | MenuSky","lead":"Acceso para el equipo del restaurante","labels":["Email","Contraseña"],"btn":"Entrar","visibleAll":[true,true,true,true],"noScrollY":true,"logoVisible":true,"opacity":["1/auto","1/auto","1/auto"],"roleBtn":0,"lang":"es-AR"}
+PASA   CA-1.1 768x1024 campos y boton operables de entrada (opacity 1, pointer-events auto, logo visible) :: ["1/auto","1/auto","1/auto"]
+PASA   CA-1.5 HTML SSR trae h1, labels, inputs y boton :: regex sobre respuesta de /login sin JS
+PASA   CA-3.13 SSR sin 'Pomo' ni 'Brioche'/'Pollito' :: 0 coincidencias en el HTML
+PASA   CA-3.2 sin <image>/<script>/<foreignObject>/href/filter dentro de los SVG del HTML :: {"svgs":4}
+PASA   CA-1.3/6.2 orden de tab exacto (5 primeros) :: ["MenuSky, ir al inicio","email","password","lg-eye","lg-submit","BODY"]
+PASA   CA-6.2 6.o Tab sale del formulario (nada decorativo recibe foco) :: BODY
+PASA   CA-12.1 logo es enlace a / con nombre 'MenuSky, ir al inicio' :: {"href":"/"}
+PASA   CA-6.3 clic en label enfoca el campo :: {"f1":"email","f2":"password"}
+PASA   CA-4.4/4.16/4.17 [400 invalid_credentials] mensaje exacto, boton Entrar habilitado <=1 s, valores y foco :: {"alert":"Email o contraseña incorrectos","alerts":1,"live":0,"liveRegions":"SECTION[Notifications alt+T] (fuera del login, layout global)","toasts":0,"c1":1,"c2":0,"btn":"Entrar","dis":false,"email":"qa@example.com","pass":"x-test-123","ptype":"password","focus":"lg-submit","path":"/login","mood":"error-a","ms":146}
+PASA   CA-6.6/6.14/2.6 [400 invalid_credentials] 1 solo anuncio: 1 role=alert (light DOM), 0 aria-live, 0 toasts, texto 1 vez :: {"alerts":1,"liveConTexto":0,"toasts":0,"c1":1,"c2":0,"regionesLive":"SECTION[Notifications alt+T] (fuera del login, layout global)"}
+PASA   RNF-S3 [400 invalid_credentials] el mensaje no filtra detalles tecnicos :: Email o contraseña incorrectos
+PASA   Caso 7.18 credenciales y luego red: un mensaje a la vez, reemplazado :: {"alert":"No pudimos conectar. Revisá tu conexión e intentá de nuevo.","c1":0,"c2":1}
+PASA   CA-4.4/4.16/4.17 [Offline (status 0)] mensaje exacto, boton Entrar habilitado <=1 s, valores y foco :: {"alert":"No pudimos conectar. Revisá tu conexión e intentá de nuevo.","alerts":1,"live":0,"liveRegions":"SECTION[Notifications alt+T] (fuera del login, layout global)","toasts":0,"c1":0,"c2":1,"btn":"Entrar","dis":false,"email":"qa@example.com","pass":"x-test-123","ptype":"password","focus":"lg-submit","path":"/login","mood":"error-a","ms":135}
+PASA   CA-6.6/6.14/2.6 [Offline (status 0)] 1 solo anuncio: 1 role=alert (light DOM), 0 aria-live, 0 toasts, texto 1 vez :: {"alerts":1,"liveConTexto":0,"toasts":0,"c1":0,"c2":1,"regionesLive":"SECTION[Notifications alt+T] (fuera del login, layout global)"}
+PASA   RNF-S3 [Offline (status 0)] el mensaje no filtra detalles tecnicos :: No pudimos conectar. Revisá tu conexión e intentá de nuevo.
+PASA   CA-6.5/7.18 reintento con Enter tras error: un solo mensaje, sigue operable :: {"alert":"No pudimos conectar. Revisá tu conexión e intentá de nuevo.","alerts":1,"live":0,"liveRegions":"SECTION[Notifications alt+T] (fuera del login, layout global)","toasts":0,"c1":0,"c2":1,"btn":"Entrar","dis":false,"email":"qa@example.com","pass":"x-test-123","ptype":"password","focus":"lg-submit","path":"/login","mood":"error-b"}
+PASA   CA-4.4/4.16/4.17 [503] mensaje exacto, boton Entrar habilitado <=1 s, valores y foco :: {"alert":"No pudimos conectar. Revisá tu conexión e intentá de nuevo.","alerts":1,"live":0,"liveRegions":"SECTION[Notifications alt+T] (fuera del login, layout global)","toasts":0,"c1":0,"c2":1,"btn":"Entrar","dis":false,"email":"qa@example.com","pass":"x-test-123","ptype":"password","focus":"lg-submit","path":"/login","mood":"error-a","ms":163}
+PASA   CA-6.6/6.14/2.6 [503] 1 solo anuncio: 1 role=alert (light DOM), 0 aria-live, 0 toasts, texto 1 vez :: {"alerts":1,"liveConTexto":0,"toasts":0,"c1":0,"c2":1,"regionesLive":"SECTION[Notifications alt+T] (fuera del login, layout global)"}
+PASA   RNF-S3 [503] el mensaje no filtra detalles tecnicos :: No pudimos conectar. Revisá tu conexión e intentá de nuevo.
+PASA   CA-4.4/4.16/4.17 [429] mensaje exacto, boton Entrar habilitado <=1 s, valores y foco :: {"alert":"No pudimos conectar. Revisá tu conexión e intentá de nuevo.","alerts":1,"live":0,"liveRegions":"SECTION[Notifications alt+T] (fuera del login, layout global)","toasts":0,"c1":0,"c2":1,"btn":"Entrar","dis":false,"email":"qa@example.com","pass":"x-test-123","ptype":"password","focus":"lg-submit","path":"/login","mood":"error-a","ms":195}
+PASA   CA-6.6/6.14/2.6 [429] 1 solo anuncio: 1 role=alert (light DOM), 0 aria-live, 0 toasts, texto 1 vez :: {"alerts":1,"liveConTexto":0,"toasts":0,"c1":0,"c2":1,"regionesLive":"SECTION[Notifications alt+T] (fuera del login, layout global)"}
+PASA   RNF-S3 [429] el mensaje no filtra detalles tecnicos :: No pudimos conectar. Revisá tu conexión e intentá de nuevo.
+PASA   CA-4.4/4.16/4.17 [200 con cuerpo no JSON] mensaje exacto, boton Entrar habilitado <=1 s, valores y foco :: {"alert":"No pudimos conectar. Revisá tu conexión e intentá de nuevo.","alerts":1,"live":0,"liveRegions":"SECTION[Notifications alt+T] (fuera del login, layout global)","toasts":0,"c1":0,"c2":1,"btn":"Entrar","dis":false,"email":"qa@example.com","pass":"x-test-123","ptype":"password","focus":"lg-submit","path":"/login","mood":"error-a","ms":109}
+PASA   CA-6.6/6.14/2.6 [200 con cuerpo no JSON] 1 solo anuncio: 1 role=alert (light DOM), 0 aria-live, 0 toasts, texto 1 vez :: {"alerts":1,"liveConTexto":0,"toasts":0,"c1":0,"c2":1,"regionesLive":"SECTION[Notifications alt+T] (fuera del login, layout global)"}
+PASA   RNF-S3 [200 con cuerpo no JSON] el mensaje no filtra detalles tecnicos :: No pudimos conectar. Revisá tu conexión e intentá de nuevo.
+PASA   CA-4.4/4.16/4.17 [200 sin user: supabase-js lo convierte en error sin status] mensaje exacto, boton Entrar habilitado <=1 s, valores y foco :: {"alert":"No pudimos conectar. Revisá tu conexión e intentá de nuevo.","alerts":1,"live":0,"liveRegions":"SECTION[Notifications alt+T] (fuera del login, layout global)","toasts":0,"c1":0,"c2":1,"btn":"Entrar","dis":false,"email":"qa@example.com","pass":"x-test-123","ptype":"password","focus":"lg-submit","path":"/login","mood":"error-a","ms":80}
+PASA   CA-6.6/6.14/2.6 [200 sin user: supabase-js lo convierte en error sin status] 1 solo anuncio: 1 role=alert (light DOM), 0 aria-live, 0 toasts, texto 1 vez :: {"alerts":1,"liveConTexto":0,"toasts":0,"c1":0,"c2":1,"regionesLive":"SECTION[Notifications alt+T] (fuera del login, layout global)"}
+PASA   RNF-S3 [200 sin user: supabase-js lo convierte en error sin status] el mensaje no filtra detalles tecnicos :: No pudimos conectar. Revisá tu conexión e intentá de nuevo.
+PASA   CA-4.19 consulta a staff_users que falla por red: termina en /kitchen (postgrest-js reintenta; se informa la demora) :: {"msHastaKitchen":8936}
+PASA   CA-4.17(c) excepcion lanzada dentro de handleSubmit (cookie de sesion lanza): mensaje de red, boton Entrar habilitado :: {"alert":"No pudimos conectar. Revisá tu conexión e intentá de nuevo.","alerts":1,"live":0,"liveRegions":"SECTION[Notifications alt+T] (fuera del login, layout global)","toasts":0,"c1":0,"c2":1,"btn":"Entrar","dis":false,"email":"qa@example.com","pass":"x-test-123","ptype":"password","focus":"lg-submit","path":"/login","mood":"error-a"}
+PASA   CA-4.1/4.2/4.3/R-2 [admin sin redirect] termina en /admin del propio origen; staff_users consultada :: {"o":"http://127.0.0.1:3230","p":"/admin","s":"","m":true,"staff":1,"ext":[]}
+PASA   CA-4.1/4.2/4.3/R-2 [waiter sin redirect] termina en /kitchen del propio origen; staff_users consultada :: {"o":"http://127.0.0.1:3230","p":"/kitchen","s":"","m":true,"staff":1,"ext":[]}
+PASA   CA-4.1/4.2/4.3/R-2 [kitchen sin redirect] termina en /kitchen del propio origen; staff_users consultada :: {"o":"http://127.0.0.1:3230","p":"/kitchen","s":"","m":true,"staff":1,"ext":[]}
+PASA   CA-4.1/4.2/4.3/R-2 [sin fila en staff_users] termina en /kitchen del propio origen; staff_users consultada :: {"o":"http://127.0.0.1:3230","p":"/kitchen","s":"","m":true,"staff":1,"ext":[]}
+PASA   CA-4.1/4.2/4.3/R-2 [staff_users devuelve error (no lanza)] termina en /kitchen del propio origen; staff_users consultada :: {"o":"http://127.0.0.1:3230","p":"/kitchen","s":"","m":true,"staff":1,"ext":[]}
+PASA   CA-4.1/4.2/4.3/R-2 [waiter con redirect=/admin (valido)] termina en /admin del propio origen; staff_users NO consultada :: {"o":"http://127.0.0.1:3230","p":"/admin","s":"","m":true,"staff":0,"ext":[]}
+PASA   CA-4.1/4.2/4.3/R-2 [admin con redirect=/floor (valido)] termina en /floor del propio origen; staff_users NO consultada :: {"o":"http://127.0.0.1:3230","p":"/floor","s":"","m":true,"staff":0,"ext":[]}
+PASA   CA-4.1/4.2/4.3/R-2 [admin con redirect invalido //evil.example] termina en /admin del propio origen; staff_users consultada :: {"o":"http://127.0.0.1:3230","p":"/admin","s":"","m":true,"staff":1,"ext":[]}
+PASA   CA-4.1/4.2/4.3/R-2 [waiter con redirect invalido https://evil.example] termina en /kitchen del propio origen; staff_users consultada :: {"o":"http://127.0.0.1:3230","p":"/kitchen","s":"","m":true,"staff":1,"ext":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/admin" => /admin :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":0,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/kitchen?x=1" => /kitchen?x=1 :: {"final":{"o":"http://127.0.0.1:3230","p":"/kitchen?x=1","h":""},"staff":0,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/admin/menu/abc" => /admin/menu/abc :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin/menu/abc","h":""},"staff":0,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/floor" => /floor :: {"final":{"o":"http://127.0.0.1:3230","p":"/floor","h":""},"staff":0,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/" => / :: {"final":{"o":"http://127.0.0.1:3230","p":"/","h":""},"staff":0,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/no-existe" => /no-existe :: {"final":{"o":"http://127.0.0.1:3230","p":"/no-existe","h":""},"staff":0,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/a/../kitchen" => /kitchen :: {"final":{"o":"http://127.0.0.1:3230","p":"/kitchen","h":""},"staff":0,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "https://evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "http://evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "//evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "///evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/\\evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "\\\\evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "\\/evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/\\/evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "javascript:alert(1)" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "JaVaScRiPt:alert(1)" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "data:text/html,x" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect " /admin" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "\t/admin" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/\t/evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/\n/evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/\r/evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/%2F%2Fevil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/%5Cevil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/%0A/evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/%09/evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/%" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "admin" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/.//evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/a/..//evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/%2e//evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/%2E%2E//evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/./%2F/evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "//\\evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/%2f/evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/%E0%A4%A" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/\u0000/evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "HTTPS://evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/admin\\.evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "/%C0%AF/evil.example" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.13 variante "/%252F/evil.example": el origen final es el propio (ruta interna, sin salto de origen) :: {"o":"http://127.0.0.1:3230","p":"/%252F/evil.example","staff":0}
+PASA   CA-4.13 variante "/∕evil.example": el origen final es el propio (ruta interna, sin salto de origen) :: {"o":"http://127.0.0.1:3230","p":"/%E2%88%95evil.example","staff":0}
+PASA   CA-4.13 variante "/／/evil.example": el origen final es el propio (ruta interna, sin salto de origen) :: {"o":"http://127.0.0.1:3230","p":"/%EF%BC%8F/evil.example","staff":0}
+PASA   CA-4.13 variante "/ /evil.example": el origen final es el propio (ruta interna, sin salto de origen) :: {"o":"http://127.0.0.1:3230","p":"/%20/evil.example","staff":0}
+PASA   CA-4.12/4.13/4.20 redirect "multiple /admin & //evil" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "sin redirect" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "redirect vacio" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.12/4.13/4.20 redirect "%-mal-formado crudo en la URL" => /admin (rol) :: {"final":{"o":"http://127.0.0.1:3230","p":"/admin","h":""},"staff":1,"ext":[],"consola":[]}
+PASA   CA-4.14/RNF-S7 redirect invalido: no se muestra en pantalla, ni en atributos/enlaces, consola limpia (nota: viaja en el payload RSC <script>, ver informe) :: {"shown":false,"inScript":true,"attrs":false,"links":["/"],"html":true,"cons":[]}
+PASA   CA-4.5 en curso: 'Entrando...' deshabilitado, mascota loading; 3 intentos extra (clic x2, Enter) no envian de nuevo :: {"during":{"alert":"","alerts":1,"live":0,"liveRegions":"SECTION[Notifications alt+T] (fuera del login, layout global)","toasts":0,"c1":0,"c2":0,"btn":"Entrando...","dis":true,"email":"qa@example.com","pass":"x-test-123","ptype":"password","focus":"","path":"/login","mood":"loading"},"tokenPosts":1}
+PASA   CA-10.10 exito: mascota en success/yay y boton deshabilitado 'Entrando...' mientras la ruta nueva carga :: {"mood":"success","face":"yay","btn":"Entrando...","dis":true}
+PASA   CA-10.10d red de seguridad: ~10 s despues el boton vuelve a Entrar habilitado :: {"msDesdeLos700":9361}
+PASA   CA-11.1/11.2 teclado: Tab llega a 'Mostrar contraseña' (>=44x44); Espacio alterna a text y nombre 'Ocultar contraseña'; valor intacto :: {"e1":{"id":"lg-eye","name":"Mostrar contraseña","type":"password","w":44,"h":44},"e2":{"id":"lg-eye","name":"Ocultar contraseña","type":"text","val":"x-test-123"}}
+PASA   CA-11.1 Enter sobre el boton alterna de vuelta a oculta :: {"type":"password","name":"Mostrar contraseña"}
+PASA   CA-4.21/11.4 al enviar, visible => vuelve a oculta (error de credenciales); valor conservado :: {"shown":"text","ptype":"password","pass":"x-test-123"}
+PASA   CA-4.21 se oculta ya al pulsar Entrar (durante la peticion) :: {"sh2":"text","during":"password"}
+PASA   CA-11.1 nombre cambia (no usa aria-pressed): aria-pressed ausente :: null
+PASA   CA-2.5 con prefers-color-scheme: dark el login se ve igual (colores computados) :: {"claro":"rgb(255, 245, 225)|rgb(255, 253, 248)|rgb(255, 245, 225)|rgb(43, 23, 16)|rgb(215, 38, 30)","oscuro":"rgb(255, 245, 225)|rgb(255, 253, 248)|rgb(255, 245, 225)|rgb(43, 23, 16)|rgb(215, 38, 30)"}
+PASA   Caso 7.13 email de 110+ caracteres en 320 px sin scroll horizontal :: {"ox":0}
+PASA   CA-9.8 consola de /login limpia (1440x900) :: []
+PASA   CA-9.8 consola de /login limpia (360x640) :: []
+
+TOTAL 112 | PASA 112 | FALLA 0

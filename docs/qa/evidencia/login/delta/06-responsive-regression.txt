@@ -1,0 +1,64 @@
+PASA   CA-7.1 320x568 sin scroll horizontal durante la entrada (89 muestras en 2,5 s) :: {"maxDesborde":0}
+PASA   CA-7.1/6.13 320x568 [carga] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[9,10,157,54],"inView":true}
+PASA   CA-7.1/6.13 320x568 [foco] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[9,10,157,54],"inView":true}
+PASA   CA-7.1/6.13 320x568 [errorCred] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[9,10,157,54],"inView":true}
+PASA   CA-7.1/6.13 320x568 [errorCredReposo] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[9,10,157,54],"inView":true}
+PASA   CA-7.1/6.13 320x568 [errorRed] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[9,10,157,54],"inView":true}
+PASA   CA-7.1/6.13 320x568 [entrando] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[9,10,157,54],"inView":true}
+PASA   CA-7.1/6.13 320x568 [exito] sin scroll horizontal y nada tapa el logo :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[9,10,157,54],"inView":true}
+PASA   CA-7.3 320x568 con el error de red (el mas largo): nada cortado ni fuera del ancho; mascota completa o oculta :: {"dentro":true,"recortado":[],"svgDentro":"oculta"}
+PASA   CA-7.1 360x640 sin scroll horizontal durante la entrada (51 muestras en 2,5 s) :: {"maxDesborde":0}
+PASA   CA-7.1/6.13 360x640 [carga] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[10,10,158,54],"inView":true}
+PASA   CA-7.1/6.13 360x640 [foco] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[10,10,158,54],"inView":true}
+PASA   CA-7.1/6.13 360x640 [errorCred] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[10,10,158,54],"inView":true}
+PASA   CA-7.1/6.13 360x640 [errorCredReposo] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[10,10,158,54],"inView":true}
+PASA   CA-7.1/6.13 360x640 [errorRed] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[10,10,158,54],"inView":true}
+PASA   CA-7.1/6.13 360x640 [entrando] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[10,10,158,54],"inView":true}
+PASA   CA-7.1/6.13 360x640 [exito] sin scroll horizontal y nada tapa el logo :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[10,10,158,54],"inView":true}
+PASA   CA-7.3 360x640 con el error de red (el mas largo): nada cortado ni fuera del ancho; mascota completa o oculta :: {"dentro":true,"recortado":[],"svgDentro":true}
+PASA   CA-7.1 180x320 sin scroll horizontal durante la entrada (29 muestras en 2,5 s) :: {"maxDesborde":0}
+PASA   CA-7.1/6.13 180x320 [carga] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[8,10,156,54],"inView":true}
+PASA   CA-7.1/6.13 180x320 [foco] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[8,10,156,54],"inView":true}
+PASA   CA-7.1/6.13 180x320 [errorCred] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[8,10,156,54],"inView":true}
+PASA   CA-7.1/6.13 180x320 [errorCredReposo] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[8,10,156,54],"inView":true}
+PASA   CA-7.1/6.13 180x320 [errorRed] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[8,10,156,54],"inView":true}
+PASA   CA-7.1/6.13 180x320 [entrando] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[8,10,156,54],"inView":true}
+PASA   CA-7.1/6.13 180x320 [exito] sin scroll horizontal y nada tapa el logo :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[8,10,156,54],"inView":true}
+PASA   CA-7.3 180x320 con el error de red (el mas largo): nada cortado ni fuera del ancho; mascota completa o oculta :: {"dentro":true,"recortado":[],"svgDentro":"oculta"}
+PASA   CA-7.1 768x1024 sin scroll horizontal durante la entrada (118 muestras en 2,5 s) :: {"maxDesborde":0}
+PASA   CA-7.1/6.13 768x1024 [carga] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[144,188,292,232],"inView":true}
+PASA   CA-7.1/6.13 768x1024 [foco] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[144,188,292,232],"inView":true}
+PASA   CA-7.1/6.13 768x1024 [errorCred] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[144,166,292,210],"inView":true}
+PASA   CA-7.1/6.13 768x1024 [errorCredReposo] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[144,166,292,210],"inView":true}
+PASA   CA-7.1/6.13 768x1024 [errorRed] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[144,156,292,200],"inView":true}
+PASA   CA-7.1/6.13 768x1024 [entrando] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[144,188,292,232],"inView":true}
+PASA   CA-7.1/6.13 768x1024 [exito] sin scroll horizontal y nada tapa el logo :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[144,188,292,232],"inView":true}
+PASA   CA-7.3 768x1024 con el error de red (el mas largo): nada cortado ni fuera del ancho; mascota completa o oculta :: {"dentro":true,"recortado":[],"svgDentro":true}
+PASA   CA-7.1 1440x900 sin scroll horizontal durante la entrada (62 muestras en 2,5 s) :: {"maxDesborde":0}
+PASA   CA-7.1/6.13 1440x900 [carga] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[788,28,936,72],"inView":true}
+PASA   CA-7.1/6.13 1440x900 [foco] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[788,28,936,72],"inView":true}
+PASA   CA-7.1/6.13 1440x900 [errorCred] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[788,28,936,72],"inView":true}
+PASA   CA-7.1/6.13 1440x900 [errorCredReposo] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[788,28,936,72],"inView":true}
+PASA   CA-7.1/6.13 1440x900 [errorRed] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[788,28,936,72],"inView":true}
+PASA   CA-7.1/6.13 1440x900 [entrando] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[788,28,936,72],"inView":true}
+PASA   CA-7.1/6.13 1440x900 [exito] sin scroll horizontal y nada tapa el logo :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[788,28,936,72],"inView":true}
+PASA   CA-7.3 1440x900 con el error de red (el mas largo): nada cortado ni fuera del ancho; mascota completa o oculta :: {"dentro":true,"recortado":[],"svgDentro":true}
+PASA   CA-7.1 640x360 sin scroll horizontal durante la entrada (32 muestras en 2,5 s) :: {"maxDesborde":0}
+PASA   CA-7.1/6.13 640x360 [carga] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[80,24,228,68],"inView":true}
+PASA   CA-7.1/6.13 640x360 [foco] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[80,24,228,68],"inView":true}
+PASA   CA-7.1/6.13 640x360 [errorCred] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[80,24,228,68],"inView":true}
+PASA   CA-7.1/6.13 640x360 [errorCredReposo] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[80,24,228,68],"inView":true}
+PASA   CA-7.1/6.13 640x360 [errorRed] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[80,24,228,68],"inView":true}
+PASA   CA-7.1/6.13 640x360 [entrando] sin scroll horizontal y nada tapa el logo (centro y 4 esquinas) :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[80,24,228,68],"inView":true}
+PASA   CA-7.1/6.13 640x360 [exito] sin scroll horizontal y nada tapa el logo :: {"desborde":0,"hits":[true,true,true,true,true],"rect":[80,24,228,68],"inView":true}
+PASA   CA-7.3 640x360 con el error de red (el mas largo): nada cortado ni fuera del ancho; mascota completa o oculta :: {"dentro":true,"recortado":[],"svgDentro":"oculta"}
+PASA   CA-4.8 regresion: /kitchen sin sesion redirige a /login?redirect= :: {"s":307,"loc":"/login?redirect=%2Fkitchen"}
+PASA   CA-4.8 regresion: /floor sin sesion redirige a /login?redirect= :: {"s":307,"loc":"/login?redirect=%2Ffloor"}
+PASA   CA-4.8 regresion: /admin sin sesion redirige a /login?redirect= :: {"s":307,"loc":"/login?redirect=%2Fadmin"}
+PASA   CA-4.8 regresion: /admin/menu sin sesion redirige a /login?redirect= :: {"s":307,"loc":"/login?redirect=%2Fadmin%2Fmenu"}
+PASA   Regresion /m/<token inexistente>: responde 404 (app/m sin cambios en el diff; tarda por Supabase ficticio) :: {"status":404}
+PASA   CA-3.12e /login?mascota=1|2|3 ignora el parametro (misma pagina y mismo SVG que sin parametro) :: SVG idéntico en 4 variantes
+PASA   CA-3.12e ?mascota=2 muestra Pomo (misma estructura .m-eyes) :: 2/1
+PASA   Regresion landing /: carga, 1 h1, enlaces a /login, sin scroll horizontal (el codigo de landing no cambia: diff vacio) :: {"title":"MenuSky | Carta digital y pedidos por QR para restaurantes","h1":1,"h1t":"Que tus clientes pidan desde la mesa. Y tu cocina lo vea al instante.","login":3,"ox":-15,"consola":[]}
+
+TOTAL 62 | PASA 62 | FALLA 0
