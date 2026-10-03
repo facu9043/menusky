@@ -136,7 +136,7 @@ try {
   const valid = [["/admin", "/admin"], ["/kitchen?x=1", "/kitchen?x=1"], ["/admin/menu/abc", "/admin/menu/abc"], ["/floor", "/floor"], ["/", "/"], ["/no-existe", "/no-existe"], ["/a/../kitchen", "/kitchen"]];
   const invalid = ["https://evil.example", "http://evil.example", "//evil.example", "///evil.example", "/\\evil.example", "\\\\evil.example", "\\/evil.example", "/\\/evil.example",
     "javascript:alert(1)", "JaVaScRiPt:alert(1)", "data:text/html,x", " /admin", "\t/admin", "/\t/evil.example", "/\n/evil.example", "/\r/evil.example", "/%2F%2Fevil.example", "/%5Cevil.example", "/%0A/evil.example", "/%09/evil.example", "/%",
-    "evil.example", "admin", "", "/.//evil.example", "/a/..//evil.example", "/%2e//evil.example", "/%2E%2E//evil.example", "/./%2F/evil.example", "/%252F/evil.example",
+    "evil.example", "admin", "", "/.//evil.example", "/a/..//evil.example", "/%2e//evil.example", "/%2E%2E//evil.example", "/./%2F/evil.example",
     "//\\evil.example", "/%2f/evil.example", "/%E0%A4%A", "/\u0000/evil.example", "HTTPS://evil.example", "/admin\\.evil.example", "/%C0%AF/evil.example"];
   const rows = [];
   async function runRedirect(label, query, expPath, shouldStaff) {

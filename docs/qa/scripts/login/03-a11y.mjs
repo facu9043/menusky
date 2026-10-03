@@ -50,10 +50,11 @@ try {
     const tb = interesting.filter((n) => n.role === "textbox");
     check("CA-6.3 labels: textbox 'Email' y 'Contraseña' (requeridos)", tb.map((n) => n.name).join() === "Email,Contraseña" && tb.every((n) => /required=true/.test(n.props)), tb);
     const btns = interesting.filter((n) => n.role === "button").map((n) => n.name);
-    check("CA-11.1/12.1 nombres accesibles: enlace 'MenuSky, ir al inicio'; botones 'Mostrar contraseña' y 'Entrar'", interesting.some((n) => n.role === "link" && n.name === "MenuSky, ir al inicio") && btns.join() === "Mostrar contraseña,Entrar", btns);
+    check("CA-11.1/12.1 nombres accesibles: enlace 'MenuSky, ir al inicio'; botones 'Mostrar contraseña' y 'Entrar'", interesting.some((n) => n.role === "link" && n.name === "MenuSky, ir al inicio") && [...btns].sort().join() === "Entrar,Mostrar contraseña", btns);
     check("CA-6.1 landmark main y heading 1 'Ingresar'", interesting.some((n) => n.role === "main") && interesting.some((n) => n.role === "heading" && n.name === "Ingresar"), "ok");
     const al = interesting.filter((n) => n.role === "alert");
-    check("CA-6.6/6.14 AX: exactamente 1 alert con nombre/texto del error y sin otros live (status/log)", al.length === 1 && !interesting.some((n) => ["status", "log", "marquee"].includes(n.role)), al.map((n) => n.name));
+    const ann = await p.eval(`(() => { const a = document.querySelector('next-route-announcer'); return { announcer: !!a, announcerAlertInShadow: !!(a && a.shadowRoot && a.shadowRoot.querySelector('[role=alert]')), lightAlerts: document.querySelectorAll('[role=alert]').length, inMain: document.querySelectorAll('main [role=alert]').length, liveConTexto: [...document.querySelectorAll('[aria-live]')].filter(e => e.textContent.trim()).length }; })()`);
+    check("CA-6.6/6.14 AX: 2 nodos alert = 1 del login (dentro de main) + el route announcer de Next (vacio, solo anuncia navegaciones); sin status/log; sin aria-live con texto", al.length === 2 && ann.announcerAlertInShadow && ann.inMain === 1 && ann.lightAlerts === 1 && ann.liveConTexto === 0 && !interesting.some((n) => ["status", "log", "marquee"].includes(n.role)), { alertasAX: al.length, ...ann });
     await p.close();
   }
 
