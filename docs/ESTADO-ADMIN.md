@@ -2,21 +2,26 @@
 
 Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada delegación.
 
-- Worktree: `C:\Users\Windows10\Desktop\menusky-admin`, rama `feat/admin-redesign` (sale de `feat/login-redesign` @ 93fd493).
+- PC nueva (desde 2026-10-03): repo único en `C:\Users\facundo\Desktop\menusky`, SIN worktrees permanentes. Rama de trabajo: `feat/admin-ui` (contiene `feat/admin-redesign`, que contiene `feat/admin-sec` y `feat/admin-brand`).
+- OJO: el `next dev` del Director (3500) corre sobre esa carpeta; cambiar de rama cambia lo que él ve. Dejar siempre la carpeta en `feat/admin-ui`.
 - Sin push, sin merge a master, nada a producción. Supabase solo con credenciales ficticias (ver "Reglas operativas").
-- Fuentes: `docs/design/admin-boceto-aprobado.md` (dirección de arte APROBADA para Carta y Mesas), `docs/STACK.md`, `docs/DECISIONES.md`.
+- Fuentes: `docs/design/admin-boceto-aprobado.md` (dirección de arte APROBADA para Carta y Mesas), `docs/STACK.md`, `docs/DECISIONES.md`, `TRASPASO.md`.
 
-## Paso actual: PAUSA ORDENADA (pedida por el Director, 2026-10-03)
-Los 3 worktrees con `git status` limpio; ningún servidor del equipo escuchando en 3400-3499 (`netstat`).
-- `menusky-admin` / `feat/admin-redesign` @ este commit: docs + merges de sec (e1ec7b8) y brand (ec26c4d).
-- `menusky-admin-sec` / `feat/admin-sec` @ be9d6f8: Backend TERMINADO incluidas las correcciones SEC-AD-01..06 (c116af4, 512ce06, be9d6f8). RLS 131/131, e2e 58/58, sondeo 10/10 + legacy 6/6, build OK. AÚN NO integrado en feat/admin-redesign (lo integrado es hasta 180c0d2 + informe de Seguridad no; ver abajo).
-- `menusky-admin-brand` / `feat/admin-ui` @ e163194: Frontend 4a (shell + Carta + hoja) CASI terminado; últimos 2 commits son WIP.
+## Decisiones del Director (2026-10-03, tras la mudanza)
+1. La Carta del admin está APROBADA visualmente.
+2. Mesas está OK, pero tiene que usar más los colores, las tipografías y los bordes de la Carta: va dentro de la tarea de Mesas (paso 4).
+3. Cocina (`/kitchen`) y Salón (`/floor`): opción B. NO se rediseñan en esta fase (sigue vigente spec admin §3.2, fuera de alcance). PRÓXIMA FASE, apenas cierre el admin: rediseñarlas igual que la Carta (mismos colores, fuentes y bordes; "es lo característico de MenuSky; no puede haber un apartado distinto").
+4. Error a corregir en esta fase: en `/floor` (y `/kitchen`) el texto del body sale en "Times New Roman". Ver D-19.
+
+## Paso actual: tanda 2026-10-03 (pasos 1 y 2 + fuente del body), luego pausa ordenada
+- Paso 1 HECHO: `feat/admin-sec` (be9d6f8) integrada en `feat/admin-redesign` (merge 0b1fec1, sin conflictos) y `feat/admin-redesign` en `feat/admin-ui` (merge 44b7b84). Hecho en un worktree temporal `../menusky-redesign` (se borra al terminar la tanda) para no mover la carpeta del 3500.
+- Paso 2 + D-19: delegados al Frontend (ver abajo).
 
 ## Orden para retomar
-1. Integrar `feat/admin-sec` (be9d6f8, trae también el informe de Seguridad 08b220f) en `feat/admin-redesign`, y luego `feat/admin-redesign` en `feat/admin-ui` (o al revés al final). Build.
-2. Frontend (retomar al agente a0fd43d9630640e4a con SendMessage si existe; si no, uno nuevo con su informe): cerrar 4a: build de producción contra el mock, re-correr `docs/design/admin/evidencia/carta-4a/{carta-e2e,quality,captures}.mjs` y guardar salidas (.txt), axe en 0 tras la corrección de contraste "Sin stock hoy", rehacer capturas sin el distintivo de `next dev`, README de cómo levantar, eslint completo.
+1. HECHO (ver arriba).
+2. Frontend: cerrar 4a: build de producción contra el mock, re-correr `docs/design/admin/evidencia/carta-4a/{carta-e2e,quality,captures}.mjs` y guardar salidas (.txt), axe en 0 tras la corrección de contraste "Sin stock hoy", rehacer capturas sin el distintivo de `next dev`, README de cómo levantar, eslint completo. Más la corrección de la fuente del body (D-19) en `fix/body-font`.
 3. Backend: sumar `kitchenPending`/`floorPending` a `AdminLiveSnapshot` (pedido del Frontend, R-9: hoy el shell abre un 2.º canal Realtime con `useStaffPendingCounts`).
-4. Frontend 4b: Mesas (en vivo con `useAdminLive`, `refresh()` tras crear/borrar mesa), "Imprimir todos", Inicio, Apariencia, estados vacíos.
+4. Frontend 4b: Mesas (en vivo con `useAdminLive`, `refresh()` tras crear/borrar mesa) usando más colores, tipografías y bordes de la Carta (decisión 2 del Director), "Imprimir todos", Inicio, Apariencia, estados vacíos.
 5. Seguridad final (retomar a a88b404df132855eb) y QA (veredictos por alcance, capturas en `docs/qa/capturas/admin/`).
 6. Informe de release al Director.
 
@@ -53,7 +58,8 @@ el Celeron se usa como meta.
 - `docs/releases/login-redesign.md` NO tiene una sección "Notas para la fase Admin" (el encargo la menciona). La deuda se tomó de `docs/STACK.md` (tokens duplicados, Bricolage en dos layouts, Geist Mono precargada en /login) y de `docs/security/login-2026-10-02.md` (SEC-LG-06/07, R-2).
 
 ## Procesos levantados (puerto, PID, dueño)
-(ninguno)
+- 3500 `next dev` (PID 13644) y 3501 mock de Supabase (PID 3864): de la sesión principal/Director. NO tocar.
+- Equipo: (ninguno)
 
 ## Reglas operativas
 - Puertos: ver D-1 en `docs/DECISIONES.md`. 3500 = `next dev` del Director: no tocar. Nunca matar procesos ajenos.
