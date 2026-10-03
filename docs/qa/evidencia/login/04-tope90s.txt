@@ -1,0 +1,1 @@
+PASA   CA-10.6d idle activo a los 30/60/80 s y 0 animaciones a los 100 s; la mirada sigue funcionando despues :: {"30":1,"60":1,"80":1,"92":0,"100":0}

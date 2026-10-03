@@ -1,0 +1,13 @@
+PASA   CA-5.3 entrada: panel y mascota con animacion unica (1 iteracion), duracion <=600 ms; no queda viva despues :: {"ent":[{"n":"lg-stage-in","d":520,"delay":120,"it":1,"fill":"backwards"},{"n":"lg-rise","d":420,"delay":0,"it":1,"fill":"backwards"}],"vivasDespues":0}
+FALLA  CA-5.3 (limite) la entrada de la mascota termina a <=600 ms contando el retraso :: [{"n":"lg-stage-in","finalizaAMs":640},{"n":"lg-rise","finalizaAMs":420}]
+PASA   CA-5.4 hover y presion del boton cambian color/posicion/sombra; transicion de transform <=160 ms :: {"base":{"btnBg":"rgb(255, 194, 26)","btnTf":"none","btnShadow":"rgb(43, 23, 16) 0px 4px 0px 0px","btnTr":"0.16s","inBorder":"rgb(106, 74, 60)","inBg":"rgb(255, 245, 225)","inOutline":"none"},"hov":{"bg":"rgb(255, 205, 63)","tf":"matrix(1, 0, 0, 1, 0, -2)"},"act":{"tf":"matrix(1, 0, 0, 1, 0, 3)"}}
+PASA   CA-5.4 foco del campo cambia borde/fondo/contorno (instantaneo, sin transicion) :: {"base":["rgb(106, 74, 60)","rgb(255, 245, 225)"],"foc":["rgb(43, 23, 16)","rgb(255, 253, 248)","solid"]}
+PASA   Caso 7.9 sin JavaScript: se ven h1, campos, boton y mascota estatica (SSR) :: {"h1":true,"email":true,"pass":true,"btn":true,"mascota":true,"txt":"Ingresar"}
+PASA   CA-4.9 sin onPaste/onCopy/onDrop; ids email y password conservados :: grep
+PASA   CA-4.9 el campo acepta texto insertado de una vez (pegado) :: ok
+PASA   CA-4.6 validacion nativa activa: email mal formado invalida el formulario (sin novalidate) :: {"valid":false,"msg":true,"type":"email","noValidate":false}
+PASA   CA-4.6 con validacion nativa fallida no se envia (boton sigue en 'Entrar') :: Entrar
+PASA   Doble clic rapido sobre Entrar: 1 sola peticion de login :: {"tokenPosts":1}
+PASA   Exploratoria: boton Atras desde el destino vuelve al login con el boton operable ('Entrar' habilitado) :: {"path":"/login","btn":"Entrar","dis":false}
+
+TOTAL 11 | PASA 10 | FALLA 1

@@ -185,3 +185,45 @@ variantes `dark:`; tiene un único aspecto (CA-8.12).
 - `chore/security-headers` (desde `feat/landing-page`): cabeceras (Backend); se integra en
   `feat/landing-page` y se audita junto con la landing.
 - Nada se integra en `master` sin Seguridad Apto, QA Aprobado y autorización del Director.
+
+## Arquitectura del rediseño del login (`/login`) — decisión del Líder Técnico (2026-10-02)
+
+Rama `feat/login-redesign` (desde `feat/landing-page` @ efbbfd5), worktree
+`C:\Users\Windows10\Desktop\menusky-login`. Spec: `docs/specs/login.md`. Estado: `docs/ESTADO-LOGIN.md`.
+
+- **Solo cambia la UI.** No cambian: `signInWithPassword`, la consulta a `staff_users`,
+  el redirect por rol (`admin` -> `/admin`, resto -> `/kitchen`), el uso de `?redirect=`,
+  los toasts de `sonner` ni `lib/**`, `proxy.ts`, `supabase/**`. `app/login/page.tsx` sigue
+  siendo Server Component que lee `searchParams` y pasa `redirectTo`.
+- **Archivos del login:**
+  | Qué | Dónde |
+  |---|---|
+  | Página | `app/login/page.tsx` (sin cambios de lógica) |
+  | Layout del login | `app/login/layout.tsx` (nuevo): envuelve en `.ms-login`, importa `login.css` y la fuente display |
+  | Estilos y tokens | `app/login/login.css` (nuevo): tokens `--ms-*` con los MISMOS valores que `app/(landing)/landing.css`, bajo `.ms-login` |
+  | Formulario | `components/auth/LoginForm.tsx` (se rediseña; se elimina la lámpara) |
+  | Mascota | `components/brand/mascot/` (nuevo; solo después de que el Director elija). Propuestas en `docs/design/mascota/` |
+  | Logo | se IMPORTA `components/landing/brand/Logo.tsx` sin modificarlo |
+- **Por qué tokens duplicados y no un archivo compartido:** `landing.css` está en QA en la otra
+  rama; moverlo ahora genera conflictos. Deuda anotada: cuando `feat/landing-page` se integre,
+  extraer los tokens a un archivo de marca común (p. ej. `app/brand.css`) para toda la app.
+- **Fuente:** Bricolage Grotesque (la misma de la landing, `next/font/google`, subset latin,
+  eje `opsz`) cargada en `app/login/layout.tsx`. Cuerpo: Geist. No se agregan otras fuentes.
+- **Animación: liviana, pensada para Celeron de 2 núcleos.** Sin librerías nuevas (ni motion,
+  ni gsap, ni lottie, ni three en `/login`). Solo CSS keyframes/transiciones sobre `transform`
+  y `opacity`; nada de `filter: blur`, `backdrop-filter` ni sombras animadas; sin loops
+  infinitos costosos (si hay un loop idle de la mascota, corto, de baja frecuencia y en
+  `transform`). JS de animación: ninguno, salvo estados de React ya existentes.
+  `prefers-reduced-motion: reduce` -> todo estático.
+- **Mascota:** SVG inline propio (sin imágenes externas), `aria-hidden="true"` y decorativa, o con
+  `role="img"` + texto alternativo si transmite estado. Debe ser original (no parecerse a Jake
+  de Hora de Aventura ni a ningún personaje con derechos).
+- **Modo oscuro:** el login tiene un único aspecto, sin `.dark` (como la landing).
+- **Cambios fuera del login prohibidos** en esta rama (landing, paneles, carta, `lib`, `globals.css`).
+
+### Estado del login (2026-10-03)
+Implementado en `feat/login-redesign`: `app/login/{layout.tsx,login.css,page.tsx}`, `components/auth/{LoginForm.tsx,safeRedirect.ts}`,
+`components/brand/mascot/{MascotPomo.tsx,index.tsx}` (Pomo en capas: `.m-look`/`.m-eyes` animadas solo con transform/opacity),
+`scripts/check-safe-redirect.mjs`, `scripts/measure-login-weight.mjs` (no cuenta fuentes: medir fuentes por CDP).
+Pruebas QA en `docs/qa/scripts/login/`. Costo de animación medido en el Celeron con CDP `SystemInfo.getProcessInfo` (ver docs/design/mascota/mascota.md).
+Deuda: tokens `--ms-*` duplicados en `app/(landing)/landing.css` y `app/login/login.css` (unificar en un archivo de marca cuando se integre la landing); Bricolage cargada en dos layouts; Geist Mono se precarga en /login sin usarse (layout raíz).

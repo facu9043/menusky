@@ -1,0 +1,33 @@
+PASA   CA-1.2 sin manejadores de arrastre ni estado on :: 0 coincidencias
+PASA   CA-1.2 sin 'cadena'/'luz'/role=button :: 0 coincidencias
+PASA   CA-2.6 sin toast ni sonner en LoginForm :: 0 coincidencias
+PASA   CA-6.14 sin aria-live; 1 role=alert :: {"alert":1}
+PASA   CA-5.1 transiciones solo transform :: ["transform var(--ms-dur-fast) var(--ms-ease-out)","transform 180ms var(--ms-ease-out)","none !important"]
+PASA   CA-5.1 keyframes sin width/height/top/left/margin/box-shadow/filter/background-position :: {"keyframes":["lg-rise","lg-stage-in","m-blink","lg-lean","lg-shake-a","lg-shake-b","lg-hop"],"malos":[]}
+PASA   CA-5.2 sin blur/backdrop-filter/drop-shadow :: []
+PASA   CA-5.6/9.9 package.json y lock sin cambios (vs efbbfd5) :: diff vacio
+PASA   CA-10.11.1/10.4 rAF/setInterval/mousemove/onKey*: solo el setTimeout de seguridad de 10 s :: ["setTimeout"]
+PASA   CA-10.10a setTimeout solo es la red de seguridad (clearTimeout, 10_000) :: 1 setTimeout, 10_000 ms; la navegacion (router.push) no espera
+PASA   CA-10.10 setSucceeded(true) justo antes de router.push, sin await entre medio :: orden verificado en handleSubmit
+PASA   CA-3.12c 0 Brioche/Pollito/MascotVariant/mascota=/variant===1|2 en app/** y components/** :: []
+PASA   CA-3.12a page.tsx sin searchParams.mascota ni BORRADOR :: page.tsx lee solo redirect
+PASA   CA-3.12b components/brand/mascot solo Pomo :: ["index.tsx","MascotPomo.tsx"]
+PASA   CA-3.12d docs/design/mascota conserva historial :: 11 archivos
+PASA   CA-3.8 mascota importada solo desde app/login (y su propio dir) :: ["app/login/login.css","app/login/page.tsx"]
+PASA   CA-3.2/3.5 SVG sin image/href/url()/script/foreignObject/text/filter/title :: []
+PASA   CA-3.5 <= 120 elementos SVG :: {"elementos":54}
+PASA   CA-3.6 SVG aria-hidden y sin title ni focusable :: aria-hidden=true
+PASA   CA-3.13 sin nombre 'Pomo' en pantalla/aria :: LoginForm/page sin 'Pomo'; SVG sin aria-label/alt
+PASA   CA-2.1/3.3 colores literales dentro de la paleta (+ #ffcd3f, #7ccb4e declarados) :: {"fuera":[],"usados":14}
+PASA   CA-2.1 tokens --ms-* del login == landing.css :: {"tokens":13,"distintos":[]}
+PASA   CA-2.1 naranja E8590C y fondo 170f0c ausentes :: 0 coincidencias
+PASA   CA-4.8/2.4 sin cambios en lib, proxy, supabase, api, globals, landing, Logo, sonner, layout (vs efbbfd5) :: diff vacio
+PASA   Alcance del diff (informativo) :: ["app/login/layout.tsx","app/login/login.css","app/login/page.tsx","components/auth/LoginForm.tsx","components/auth/safeRedirect.ts","components/brand/mascot/MascotPomo.tsx","components/brand/mascot/index.tsx","scripts/check-safe-redirect.mjs","scripts/measure-login-weight.mjs"]
+PASA   CA-3.8/CA-2.4 Logo.tsx intacto :: sin diff
+PASA   CA-3.5 peso de MascotPomo.tsx (aprox. SVG) :: {"bytes":5504,"gzip":1573}
+PASA   RNF-S2 sin placeholder/defaultValue con credenciales :: sin placeholder ni defaultValue
+PASA   CA-4.6 atributos de campos :: ok
+PASA   CA-12.1 enlace al inicio sin prefetch :: ok
+PASA   CA-12.2 sin enlaces externos/redes :: ok
+
+TOTAL 31 | PASA 31 | FALLA 0

@@ -1,0 +1,7 @@
+{"rep":0,"reduced":false,"vis":"visible/true","ventanas10s_renderer_gpu":[[1.75,11.06],[1.74,8.42],[2.23,10.9]],"prom_renderer":1.91,"prom_gpu":10.13}
+{"rep":0,"reduced":true,"vis":"visible/true","ventanas10s_renderer_gpu":[[0.72,0.14],[2.46,0.08],[2.95,0.01]],"prom_renderer":2.04,"prom_gpu":0.08}
+{"rep":1,"reduced":false,"vis":"visible/true","ventanas10s_renderer_gpu":[[1.84,1.72],[1.87,1.65],[2.15,1.82]],"prom_renderer":1.95,"prom_gpu":1.73}
+{"rep":1,"reduced":true,"vis":"visible/true","ventanas10s_renderer_gpu":[[0.01,0.06],[0,0.01],[0.4,0.02]],"prom_renderer":0.14,"prom_gpu":0.03}
+{"rep":2,"reduced":false,"vis":"visible/true","ventanas10s_renderer_gpu":[[1.89,1.86],[1.95,1.81],[2.4,1.86]],"prom_renderer":2.08,"prom_gpu":1.84}
+{"rep":2,"reduced":true,"vis":"visible/true","ventanas10s_renderer_gpu":[[0.01,0.03],[0.47,0.01],[0.48,0.02]],"prom_renderer":0.32,"prom_gpu":0.02}
+{"resumen":{"renderer_normal":1.98,"renderer_reduced":0.83,"dif_renderer":1.15,"gpu_normal":4.57,"gpu_reduced":0.04,"dif_gpu":4.53}}
