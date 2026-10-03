@@ -1,0 +1,59 @@
+Contraste del tema MenuSky y de los 8 presets de lib/theme/presets.ts
+Fecha: 2026-10-03. Fórmula WCAG 2.x de lib/theme/contrast.ts.
+Umbral: 4,5:1 texto normal; 3:1 texto grande (reglas 5 a 7 del editor).
+
+== 1. MenuSky: valores ==
+{
+  "key": "menusky",
+  "label": "MenuSky",
+  "theme": {
+    "background": "#FFF5E1",
+    "cardBackground": "#FFFDF8",
+    "textPrimary": "#2B1710",
+    "textSecondary": "#6A4A3C",
+    "accentPrimary": "#D7261E",
+    "accentSecondary": "#FFC21A",
+    "waiterButton": "#2B1710",
+    "style": "brutal"
+  }
+}
+
+== 2. MenuSky: las 7 reglas del editor (CA-4.2 pide 0 avisos) ==
+OK   Texto principal / Fondo: #2B1710 sobre #FFF5E1 = 15.74:1
+OK   Texto secundario / Fondo: #6A4A3C sobre #FFF5E1 = 7.30:1
+OK   Texto principal / Fondo de tarjeta: #2B1710 sobre #FFFDF8 = 16.76:1
+OK   Texto secundario / Fondo de tarjeta: #6A4A3C sobre #FFFDF8 = 7.77:1
+OK   Texto del botón de pedido / Acento primario (grande): #FFFFFF sobre #D7261E = 5.02:1
+OK   Texto de las tabs / Acento secundario (grande): #111111 sobre #FFC21A = 11.67:1
+OK   Ícono del botón de mozo / Botón de mozo (grande): #FFFFFF sobre #2B1710 = 17.03:1
+Avisos del editor: 0
+
+== 3. MenuSky: pares que pinta la carta (/m) con texto normal (>= 4,5) ==
+OK   Precio / acento primario como texto sobre Fondo: #D7261E sobre #FFF5E1 = 4.64:1
+OK   Precio / acento primario como texto sobre Fondo de tarjeta: #D7261E sobre #FFFDF8 = 4.94:1
+OK   Texto del botón "Ver pedido" (--primary-foreground) sobre --primary: #FFFFFF sobre #D7261E = 5.02:1
+OK   Texto de tab activa (--secondary-foreground) sobre --secondary: #111111 sobre #FFC21A = 11.67:1
+OK   Ícono/texto del botón de mozo (--waiter-foreground) sobre --waiter: #FFFFFF sobre #2B1710 = 17.03:1
+Nota: el acento secundario cheddar NO se usa como color de texto sobre crema (1,5:1); en la carta es fondo de tabs con texto oscuro.
+
+== 4. Selección de preset ==
+OK   Primer preset = menusky / MenuSky
+OK   DEFAULT_THEME es el tema de MenuSky
+OK   Cantidad de presets = 8 (MenuSky + 7)
+OK   Tema guardado igual al viejo "Default" -> default / Clásico
+OK   Mismo tema en minúsculas -> default
+OK   theme null -> menusky / MenuSky
+OK   Colores de MenuSky con style "soft" (personalizado) -> ningún preset activo
+OK   Paleta personalizada que no coincide -> ningún preset activo
+
+== 5. Los 8 presets con las 7 reglas del editor (referencia) ==
+menusky        MenuSky        style=brutal     avisos=0  15.74 | 7.30 | 16.76 | 7.77 | 5.02 | 11.67 | 17.03
+default        Clásico        style=soft       avisos=0  15.05 | 7.84 | 11.76 | 6.13 | 5.27 | 12.36 | 17.49
+glaciar        Glaciar        style=soft       avisos=0  12.58 | 5.78 | 10.95 | 5.03 | 6.51 | 6.15 | 7.36
+galaxia        Galaxia        style=soft       avisos=0  17.86 | 7.63 | 16.17 | 6.91 | 4.91 | 5.97 | 10.10
+madera         Madera         style=soft       avisos=0  10.23 | 6.32 | 8.24 | 5.10 | 6.43 | 8.63 | 5.29
+neobrutalista  Neobrutalista  style=brutal     avisos=0  17.28 | 10.67 | 11.67 | 7.21 | 4.53 | 11.96 | 4.53
+neumorfismo    Neumorfismo    style=neumorphic avisos=2  9.31 | 3.60 | 9.31 | 3.60 | 5.81 | 4.92 | 5.81
+claymorfismo   Claymorfismo   style=clay       avisos=1  12.43 | 5.01 | 10.18 | 4.11 | 6.92 | 9.76 | 6.92
+
+Resultado: todo OK
