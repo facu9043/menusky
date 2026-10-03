@@ -1,0 +1,6 @@
+inicio 1440x900: scroll horizontal no (1440/1440); fuentes cargadas: Bricolage Grotesque, Geist
+apariencia 1440x900: scroll horizontal no (1440/1440); fuentes cargadas: Bricolage Grotesque, Geist, Geist Mono
+estados 1440x900: scroll horizontal no (1440/1440); fuentes cargadas: Bricolage Grotesque, Geist, Geist Mono
+inicio 390x844: scroll horizontal no (390/390); fuentes cargadas: Bricolage Grotesque, Geist
+apariencia 390x844: scroll horizontal no (390/390); fuentes cargadas: Bricolage Grotesque, Geist, Geist Mono
+estados 390x844: scroll horizontal no (390/390); fuentes cargadas: Bricolage Grotesque, Geist, Geist Mono
