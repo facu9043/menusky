@@ -57,7 +57,8 @@ cada delegación y después de cada paso verificado.
 ## Hallazgos abiertos
 - Idle al límite del umbral CA-10.11 (decisión 4c). Respiración y seguimiento del cursor recortados por costo (medido).
 - Peso: margen de 3,4 KB hasta 380 KB.
-- Bloquean el release: Lighthouse en otra PC (CA-9.5); originalidad de Pomo CA-3.4 puntos 2 y 5 (tarea humana del Director).
+- ~~Bloquean el release: Lighthouse en otra PC (CA-9.5); originalidad de Pomo CA-3.4 puntos 2 y 5 (tarea humana del Director).~~
+- RELEASE APROBADO POR EL DIRECTOR (2026-10-03): Lighthouse medido en la PC nueva (mediana de 3, móvil): Rendimiento 93, Accesibilidad 100, TBT 63 ms, CLS 0; LCP 3,18 s NO cumple <= 2,5 s, aceptado y pendiente con la mejora de velocidad de la landing (`docs/qa/evidencia/login/lighthouse-2026-10-03/RESUMEN.md`). Originalidad de Pomo (CA-3.4 puntos 2 y 5): la hace el Director más adelante; si aparece un parecido, se cambia Pomo. Idle de la mascota: queda con tope de 90 s. Merge a master y push autorizados.
 - Pregunta al Director: tope de 90 s del idle (default) vs indefinido con botón de pausa (WCAG 2.2.2).
 - R-2 pendiente de evaluación de Seguridad y decisión del Director.
 - Si staff_users falla por red, postgrest reintenta ~8 s con el botón en "Entrando..." (librería).
