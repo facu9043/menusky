@@ -1,13 +1,13 @@
-browser-poll-check: Chrome headless (CDP 3410) contra mock 3401 + next 3402, 2026-10-03
+browser-poll-check (modo normal): Chrome headless CDP 3410, mock 3401, next 3402, 2026-10-03
 PASS  "Tu pedido" cargó con el paso 1 (Recibido) activo
-PASS  cadencia: 3 consultas en 10 s (esperado 3 o 4), separación 3.0/3.0 s
+PASS  cadencia: 3 consultas en 10 s (esperado 2 a 4 según cuándo cayó la primera), separación 3.0/3.0 s
 PASS  sin solapar: nunca hubo más de 1 consulta en vuelo
-PASS  cambio a in_kitchen: el cliente lo muestra en 0.3 s (<= 5 s)
-PASS  cambio a ready: el cliente lo muestra en 3.1 s (<= 5 s)
-PASS  cambio a delivered: el cliente lo muestra en 3.0 s (<= 5 s)
+PASS  cambio a in_kitchen: el cliente lo muestra en 0.9 s (<= 5 s)
+PASS  cambio a ready: el cliente lo muestra en 2.9 s (<= 5 s)
+PASS  cambio a delivered: el cliente lo muestra en 3.1 s (<= 5 s)
 PASS  tras 'delivered' ya no consulta más (8 s sin pedidos de estado)
 PASS  pestaña oculta: no consulta (8 s, 0 consultas)
-PASS  al volver a la pestaña consulta de inmediato y muestra "Este pedido fue cancelado." (41 ms)
+PASS  al volver a la pestaña consulta de inmediato y muestra "Este pedido fue cancelado." (31 ms)
 PASS  tras 'cancelled' ya no consulta más
 
 10/10 OK

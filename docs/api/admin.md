@@ -48,7 +48,13 @@ create or replace function create_order(p_qr_token text, p_items jsonb) returns 
 --   subtotal = (price + sum(extra_price)) * quantity; total = sum(subtotal);
 --   selected_options con la MISMA forma JSON que hoy:
 --     [{ "groupId", "groupName", "choiceId", "choiceName", "extraPrice" }];
---   status nace 'received' (default de la tabla).
+--   status nace 'received' (default de la tabla);
+--   LIMITE DE TASA (D-14, SEC-AD-01): como maximo 10 pedidos por mesa en los ultimos 10 minutos
+--     (constantes c_rate_max / c_rate_window; cuentan todos los estados, cancelados incluidos), con
+--     pg_advisory_xact_lock por mesa; el excedente lanza 'rate_limited' con errcode 'P0429' (se evalua
+--     antes que la validacion de items). /api/orders lo traduce a 429 "Recibimos muchos pedidos de esta
+--     mesa. Esperá unos minutos o llamá al mozo.".
+--   Las 3 funciones usan set search_path = '' y nombres calificados (public.tabla).
 -- Devuelve el id del pedido.
 
 -- Lectura del pedido propio: exige el qr_token de la mesa Y el id del pedido.
@@ -148,8 +154,8 @@ export interface AdminLiveSnapshot {
   `lib/floor/tableStatus.ts` (`deriveTableStatus`) y `FloorBoard` la usa sin cambiar su resultado (CA-8.5).
 - `lib/admin/live/getAdminLiveSnapshot.ts` (server): `getAdminLiveSnapshot(restaurantId): Promise<AdminLiveSnapshot>`.
 - `lib/admin/live/AdminLiveProvider.tsx` (client, sin UI): `<AdminLiveProvider restaurantId initial>` abre UNA
-  suscripción Realtime (orders INSERT/UPDATE, waiter_calls INSERT/UPDATE, tables INSERT/DELETE si se puede;
-  si no, `refreshTables()` explícito) y expone:
+  suscripción Realtime (orders `*`, waiter_calls INSERT/UPDATE). `tables` NO se escucha (SEC-AD-04: no está
+  publicada): el Frontend llama `refresh()` tras crear/borrar una mesa y expone:
   ```ts
   export function useAdminLive(): AdminLiveSnapshot & {
     connected: boolean;                 // estado de la conexión en vivo (CA-8.15)

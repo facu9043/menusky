@@ -236,6 +236,26 @@ const rest = (token, path, init = {}) => fetch(`${MOCK}/rest/v1/${path}`, { ...i
   anon.realtime.disconnect();
 }
 
+// ---- 9b. Límite de tasa por mesa (D-14): 10 pedidos cada 10 minutos
+{
+  const MESA3 = "mesa-3-demo0003";
+  const body = { qrToken: MESA3, items: [{ menuItemId: idOf("Agua mineral 500ml"), quantity: 1, choiceIds: [] }] };
+  const statuses = [];
+  for (let i = 0; i < 10; i++) statuses.push((await post(body)).status);
+  check("límite: 10 pedidos seguidos de una mesa -> todos 200", statuses.every((s) => s === 200), JSON.stringify(statuses));
+  const r11 = await post(body);
+  const j11 = await r11.json();
+  check("límite: el pedido 11 -> 429 con el texto exacto", r11.status === 429 && j11.error === "Recibimos muchos pedidos de esta mesa. Esperá unos minutos o llamá al mozo.", `${r11.status} ${JSON.stringify(j11)}`);
+  const other = await post({ ...body, qrToken: QR });
+  check("límite: otra mesa (Mesa 1) no se ve afectada -> 200", other.status === 200, `${other.status}`);
+  const direct = await fetch(`${MOCK}/rest/v1/rpc/create_order`, { method: "POST", headers: { apikey: ANON, "content-type": "application/json" }, body: JSON.stringify({ p_qr_token: MESA3, p_items: [{ menu_item_id: idOf("Agua mineral 500ml"), quantity: 1 }] }) });
+  const dj = await direct.json();
+  check("límite: la RPC directa con la anon key también lo respeta (rate_limited / P0429)", dj.message === "rate_limited" && dj.code === "P0429", JSON.stringify(dj));
+  await mockPost("/__mock/event", { type: "age_orders", table: "Mesa 3", minutes: 11 });
+  const after = await post(body);
+  check("límite: pasados 10 minutos (tiempo simulado) vuelve a pasar -> 200", after.status === 200, `${after.status}`);
+}
+
 // ---- 10. Llamado al mozo (no cambia)
 {
   const r = await fetch(`${APP}/api/waiter-calls`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ qrToken: QR, reason: "cuenta" }) });
