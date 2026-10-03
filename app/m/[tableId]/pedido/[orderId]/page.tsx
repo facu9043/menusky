@@ -16,7 +16,7 @@ export default async function OrderStatusPage({
   params,
 }: PageProps<"/m/[tableId]/pedido/[orderId]">) {
   const { tableId, orderId } = await params;
-  const data = await getOrder(orderId);
+  const data = await getOrder(tableId, orderId);
 
   if (!data) notFound();
 
@@ -33,7 +33,7 @@ export default async function OrderStatusPage({
         </p>
       </div>
 
-      <OrderStatusTracker orderId={order.id} initialStatus={order.status} />
+      <OrderStatusTracker qrToken={tableId} orderId={order.id} initialStatus={order.status} />
 
       <div className="flex flex-col gap-3">
         {items.map((item) => (

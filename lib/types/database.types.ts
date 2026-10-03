@@ -5,6 +5,9 @@
 import type { CartSelectedOption } from "@/lib/types/cart";
 import type { RestaurantTheme } from "@/lib/theme/types";
 
+// JSON arbitrario (argumentos y retornos de las funciones RPC).
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+
 export type OrderStatus =
   | "received"
   | "in_kitchen"
@@ -200,7 +203,20 @@ export interface Database {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      create_order: {
+        Args: { p_qr_token: string; p_items: Json };
+        Returns: string;
+      };
+      get_public_order: {
+        Args: { p_qr_token: string; p_order_id: string };
+        Returns: Json;
+      };
+      get_public_order_status: {
+        Args: { p_qr_token: string; p_order_id: string };
+        Returns: string | null;
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };
