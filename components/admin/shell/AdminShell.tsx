@@ -11,7 +11,6 @@ import { OfflineNotice } from "@/components/admin/shell/OfflineNotice";
 import { useAdminPortalClass } from "@/components/admin/shell/portal";
 import { useLogout } from "@/components/admin/shell/useLogout";
 import { useAdminLive } from "@/lib/admin/live/AdminLiveProvider";
-import { useStaffPendingCounts } from "@/lib/realtime/useStaffPendingCounts";
 
 export interface AdminShellStaff {
   name: string;
@@ -52,10 +51,10 @@ export function AdminShell({
   const live = useAdminLive();
   const { logout, loggingOut } = useLogout();
   const portalClass = useAdminPortalClass();
-  // Mismo criterio de pendientes que StaffNav (CA-NR.04).
-  const pending = useStaffPendingCounts(staff.restaurantId);
-  const pendingBy = { kitchen: pending.kitchenPending, floor: pending.floorPending };
-  const anyPending = pending.kitchenPending + pending.floorPending > 0;
+  // Mismo criterio de pendientes que StaffNav (CA-NR.04), desde la instantánea
+  // compartida: un solo canal Realtime para todo el admin (R-9, D-20).
+  const pendingBy = { kitchen: live.kitchenPending, floor: live.floorPending };
+  const anyPending = live.kitchenPending + live.floorPending > 0;
 
   const { refresh } = live;
   useEffect(() => {

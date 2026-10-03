@@ -38,5 +38,7 @@ export function deriveAdminLive(raw: AdminLiveRaw): AdminLiveSnapshot {
     salesToday: counted.reduce((s, o) => s + o.total, 0),
     pendingCalls: raw.pendingCalls.length,
     occupiedTables: tables.filter((t) => t.state !== "free").length,
+    kitchenPending: active.filter((o) => o.status === "received").length,
+    floorPending: active.filter((o) => o.status === "ready").length + raw.pendingCalls.length,
   };
 }

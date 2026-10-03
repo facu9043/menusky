@@ -160,7 +160,44 @@ eq("pedidos activos por mesa: D = 2, B = 1, E = 0, F = 0", [snap.tables[3].activ
 eq("totales de hoy por mesa sin cancelados: D = 1000, F = 400", [snap.tables[3].todayTotal, snap.tables[5].todayTotal], [1000, 400]);
 eq("ordersToday = 6 (sin el cancelado) y salesToday = 4900", [snap.ordersToday, snap.salesToday], [6, 4900]);
 eq("sin datos: todo en cero", deriveAdminLive({ tables: [], activeOrders: [], todayOrders: [], pendingCalls: [] }),
-  { tables: [], ordersToday: 0, salesToday: 0, pendingCalls: 0, occupiedTables: 0 });
+  { tables: [], ordersToday: 0, salesToday: 0, pendingCalls: 0, occupiedTables: 0, kitchenPending: 0, floorPending: 0 });
+
+// ---------------------------------------------------------------- kitchenPending / floorPending (D-20)
+// Mismo criterio que useStaffPendingCounts: received (cocina); ready + llamados pending (salón); cualquier fecha.
+// activeOrders no distingue fechas: los de días anteriores entran igual que los de hoy.
+{
+  const t3 = ["A", "B", "C"].map((id) => ({ id, label: `Mesa ${id}`, qrToken: `tok-${id}` }));
+  const mk = (activeOrders, pendingCalls = [], todayOrders = []) =>
+    deriveAdminLive({ tables: t3, activeOrders, todayOrders, pendingCalls });
+  const pc = (s) => [s.kitchenPending, s.floorPending];
+  const call = (tableId) => ({ tableId, reason: "cuenta", createdAt: "2026-10-03T15:00:00Z" });
+
+  eq("pendientes: sin nada = [0,0]", pc(mk([])), [0, 0]);
+  eq("pendientes: 1 received = cocina 1, salón 0", pc(mk([{ tableId: "A", status: "received" }])), [1, 0]);
+  eq("pendientes: in_kitchen no cuenta en cocina ni en salón", pc(mk([{ tableId: "A", status: "in_kitchen" }])), [0, 0]);
+  eq("pendientes: 1 ready = cocina 0, salón 1", pc(mk([{ tableId: "A", status: "ready" }])), [0, 1]);
+  eq("pendientes: 1 llamado = cocina 0, salón 1", pc(mk([], [call("B")])), [0, 1]);
+  eq("pendientes: ready + 2 llamados = salón 3", pc(mk([{ tableId: "A", status: "ready" }], [call("B"), call("B")])), [0, 3]);
+  eq("pendientes: received/in_kitchen/ready en la misma mesa = [1,1]",
+    pc(mk([{ tableId: "A", status: "received" }, { tableId: "A", status: "in_kitchen" }, { tableId: "A", status: "ready" }])), [1, 1]);
+  // Pedidos de días anteriores (están en activeOrders pero NO en todayOrders): cuentan igual.
+  {
+    const s = mk(
+      [{ tableId: "A", status: "received" }, { tableId: "B", status: "ready" }, { tableId: "C", status: "received" }],
+      [],
+      [{ tableId: "C", status: "received", total: 100 }] // solo C es de hoy
+    );
+    eq("pendientes: received/ready de días anteriores cuentan = [2,1] (hoy: solo 1 pedido)", [...pc(s), s.ordersToday], [2, 1, 1]);
+  }
+  eq("pendientes: cancelados y entregados no cuentan",
+    pc(mk([{ tableId: "A", status: "cancelled" }, { tableId: "B", status: "delivered" }])), [0, 0]);
+  eq("pendientes: cancelado de hoy no suma aunque esté en todayOrders",
+    pc(mk([], [], [{ tableId: "A", status: "cancelled", total: 50 }])), [0, 0]);
+  eq("pendientes: mesa sin pedidos no aporta (A con received; B y C libres) = [1,0]",
+    pc(mk([{ tableId: "A", status: "received" }])), [1, 0]);
+  eq("pendientes: llamado de mesa inexistente en tables igual cuenta (criterio por conteo de filas)",
+    pc(mk([], [call("ZZ")])), [0, 1]);
+}
 
 console.log(`\n${n - bad}/${n} OK`);
 process.exit(bad ? 1 : 0);

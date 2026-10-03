@@ -1,0 +1,4 @@
+## npx tsc --noEmit
+exit=0
+## npx eslint (archivos tocados)
+exit=0
