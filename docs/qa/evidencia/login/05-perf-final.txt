@@ -1,0 +1,29 @@
+[1440x900] otros: [ '/icon.svg?icon.23ezl472brfc2.svg 1322B' ]
+[1440x900] 18 peticiones; por tipo: {"Document":1,"Font":3,"Stylesheet":3,"Script":10,"Other":1}; KB: doc 8.3, JS 220.1, CSS 19.2, fuentes 127.8, otros 1.3
+PASA   CA-9.2 [1440x900] peso total transferido (HTML+JS+CSS+fuentes, sin cache) <= 380 KB :: {"total_kb":376.7,"fuentes":["2aa781f449db21e3-s.p.1pg2nifvadz06.woff2 75.6KB","797e433ab948586e-s.p.0r6juujl39pe6.woff2 23.1KB","caa3a2e1cccd8315-s.p.0wgildi0cnwt9.woff2 29.1KB"]}
+PASA   CA-9.3/3.2/RNF-S5 [1440x900] 0 imagenes, 0 peticiones a terceros, 0 peticiones por la mascota (el unico 'Other' es /icon.svg, el favicon de la app) :: {"imagenes":0,"externos":[]}
+PASA   CA-2.3 [1440x900] fuentes: solo las de next/font del propio origen :: 3 fuentes
+[360x640] otros: []
+[360x640] 17 peticiones; por tipo: {"Document":1,"Font":3,"Stylesheet":3,"Script":10}; KB: doc 8.3, JS 220.1, CSS 19.2, fuentes 127.8, otros 0
+PASA   CA-9.2 [360x640] peso total transferido (HTML+JS+CSS+fuentes, sin cache) <= 380 KB :: {"total_kb":375.4,"fuentes":["2aa781f449db21e3-s.p.1pg2nifvadz06.woff2 75.6KB","797e433ab948586e-s.p.0r6juujl39pe6.woff2 23.1KB","caa3a2e1cccd8315-s.p.0wgildi0cnwt9.woff2 29.1KB"]}
+PASA   CA-9.3/3.2/RNF-S5 [360x640] 0 imagenes, 0 peticiones a terceros, 0 peticiones por la mascota (el unico 'Other' es /icon.svg, el favicon de la app) :: {"imagenes":0,"externos":[]}
+PASA   CA-2.3 [360x640] fuentes: solo las de next/font del propio origen :: 3 fuentes
+PASA   CA-5.8 CLS en la carga 1440x900 CPU 1x <= 0,05 :: {"cls":0,"shifts":[0]}
+PASA   CA-5.8 CLS en la carga 360x640 CPU 1x <= 0,05 :: {"cls":0.0001,"shifts":[0.0001]}
+PASA   CA-5.8 CLS en la carga 360x640 CPU 4x <= 0,05 :: {"cls":0.0001,"shifts":[0.0001]}
+PASA   CA-5.8 CLS en la carga 320x568 CPU 4x <= 0,05 :: {"cls":0.0001,"shifts":[0.0001]}
+{"reduced":false,"rate":1,"anims_3s":1,"visibilidad_y_foco":"visible/true","w10":{"ScriptMs":0.12,"TaskMs":8,"Layout":0,"RecalcStyle":3,"Frames":0,"renderer":1.97,"gpu":1.84},"w30":{"ScriptMs":0.68,"TaskMs":144.8,"Layout":0,"RecalcStyle":18,"Frames":0,"renderer":2.21,"gpu":1.82}}
+{"reduced":true,"rate":1,"anims_3s":0,"visibilidad_y_foco":"visible/true","w10":{"ScriptMs":0,"TaskMs":1.6,"Layout":0,"RecalcStyle":0,"Frames":0,"renderer":0.03,"gpu":0.09},"w30":{"ScriptMs":0,"TaskMs":32.6,"Layout":0,"RecalcStyle":0,"Frames":-3,"renderer":0.16,"gpu":0.04}}
+{"reduced":false,"rate":4,"anims_3s":1,"visibilidad_y_foco":"visible/true","w10":{"ScriptMs":0.56,"TaskMs":12.1,"Layout":0,"RecalcStyle":7,"Frames":0,"renderer":41.01,"gpu":1.92}}
+{"reduced":true,"rate":4,"anims_3s":0,"visibilidad_y_foco":"visible/true","w10":{"ScriptMs":0,"TaskMs":1.6,"Layout":0,"RecalcStyle":0,"Frames":0,"renderer":44.65,"gpu":0.09}}
+PASA   CA-10.11.1 scripting ~0: ScriptDuration <= 10 ms en 10 s (normal, 1x) :: {"n10":0.12,"n30":0.68,"reduced10":0}
+PASA   CA-10.11.2 sin layout en reposo: LayoutCount no crece en 10 s ni en 30 s :: {"w10":0,"w30":0,"recalcStyle10":3}
+FALLA  CA-10.11.4 CPU renderizador (headless) <= 3 % absoluto y <= +2 puntos vs reduced-motion (30 s) :: {"normal":2.21,"reduced":0.16,"dif":2.05}
+PASA   CA-10.11.4 CPU proceso GPU (headless/SwiftShader) <= 3 % absoluto y <= +2 puntos vs reduced-motion (30 s) :: {"normal":1.82,"reduced":0.04,"dif":1.78,"w10":{"n":1.84,"r":0.09}}
+PASA   CA-10.11.5 CPU 4x (10 s): hilo principal de la pagina <= 8 % de un nucleo (proxy; el % de proceso queda contaminado por el throttling, ver informe) :: {"hiloPrincipal_normal_pct":0.12,"hiloPrincipal_reduced_pct":0.02,"procesoRenderer_normal_pct_NO_CONFIABLE":41.01,"procesoRenderer_reduced_pct_NO_CONFIABLE":44.65}
+PASA   CA-8.1 con reduced-motion 0 animaciones en reposo :: {"r":0}
+PASA   CA-10.11 traza 10 s en reposo CPU 1x: 0 Layout, 0 FireAnimationFrame, 0 TimerFire, 0 tareas largas, repintado solo dentro del recuadro de la mascota :: {"rate":1,"mainTaskMs":27.6,"longTasks":0,"Layout":0,"UpdateLayoutTree":6,"Paint":0,"paintUnion":null,"mascota":[176,460,542,900],"FireAnimationFrame":0,"TimerFire":0,"FunctionCall":4,"compositeFailed":[]}
+PASA   CA-10.11 traza 10 s en reposo CPU 4x: 0 Layout, 0 FireAnimationFrame, 0 TimerFire, 0 tareas largas, repintado solo dentro del recuadro de la mascota :: {"rate":4,"mainTaskMs":54.2,"longTasks":0,"Layout":0,"UpdateLayoutTree":14,"Paint":0,"paintUnion":null,"mascota":[176,460,542,900],"FireAnimationFrame":0,"TimerFire":0,"FunctionCall":8,"compositeFailed":[]}
+PASA   CA-9.7 a ~94-124 s: 0 animaciones y CPU renderizador <= 1 %, GPU <= 1 %, 0 Layout (headless) :: {"animaciones":0,"renderer":0.01,"gpu":0.02,"frames":0,"layout":0}
+
+TOTAL 19 | PASA 18 | FALLA 1

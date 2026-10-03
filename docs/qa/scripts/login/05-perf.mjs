@@ -56,8 +56,8 @@ try {
     await p.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: reduced ? "reduce" : "no-preference" }] });
     await p.send("Emulation.setCPUThrottlingRate", { rate });
     await p.goto(LOGIN); await sleep(3000);
-    const anims = await p.eval(`document.getAnimations().length`);
-    const m0 = pick(await p.send("Performance.getMetrics")); const c0 = await cpu(); const out = { reduced, rate, anims_3s: anims };
+    const anims = await p.eval(`document.getAnimations().length`); const vis = await p.eval(`document.visibilityState + '/' + document.hasFocus()`);
+    const m0 = pick(await p.send("Performance.getMetrics")); const c0 = await cpu(); const out = { reduced, rate, anims_3s: anims, visibilidad_y_foco: vis };
     let last = 0;
     for (const s of secsList) { await sleep((s - last) * 1000); last = s; const m = pick(await p.send("Performance.getMetrics")); const c = await cpu();
       out["w" + s] = { ScriptMs: +((m.ScriptDuration - m0.ScriptDuration) * 1000).toFixed(2), TaskMs: +((m.TaskDuration - m0.TaskDuration) * 1000).toFixed(1), Layout: m.LayoutCount - m0.LayoutCount, RecalcStyle: m.RecalcStyleCount - m0.RecalcStyleCount, Frames: m.Frames - m0.Frames, ...diffCpu(c0, c, s) }; }
@@ -78,7 +78,27 @@ try {
       const nm = R.norm4.w10.TaskMs / 10000 * 100, rm = R.red4.w10.TaskMs / 10000 * 100;
       check("CA-10.11.5 CPU 4x (10 s): hilo principal de la pagina <= 8 % de un nucleo (proxy; el % de proceso queda contaminado por el throttling, ver informe)", nm <= 8, { hiloPrincipal_normal_pct: +nm.toFixed(2), hiloPrincipal_reduced_pct: +rm.toFixed(2), procesoRenderer_normal_pct_NO_CONFIABLE: R.norm4.w10.renderer, procesoRenderer_reduced_pct_NO_CONFIABLE: R.red4.w10.renderer });
     }
-    check("CA-8.1 con reduced-motion 0 animaciones en reposo", r.anims_3s === 0 && R.red4.anims_3s === 0, { r: r.anims_3s });
+    check("CA-8.1 con reduced-motion 0 animaciones en reposo", r.anims_3s === 0 && (!R.red4 || R.red4.anims_3s === 0), { r: r.anims_3s });
+  }
+  if (phases.includes("gpu")) {
+    // CA-10.11.4/6 repetido: normal vs reduced, ventanas de 10 s tras 5 s de calentamiento, 3 repeticiones (dispersion entre corridas)
+    const out = [];
+    for (let rep = 0; rep < 3; rep++) for (const reduced of [false, true]) {
+      const p = await b.newPage();
+      await p.send("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+      await p.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: reduced ? "reduce" : "no-preference" }] });
+      await p.goto(LOGIN); await sleep(5000);
+      const vis = await p.eval(`document.visibilityState + '/' + document.hasFocus()`);
+      const w = []; for (let k = 0; k < 3; k++) { const c0 = await cpu(); await sleep(10000); const d = diffCpu(c0, await cpu(), 10); w.push([d.renderer, d.gpu]); }
+      const avg = (i) => +(w.reduce((a, x) => a + (x[i] ?? 0), 0) / w.length).toFixed(2);
+      const row = { rep, reduced, vis, ventanas10s_renderer_gpu: w, prom_renderer: avg(0), prom_gpu: avg(1) }; out.push(row); console.log(JSON.stringify(row));
+      await p.close(); await sleep(1500);
+    }
+    const g = (r) => out.filter((x) => x.reduced === r);
+    const mean = (a, k) => +(a.reduce((s2, x) => s2 + x[k], 0) / a.length).toFixed(2);
+    const nR = mean(g(false), "prom_renderer"), rR = mean(g(true), "prom_renderer"), nG = mean(g(false), "prom_gpu"), rG = mean(g(true), "prom_gpu");
+    console.log(JSON.stringify({ resumen: { renderer_normal: nR, renderer_reduced: rR, dif_renderer: +(nR - rR).toFixed(2), gpu_normal: nG, gpu_reduced: rG, dif_gpu: +(nG - rG).toFixed(2) } }));
+    process.exit(0);
   }
   if (phases.includes("idle4x")) {
     // CPU 4x con un Chrome nuevo por muestra (el proceso 'renderer' con mas CPU de otra pestana contamina la medicion en el mismo navegador)
