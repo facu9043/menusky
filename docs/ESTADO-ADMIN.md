@@ -23,6 +23,7 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
   4. Carta: píldora removible "Sin stock" (desvío del boceto).
   5. Mesas en celular: sin "+" flotante; "Nueva mesa" en el encabezado.
   El resto de los textos: propuesta de dejarlos como en las maquetas salvo objeción.
+- RESPUESTAS DEL DIRECTOR (2026-10-03): 1 SÍ; 2 DESPUÉS (ventas del día y "Reponer" quedan fuera de 4b); 3 SÍ; 4 NO (sin píldora "Sin stock" en la Carta; el estado de la maqueta `estados.html` que la muestra no se construye); 5 SÍ (Mesas aprobada tal cual). Todo lo demás (las 18 preguntas del README de maquetas, incluidos los textos de Mesas) queda COMO ESTÁ EN LAS MAQUETAS. Mesas integrada en feat/admin-ui. Paso 4b listo para construir.
 - Después: integrar Mesas, paso 4b (construir Inicio, Apariencia y estados aprobados; Mesas tiene que leer `?filtro=`/`?imprimir=` para los accesos de Inicio), luego paso 5.
 - Uso al pausar: 5 h ~31%+, semanal ~70% (se renueva el 2026-10-08).
 - Paso 1 HECHO: `feat/admin-sec` (be9d6f8) integrada en `feat/admin-redesign` (merge 0b1fec1, sin conflictos) y `feat/admin-redesign` en `feat/admin-ui` (merge 44b7b84). Hecho en un worktree temporal `../menusky-redesign` (ya borrado) para no mover la carpeta del 3500.
