@@ -22,7 +22,12 @@ Rama de trabajo: `feat/landing-page` (todo local, sin push, sin merge a master).
 | 5. QA de la landing | HECHO: **Rechazado** (QA-01 contraste, QA-02 desborde <= 337 px) | 7936f65 docs/qa/landing-2026-10-01.md |
 | 6. Correcciones y re-auditoría | Ciclo 1: Frontend corrigió QA-01 (9b19ade), QA-02 (84b192b), QA-03 (33fe415); SEC-L-01 sin cambio (no hay alternativa documentada). Seguridad delta: **Apto** (335ba52, SEC-L-06 info: ruta absoluta en docs/qa/scripts/04-dark-diff.mjs, dueño QA). QA re-test ciclo 1: **Aprobado con reservas** (b8daf64): QA-01/02/03 cerrados; nuevo QA-07 (Baja: FlowDemo no arranca a <= 260 px, umbral 0.35) y QA-08 (info, aviso de Firefox). Ciclo 2: Frontend corrigió QA-07 (2531b5e, IntersectionObserver threshold 0 + rootMargin -25%; diff revisado por el Líder). QA re-test ciclo 2: QA-07 cerrado; veredicto final **Aprobado con reservas** (8be3807). Seguridad no aplica (cambio de umbral sin impacto; el Líder revisa el diff). | |
 | 7. Informe final al Director | HECHO (2026-10-02) | Seguridad Apto, QA Aprobado con reservas |
-| 8. Release | **BLOQUEADO**: medición de rendimiento en otra PC + aprobaciones del Director | |
+| 8. Release | HECHO (2026-10-03): el Director eligió publicar con la medición por debajo de la meta (opción A); merge a master y push | `docs/qa/evidencia/landing/lighthouse-2026-10-03/RESUMEN.md` |
+
+## Decisiones del Director (2026-10-03): release de la landing
+- Lighthouse medido en la PC nueva (Ryzen 5 5600G, móvil simulado, mediana de 3): Rendimiento 80, LCP 3,27 s, TBT 503 ms, CLS 0; A11y/BP/SEO 100. CA-9.2 NO se cumple. El Director eligió **publicar igual (A)** y mejorar la velocidad después: queda PENDIENTE un ciclo de optimización (Frontend; pistas en el RESUMEN: render delay del LCP y un chunk de ~700 ms de scripting) y re-medición.
+- Aprobados: 3D tras la primera interacción, textos de la landing, medición de rendimiento como está.
+- Pendiente del Director, con la página publicada: probar en iPhone/Safari y el link de WhatsApp desde un celular.
 
 ## Autoverificación del Frontend (no reemplaza a QA)
 OK: sin scroll horizontal (360/768/1440, antes y después del 3D), CLS 0, primera carga ~357 KiB / 20 requests,
