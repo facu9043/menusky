@@ -147,6 +147,8 @@ export interface AdminLiveSnapshot {
   salesToday: number;            // suma de total del día AR, sin cancelados (para "Podría")
   pendingCalls: number;
   occupiedTables: number;        // state !== "free"
+  kitchenPending: number;        // pedidos "received" (cualquier fecha): mismo criterio que useStaffPendingCounts
+  floorPending: number;          // pedidos "ready" (cualquier fecha) + llamados "pending": mismo criterio
 }
 ```
 - `lib/admin/live/derive.ts`: función PURA que calcula estados con la MISMA prioridad que el salón
@@ -165,6 +167,7 @@ export interface AdminLiveSnapshot {
   ```
   Sin sonido ni toast (CA-8.6). `useWaiterCalls` suma una opción `{ notify?: boolean }` (default `true`:
   `/floor` sin cambios) si se reutiliza.
+- `kitchenPending`/`floorPending` (paso 3, D-20): se derivan en `derive.ts` de las lecturas que ya hace `load.ts` (sin consultas nuevas). El shell del admin deja de usar `useStaffPendingCounts` (2.º canal Realtime) y lee `useAdminLive()`. `StaffNav` y `useStaffPendingCounts` (cocina/salón) NO cambian.
 - Disponibilidad de platos y "Sin stock" NO van en la instantánea: los calcula el Frontend desde la carta.
 
 ### 3.4 Escrituras (sin cambios de firma)
