@@ -27,6 +27,8 @@ const EMPTY_LIVE: AdminLiveSnapshot = {
   salesToday: 0,
   pendingCalls: 0,
   occupiedTables: 0,
+  kitchenPending: 0,
+  floorPending: 0,
 };
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {

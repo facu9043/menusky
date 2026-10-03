@@ -23,6 +23,10 @@ export interface AdminLiveSnapshot {
   pendingCalls: number;
   /** Mesas con state !== "free". */
   occupiedTables: number;
+  /** Pedidos "received" de cualquier fecha (indicador de Cocina; igual que useStaffPendingCounts). */
+  kitchenPending: number;
+  /** Pedidos "ready" de cualquier fecha + llamados "pending" (indicador de Salón). */
+  floorPending: number;
 }
 
 /** Datos crudos de entrada de derive (lo que se lee de la base). */

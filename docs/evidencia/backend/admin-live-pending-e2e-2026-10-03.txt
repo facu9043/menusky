@@ -1,0 +1,17 @@
+PASS  carga inicial (received + ready + llamado): Cocina=punto, Salón=punto  [k=true f=true]
+PASS  un solo canal Realtime en /admin (phx_join de admin-live-*)  [joins=["realtime:admin-live-11111111-1111-4111-8111-111111111111"]]
+PASS  ningún otro canal (p. ej. staff-pending-*)  [[]]
+PASS  un solo WebSocket abierto  [["ws://127.0.0.1:3401/realtime/v1/websocket?apikey=mock-anon-key&vsn=2.0.0"]]
+PASS  todo atendido: Cocina=sin punto, Salón=sin punto  [k=false f=false]
+PASS  pedido nuevo (received): Cocina=punto, Salón=sin punto  [k=true f=false]
+PASS  pasa a in_kitchen: Cocina=sin punto, Salón=sin punto  [k=false f=false]
+PASS  pasa a ready: Cocina=sin punto, Salón=punto  [k=false f=true]
+PASS  entregado: Cocina=sin punto, Salón=sin punto  [k=false f=false]
+PASS  llamado de mozo (pending): Cocina=sin punto, Salón=punto  [k=false f=true]
+PASS  llamado atendido: Cocina=sin punto, Salón=sin punto  [k=false f=false]
+PASS  received de hace 3 días (relectura posterior): sigue contando en Cocina: Cocina=punto, Salón=sin punto  [k=true f=false]
+PASS  ese pedido viejo pasa a ready: Salón: Cocina=sin punto, Salón=punto  [k=false f=true]
+PASS  navegar Carta > Mesas > Inicio sin recargar: siguen 1 join y 1 WebSocket  [joins=1 sockets=1]
+PASS  tras navegar, los indicadores siguen vigentes (ready viejo => Salón): Cocina=sin punto, Salón=punto  [k=false f=true]
+
+15/15 OK
