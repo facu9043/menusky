@@ -21,7 +21,7 @@ export function summary() {
 
 export async function launch(port = 9340) {
   const dir = mkdtempSync(join(tmpdir(), "lt-qa-chrome-"));
-  const proc = spawn(CHROME, [`--remote-debugging-port=${port}`, `--user-data-dir=${dir}`, "--headless=new",
+  const proc = spawn(CHROME, [`--remote-debugging-port=${port}`, `--user-data-dir=${dir}`, ...(process.env.QA_HEADED ? [] : ["--headless=new"]),
     "--no-first-run", "--no-default-browser-check", "--disable-extensions", "--disable-background-networking",
     "about:blank"], { stdio: "ignore" });
   let ver;
@@ -54,7 +54,7 @@ export async function launch(port = 9340) {
     await s("Page.enable"); await s("Runtime.enable");
     return page;
   }
-  return { send, on, newPage, pid: proc.pid, async close() { try { await send("Browser.close"); } catch {} await sleep(500); try { proc.kill(); } catch {} try { rmSync(dir, { recursive: true, force: true }); } catch {} } };
+  return { send, on, newPage, pid: proc.pid, async close() { try { await Promise.race([send("Browser.close"), sleep(3000)]); } catch {} await sleep(500); try { proc.kill(); } catch {} try { rmSync(dir, { recursive: true, force: true }); } catch {} } };
 }
 
 // ---- Supabase simulado -------------------------------------------------

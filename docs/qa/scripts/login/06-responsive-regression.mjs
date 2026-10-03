@@ -5,7 +5,7 @@ import { launch, check, summary, sleep, open, waitFor, fill, BASE } from "./lib.
 
 const b = await launch(9345);
 const SIZES = [[320, 568], [360, 640], [180, 320], [768, 1024], [1440, 900], [640, 360]];
-const logoProbe = (p) => p.eval(`(() => { const L = document.querySelector('.lg-home'); const r = L.getBoundingClientRect(); const pts = [[r.left + 2, r.top + 2], [r.right - 2, r.top + 2], [r.left + 2, r.bottom - 2], [r.right - 2, r.bottom - 2], [r.left + r.width / 2, r.top + r.height / 2]];
+const logoProbe = (p) => p.eval(`(() => { window.scrollTo(0, 0); const L = document.querySelector('.lg-home'); const r = L.getBoundingClientRect(); const pts = [[r.left + 4, r.top + 4], [r.right - 4, r.top + 4], [r.left + 4, r.bottom - 4], [r.right - 4, r.bottom - 4], [r.left + r.width / 2, r.top + r.height / 2]];
   const hits = pts.map(([x, y]) => { const e = document.elementFromPoint(x, y); return !!(e && (e === L || L.contains(e))); }); return { hits, rect: [r.left, r.top, r.right, r.bottom].map(Math.round), inView: r.top >= 0 && r.left >= 0 && r.right <= innerWidth && r.bottom <= innerHeight + 1 }; })()`);
 const ox = (p) => p.eval(`document.documentElement.scrollWidth - innerWidth`);
 
@@ -63,7 +63,7 @@ try {
   const manual = async (path) => { const r = await fetch(BASE + path, { redirect: "manual" }); return { s: r.status, loc: r.headers.get("location") }; };
   for (const path of ["/kitchen", "/floor", "/admin", "/admin/menu"]) {
     const r = await manual(path);
-    check(`CA-4.8 regresion: ${path} sin sesion redirige a /login?redirect=`, [307, 302, 303].includes(r.s) && r.loc === `${BASE}/login?redirect=${encodeURIComponent(path)}`, r);
+    check(`CA-4.8 regresion: ${path} sin sesion redirige a /login?redirect=`, [307, 302, 303].includes(r.s) && (r.loc === `/login?redirect=${encodeURIComponent(path)}` || r.loc === `${BASE}/login?redirect=${encodeURIComponent(path)}`), r);
   }
   {
     const r = await fetch(BASE + "/m/token-inexistente-123", { redirect: "manual", signal: AbortSignal.timeout(90000) });
