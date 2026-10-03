@@ -9,7 +9,7 @@ cada delegación y después de cada paso verificado.
 - Puertos: 3000 y 53659 ocupados por otros procesos (no tocar). Este frente usa 3200+.
 - Env ficticias (ver docs/ESTADO.md, "Reglas operativas"): `NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co NEXT_PUBLIC_SUPABASE_ANON_KEY=dummy-anon-key NEXT_PUBLIC_SITE_URL=http://localhost:3200`.
 
-Última actualización: 2026-10-02. **Retomado 2026-10-02. Paso actual: 5c (re-auditoría delta de Seguridad de SEC-LG-01/02).** La sesión principal tiene un `next dev` en el 3300 de este worktree: NO tocar.
+Última actualización: 2026-10-02. **Retomado 2026-10-02. Paso actual: 6 (QA).** La sesión principal tiene un `next dev` en el 3300 de este worktree: NO tocar.
 
 | Paso | Estado | Evidencia |
 |---|---|---|
@@ -42,8 +42,8 @@ cada delegación y después de cada paso verificado.
 | 4c. Decidir idle: aceptar parpadeo cada 5,5 s (costo al límite del umbral de 2 pts) o recortar a "solo reacciones" (~0) | HECHO: se acepta el parpadeo (ver Decisiones del Líder (f) en la spec) | docs/specs/login.md |
 | 5. Seguridad | HECHO: **Apto con reservas** (SEC-LG-01 Baja: safeRedirect acepta /.//evil, reproducido por el Líder; SEC-LG-02 Info contraseña visible en éxito; SEC-LG-03 Baja braces vía shadcn, preexistente; SEC-LG-06/07 Media potencial RLS preexistentes, fuera de alcance; R-2 Baja con propuesta) | docs/security/login-2026-10-02.md |
 | 5b. Corrección SEC-LG-01/02 (Frontend) | HECHO ciclo 1: check-safe-redirect 40/40 (verificado por el Líder) | f54e920, bfbb1a7 |
-| 5c. Re-auditoría delta de Seguridad | EN CURSO | |
-| 6. QA | PENDIENTE | |
+| 5c. Re-auditoría delta de Seguridad | HECHO: **Apto para el alcance login** (SEC-LG-01/02 cerrados; SEC-LG-03, 06, 07 y R-2 preexistentes, fuera de alcance, decide el Director; 06/07 bloquean un release a producción de la app, no el merge del login) | este commit |
+| 6. QA | EN CURSO | |
 | 7. Informe de release | PENDIENTE | |
 
 ## Orden para retomar (tras la pausa)
