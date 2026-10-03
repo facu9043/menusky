@@ -71,13 +71,10 @@ for (const [w, h] of SIZES) {
   await shot("carta-error");
   await fault({ categories: false });
 
-  // Pantallas que siguen con su componente actual hasta la parte 4b
+  // Pantalla que sigue con su componente actual hasta la parte 4b (Mesas tiene sus capturas en mesas-4a/)
   await page.goto(`${APP}/admin`);
   await page.locator("h1").waitFor();
   await shot("inicio-provisorio");
-  await page.goto(`${APP}/admin/mesas`);
-  await page.locator("h1").waitFor();
-  await shot("mesas-provisorio");
   await ctx.close();
 }
 

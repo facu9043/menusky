@@ -289,6 +289,11 @@ const stat = async (label) =>
   await sheet.getByRole("button", { name: "Eliminar opción Crema" }).click();
   await until(async () => (await item("Flan casero")).item_option_groups[0].item_option_choices.length === 1);
   check("CA-NR.19 eliminar opción sin confirmación", (await item("Flan casero")).item_option_groups[0].item_option_choices.length === 1);
+  {
+    await until(async () => (await page.evaluate(() => document.activeElement?.getAttribute("aria-label"))) === "Eliminar opción Dulce de leche", 2000);
+    const f = await page.evaluate(() => ({ label: document.activeElement?.getAttribute("aria-label") ?? document.activeElement?.textContent?.trim(), inSheet: !!document.activeElement?.closest(".adm-sheet") }));
+    check("H-AD-1 tras eliminar una opción el foco queda en la hoja (opción vecina)", f.inSheet && f.label === "Eliminar opción Dulce de leche", JSON.stringify(f));
+  }
   const delBtn = sheet.getByRole("button", { name: "Eliminar el grupo Salsas" });
   check("CA-13.5 botón de eliminar opción >= 44 px", ((await sheet.getByRole("button", { name: "Eliminar opción Dulce de leche" }).boundingBox()).height) >= 44);
   await delBtn.click();
@@ -305,6 +310,11 @@ const stat = async (label) =>
   check("CA-NR.18 confirmar borra el grupo", (await item("Flan casero")).item_option_groups.length === 0);
   // Con el build de producción el Escape llegaba mientras la confirmación todavía se cerraba.
   await conf.waitFor({ state: "hidden" });
+  {
+    await until(async () => (await page.evaluate(() => document.activeElement?.textContent?.trim())) === "Nuevo grupo", 2000);
+    const f = await page.evaluate(() => ({ text: document.activeElement?.textContent?.trim(), inSheet: !!document.activeElement?.closest(".adm-sheet"), body: document.activeElement === document.body }));
+    check("H-AD-1 tras eliminar un grupo el foco va a 'Nuevo grupo' (no a <body>)", f.inSheet && !f.body && f.text === "Nuevo grupo", JSON.stringify(f));
+  }
   await page.keyboard.press("Escape");
   await sheet.waitFor({ state: "hidden" });
 }

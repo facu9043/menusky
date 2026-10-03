@@ -13,7 +13,19 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 3. Cocina (`/kitchen`) y Salón (`/floor`): opción B. NO se rediseñan en esta fase (sigue vigente spec admin §3.2, fuera de alcance). PRÓXIMA FASE, apenas cierre el admin: rediseñarlas igual que la Carta (mismos colores, fuentes y bordes; "es lo característico de MenuSky; no puede haber un apartado distinto").
 4. Error a corregir en esta fase: en `/floor` (y `/kitchen`) el texto del body sale en "Times New Roman". Ver D-19.
 
-## Paso actual: PAUSA ORDENADA tras el PASO 3 (HECHO). Próximo: paso 4 (requiere aprobación del Director)
+## PAUSA ORDENADA (2026-10-03, pedida por el Director)
+- Paso 4a y 4a-bis HECHOS (Frontend a340eb5e71f7b0515) en la rama `feat/admin-mesas` (709438b H-AD-1, b559313 Mesas, 6966a68 evidencia, 0f39abf maquetas). Verificado por la sesión principal con git: sin cambios en /kitchen, /floor, components/staff, lib/realtime ni lib/floor; sin procesos del equipo. Mesas e2e 65/0, quality 20/0, axe 0 (11 pasadas); Carta sin regresión 128/0 y 22/0. Evidencia: `docs/design/admin/evidencia/mesas-4a/`, capturas `docs/design/admin/capturas/mesas-*.png`, maquetas `docs/design/admin/maquetas/` (README con 18 preguntas).
+- `feat/admin-mesas` NO está integrada en `feat/admin-ui`: se integra (`--no-ff`) cuando el Director dé el ok a Mesas. La carpeta queda en `feat/admin-mesas`.
+- AL RETOMAR, preguntar al Director (resumen de las 18 del README de maquetas):
+  1. Inicio: título "Así viene el día", 4 datos del día y 4 accesos rápidos.
+  2. Inicio: ventas del día y "Reponer" (CA-9.9) ahora o después.
+  3. Apariencia: título "Tu carta, a tu estilo", 8 temas en tarjetas, MenuSky marcado "Activo".
+  4. Carta: píldora removible "Sin stock" (desvío del boceto).
+  5. Mesas en celular: sin "+" flotante; "Nueva mesa" en el encabezado.
+  El resto de los textos: propuesta de dejarlos como en las maquetas salvo objeción.
+- RESPUESTAS DEL DIRECTOR (2026-10-03): 1 SÍ; 2 DESPUÉS (ventas del día y "Reponer" quedan fuera de 4b); 3 SÍ; 4 NO (sin píldora "Sin stock" en la Carta; el estado de la maqueta `estados.html` que la muestra no se construye); 5 SÍ (Mesas aprobada tal cual). Todo lo demás (las 18 preguntas del README de maquetas, incluidos los textos de Mesas) queda COMO ESTÁ EN LAS MAQUETAS. Mesas integrada en feat/admin-ui. Paso 4b listo para construir.
+- Después: integrar Mesas, paso 4b (construir Inicio, Apariencia y estados aprobados; Mesas tiene que leer `?filtro=`/`?imprimir=` para los accesos de Inicio), luego paso 5.
+- Uso al pausar: 5 h ~31%+, semanal ~70% (se renueva el 2026-10-08).
 - Paso 1 HECHO: `feat/admin-sec` (be9d6f8) integrada en `feat/admin-redesign` (merge 0b1fec1, sin conflictos) y `feat/admin-redesign` en `feat/admin-ui` (merge 44b7b84). Hecho en un worktree temporal `../menusky-redesign` (ya borrado) para no mover la carpeta del 3500.
 - Paso 2 HECHO (Frontend, agente a340eb5e71f7b0515): build de producción contra mock propio; e2e 126 OK / 0 FAIL (3 corridas), quality 22 OK / 0 FAIL, axe 0 violaciones (10 pasadas, 1440 y 360), 29 capturas rehechas sin distintivo de dev, tsc 0, eslint 19 problemas preexistentes fuera del admin (0 en admin). Solo se ajustaron tiempos de los scripts, no la app. Commits 971f8a2, fbc5f15. Evidencia: `docs/design/admin/evidencia/carta-4a/*-salida.txt` y README.md.
 - D-19 HECHO: `fix/body-font` 20fd9c4 (1 línea en app/globals.css), merge c476698 en feat/admin-ui. /kitchen: textos en Times 18/19 -> 0; /floor: 24/25 -> 0; landing, login, admin y /m sin cambios (0 -> 0). Verificado por el Líder: el 3500 ya sirve `--font-sans: var(--font-geist-sans)`. Evidencia: `docs/evidencia/frontend/body-font-2026-10-03.txt` y capturas antes/después. Efecto visible: además del texto, los títulos `font-heading` de shadcn en Cocina/Salón pasan de Times a Geist.
@@ -23,7 +35,7 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 1. HECHO.
 2. HECHO (ver arriba).
 3. HECHO (Backend, agente a34953378cf15d49f; rama `feat/admin-live-pending` f026e1b, 2808828; merge en feat/admin-ui). `AdminLiveSnapshot` suma `kitchenPending`/`floorPending` derivados sin consultas nuevas; el shell del admin los lee de `useAdminLive()`. Unitarias 37/37 x 4 zonas; e2e 15/15 sobre build de producción + mock propio; 1 solo canal Realtime (`admin-live-*`, 0 `staff-pending-*`) navegando Carta, Mesas e Inicio; tsc y eslint 0 en lo tocado. /kitchen, /floor, components/staff y useStaffPendingCounts sin cambios. Evidencia: `docs/evidencia/backend/admin-live-pending-{unit,e2e,static}-2026-10-03.txt` y `admin-live-pending-e2e.mjs`. Riesgo menor: un DELETE de llamado no refresca hasta el próximo evento (D-20).
-4. Frontend 4b: Mesas (en vivo con `useAdminLive`, `refresh()` tras crear/borrar mesa) usando más colores, tipografías y bordes de la Carta (decisión 2 del Director), "Imprimir todos", Inicio, Apariencia, estados vacíos.
+4. Frontend (partido por el Director): 4a construir Mesas + H-AD-1 + capturas; 4a-bis maquetas de Inicio, Apariencia y estados vacíos (esperan su ok); 4b construir lo aprobado. Detalle original: Mesas (en vivo con `useAdminLive`, `refresh()` tras crear/borrar mesa) usando más colores, tipografías y bordes de la Carta (decisión 2 del Director), "Imprimir todos", Inicio, Apariencia, estados vacíos.
 5. Seguridad: re-auditoría de SEC-AD-01..06 (be9d6f8, ya integrado) + auditoría final; el agente a88b404df132855eb era de la PC vieja, lanzar uno nuevo con docs/security/admin-sec-2026-10-03.md y QA (veredictos por alcance, capturas en `docs/qa/capturas/admin/`).
 6. Informe de release al Director.
 7. PRÓXIMA FASE (decisión 3 del Director): rediseñar Cocina (`/kitchen`) y Salón (`/floor`) con los colores, fuentes y bordes de la Carta.
@@ -58,12 +70,12 @@ rendimiento (Lighthouse / fluidez) se hace después en la PC de 16 GB del Direct
 el Celeron se usa como meta.
 
 ## Hallazgos abiertos
-- H-AD-1 (Frontend, cierre 4a, sin corregir): en la hoja de edición, al borrar un grupo de opciones el foco cae a `<body>` (fuera de la hoja); probablemente igual al borrar una opción (no verificado). Contra CA-7.9 / CA-13.3. Arreglo mínimo: devolver el foco a "Nuevo grupo" tras borrar (`components/admin/carta/ConfirmDialog.tsx` o quien lo usa). Asignar en el paso 4 y que QA lo verifique.
+- H-AD-1: CORREGIDO en 709438b (feat/admin-mesas); falta que QA lo verifique en el paso 6. Texto original: en la hoja de edición, al borrar un grupo de opciones el foco cae a `<body>` (fuera de la hoja); probablemente igual al borrar una opción (no verificado). Contra CA-7.9 / CA-13.3. Arreglo mínimo: devolver el foco a "Nuevo grupo" tras borrar (`components/admin/carta/ConfirmDialog.tsx` o quien lo usa). Asignar en el paso 4 y que QA lo verifique.
 - eslint: 3 errores `react-hooks/set-state-in-effect` preexistentes (CallWaiterButton, CartFab, useAnimatedNumber; también en master), fuera de alcance.
 - `docs/releases/login-redesign.md` NO tiene una sección "Notas para la fase Admin" (el encargo la menciona). La deuda se tomó de `docs/STACK.md` (tokens duplicados, Bricolage en dos layouts, Geist Mono precargada en /login) y de `docs/security/login-2026-10-02.md` (SEC-LG-06/07, R-2).
 
 ## Procesos levantados (puerto, PID, dueño)
-- 3500 `next dev` (PID 13644) y 3501 mock de Supabase (PID 3864): de la sesión principal/Director. NO tocar.
+- Ninguno: en la pausa se pararon el 3500 (`next dev`), el 3501 (mock) y el 4317 (oficina), todos de la sesión principal.
 - Equipo: (ninguno)
 
 ## Reglas operativas

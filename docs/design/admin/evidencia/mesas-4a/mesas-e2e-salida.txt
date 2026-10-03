@@ -1,0 +1,69 @@
+# node mesas-e2e.mjs | 2026-10-03 | app: build de producción (next start 127.0.0.1:3420) de feat/admin-mesas, código de la app = b559313 | mock propio 3422 detrás de fault-proxy 3421 | Chrome headless (Playwright 1.63.0, @axe-core/playwright 4.13.0)
+OK   CA-8.1 rótulo 'Mesas' y h1 'Tu salón, de un vistazo'
+OK   CA-8.1 botones 'Imprimir todos' y 'Nueva mesa'
+OK   CA-NR.30 mesas ordenadas por nombre | ["Mesa 1","Mesa 2","Mesa 3"]
+OK   CA-8.2 conteos iniciales (Todas 3, Libres 0, Ocupadas 2, Llamando 1) | {"all":3,"free":0,"occupied":2,"calling":1}
+OK   CA-8.2 Libres + Ocupadas + Llamando = Todas
+OK   CA-8.3 llamado: 'Llama al mozo' + motivo 'Pide la cuenta' (prioridad sobre el pedido activo) | Llama al mozo / Pide la cuenta
+OK   CA-8.3 ocupada: 'Ocupada' + 'N pedido(s) · $total' | Ocupada / 1 pedido · $ 11.400
+OK   CA-8.3 'Listo' del salón (Mesa 3, pedido ready) cuenta como Ocupada
+OK   CA-8.3 estado con ícono además del color
+OK   CA-11.1 filtro vacío: 'No hay mesas libres ahora.' con Pomo y 'Ver todas'
+OK   CA-11.1 'Ver todas' vuelve a todas
+OK   CA-8.2 filtro Llamando muestra solo las que llaman
+OK   CA-8.7 QR con alt 'QR de Mesa 1', diferido y con espacio reservado
+OK   CA-NR.33 'Ver carta' en pestaña nueva con noopener noreferrer
+OK   CA-NR.33 abre /m/<qrToken> y el admin no se mueve | http://127.0.0.1:3420/m/mesa-1-demo0001
+OK   CA-NR.32 descarga 'qr-mesa-1.png' (PNG) | qr-mesa-1.png
+OK   CA-NR.32 token inexistente: 404 JSON
+OK   CA-8.10 nombre vacío no se crea
+OK   CA-NR.31 'Mesa 7' recortada, con qr_token propio 'mesa-7-xxxxxx' | mesa-7-x54itl
+OK   CA-8.10 aparece sin recargar, como Libre y con su QR | 1 ms
+OK   CA-8.2 conteos tras crear (Todas 4, Libres 1) | {"all":4,"free":1,"occupied":2,"calling":1}
+OK   CA-8.7 4 tarjetas por fila en 1440x900 | [187,187,187,187]
+OK   CA-8.4a llamado -> 'Llama al mozo' sin recargar (<= 3 s) | 327 ms
+OK   CA-8.3 motivo 'Tiene una consulta'
+OK   CA-8.4a conteo Llamando sube a 2 | {"all":4,"free":1,"occupied":1,"calling":2}
+OK   CA-8.6 anuncio aria-live 'Mesa 3 llama al mozo'
+OK   CA-8.6 sin toast de llamado dentro del admin
+OK   CA-8.4b llamado atendido -> vuelve a su estado anterior (Ocupada) | 327 ms
+OK   CA-8.4c pedido nuevo -> 'Ocupada' con '1 pedido · $total' | 327 ms | Ocupada / 1 pedido · $ 10.400
+OK   CA-8.4d pedido entregado sin otros activos -> 'Libre' | 323 ms
+OK   CA-8.16 ⋯ se abre con teclado, flechas recorren, Escape cierra y devuelve el foco | Eliminar mesa | Más acciones de Mesa 7
+OK   CA-8.14 mesa con pedidos: 'También se borran sus pedidos.'
+OK   CA-NR.34 texto '¿Eliminar "Mesa 7"? El QR impreso dejará de funcionar.'
+OK   CA-8.9 foco inicial en Cancelar
+OK   CA-NR.34 cancelar no borra
+OK   CA-8.13 confirmar: la tarjeta desaparece y la mesa se borra
+OK   CA-8.13 conteos actualizados (Todas 3) | {"all":3,"free":0,"occupied":2,"calling":1}
+OK   CA-NR.34 su QR da 'no encontrada'
+OK   H-AD-1 (Mesas) tras borrar el foco no cae a <body> | H1
+OK   CA-8.11 todas las mesas aunque haya filtro, en el orden de la lista | ["Mesa 1","Mesa 2","Mesa 3"]
+OK   CA-8.11 un QR por mesa, de /api/qr/<qrToken> de esa mesa (mismo PNG que 'Descargar') | [{"ok":true,"src":"/api/qr/mesa-1-demo0001"},{"ok":true,"src":"/api/qr/mesa-2-demo0002"},{"ok":true,"src":"/api/qr/mesa-3-demo0003"}]
+OK   CA-8.11 nombre DEBAJO del QR y borde punteado
+OK   CA-8.12 al imprimir: sin menú, barra ni botones; fondo blanco; sin sombras; nombre negro | {"side":"flex","shell":[],"bar":"none","bg":"rgb(255, 255, 255)","paperShadow":"none","nameColor":"rgb(0, 0, 0)","qrMm":50}
+     tamaño impreso del QR: 50 mm (CA-8.12: lo valida el Líder escaneando una hoja real)
+OK   CA-8.12 al volver de la impresión se conserva el filtro
+OK   CA-8.12 60 mesas: 60 QR y paginado sin partir filas | QR=60, celda=65.9 mm, 4 filas x 3 por hoja, páginas PDF=5 (esperadas 5)
+OK   CA-11.5 error de lectura: 'No pudimos cargar las mesas' (no el vacío)
+OK   CA-11.5 'Reintentar' vuelve a pedir sin recargar la página
+OK   CA-11.1 sin mesas: 'Todavía no hay mesas. Creá la primera y bajá su QR.' con 'Nueva mesa'
+OK   CA-8.12 con 0 mesas 'Imprimir todos' deshabilitado y explica 'Creá una mesa para imprimir'
+OK   CA-8.8 celular: filas compactas visibles y tarjetas ocultas
+OK   CA-8.8 fila con nombre, resumen y estado | Mesa 2 / Pide la cuenta / Llama al mozo
+OK   CA-8.1 en celular los dos botones caben sin desbordar | [177.703125,344]
+OK   CA-8.8 hoja: QR grande en recuadro blanco sobre tomate + 'Escaneá y pedí desde la mesa' | rgb(215, 38, 30) / rgb(255, 255, 255)
+OK   CA-8.8 hoja: estado, resumen, Descargar, Ver carta y Eliminar mesa
+OK   CA-8.9 role=dialog, aria-modal y 'Cerrar' >= 44 px
+OK   CA-8.9 Escape cierra y el foco vuelve a la fila | BUTTON.adm-table__row "Mesa 11 pedido · $ 11.400Ocupa"
+OK   CA-8.9 la hoja vive en la URL (?mesa=)
+OK   CA-8.9 Atrás cierra la hoja sin salir de Mesas
+OK   CA-8.9 'Eliminar mesa' abre la confirmación propia (texto CA-NR.34)
+OK   CA-8.13 borrar desde la hoja: la hoja se cierra y la fila desaparece
+OK   H-AD-1 (Mesas) tras borrar desde la hoja el foco no cae a <body> | H1
+OK   CA-13.5 .adm-mesas__actions .adm-btn >= 44x44 | 2 medidos, chicos=[]
+OK   CA-13.5 .adm-pill >= 44x44 | 4 medidos, chicos=[]
+OK   CA-13.5 .adm-table__row >= 44x44 | 3 medidos, chicos=[]
+OK   CA-13.3 'Nueva mesa' alcanzable con Tab y la mesa se crea con Enter
+
+65 OK, 0 FAIL

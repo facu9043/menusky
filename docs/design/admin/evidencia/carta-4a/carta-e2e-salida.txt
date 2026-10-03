@@ -1,4 +1,4 @@
-# node carta-e2e.mjs | 2026-10-03 16:21 | app: build de producción (next start 127.0.0.1:3420) de feat/admin-ui @ c476698 | mock propio 3422 detrás de fault-proxy 3421 | Chrome headless (Playwright 1.63.0, @axe-core/playwright 4.13.0)
+# node carta-e2e.mjs | 2026-10-03 | app: build de producción (next start 127.0.0.1:3420) de feat/admin-mesas, código de la app = b559313 | mock propio 3422 detrás de fault-proxy 3421 | Chrome headless (Playwright 1.63.0, @axe-core/playwright 4.13.0)
 OK   CA-NR.01 sin sesión /admin | http://127.0.0.1:3420/login?redirect=%2Fadmin
 OK   CA-NR.01 sin sesión /admin/menu | http://127.0.0.1:3420/login?redirect=%2Fadmin%2Fmenu
 OK   CA-NR.01 sin sesión /admin/mesas | http://127.0.0.1:3420/login?redirect=%2Fadmin%2Fmesas
@@ -32,7 +32,7 @@ OK   CA-NR.11 se crea 'Postres' recortado y al final | ["Entradas","Platos princ
 OK   CA-6.3 píldora nueva al final, antes de '+ Categoría' | ["Todas·8","Entradas·2","Platos principales·3","Bebidas·3","Postres·0","Nueva Categoría"]
 OK   CA-6.3 píldora activa anunciada (aria-pressed)
 OK   CA-11.1 vacío de categoría con Pomo
-OK   CA-6.13 hoja del plato nuevo con el nombre seleccionado | {"id":"_r_2i_","v":"Nuevo plato","s":0,"e":11}
+OK   CA-6.13 hoja del plato nuevo con el nombre seleccionado | {"id":"_r_3q_","v":"Nuevo plato","s":0,"e":11}
 OK   CA-NR.13 'Nuevo plato', precio 0, orden 0, en Postres
 OK   CA-7.7 nombre vacío: aviso en línea y no se guarda
 OK   CA-7.7 precio negativo: aviso y no se guarda
@@ -44,25 +44,27 @@ OK   CA-NR.16 descripción vacía se guarda como nulo
 OK   CA-7.6 el selector acepta solo imágenes
 OK   CA-7.6 archivo que no es imagen: mensaje claro
 OK   CA-7.6 imagen de más de 5 MB: mensaje claro
-OK   CA-NR.17 subida: vista previa con la URL del bucket | http://127.0.0.1:3421/storage/v1/object/public/menu-photos/8e14257a-3acd-4f07-97d0-ec2a39cbc4b2-1791054949762.png
+OK   CA-NR.17 subida: vista previa con la URL del bucket | http://127.0.0.1:3421/storage/v1/object/public/menu-photos/beffd086-ba11-41b5-bd47-0e13f845aaed-1791058039910.png
 OK   CA-7.6 botón 'Cambiar foto' con foto cargada
 OK   CA-NR.17 la URL queda en el plato al guardar
 OK   RNF-S5 link de foto solo http/https
 OK   CA-NR.17 vaciar la URL deja el plato sin foto
 OK   CA-NR.18 grupo sin nombre no se crea
 OK   CA-7.8 'Obligatorio' es interruptor con estado
-OK   CA-NR.18 grupo creado (varias, obligatorio) | {"id":"02e57311-f2d0-4a21-a10b-45c558371b96","name":"Salsa","selection_type":"multiple","is_required":true,"item_option_choices":[]}
+OK   CA-NR.18 grupo creado (varias, obligatorio) | {"id":"2b63756c-4b1d-420b-b425-aaf22144c164","name":"Salsa","selection_type":"multiple","is_required":true,"item_option_choices":[]}
 OK   CA-7.8 alta anunciada
 OK   CA-NR.18 sin cambios no hay botón de guardar grupo
-OK   CA-NR.18 editar nombre y tipo | {"id":"02e57311-f2d0-4a21-a10b-45c558371b96","name":"Salsas","selection_type":"single","is_required":true,"item_option_choices":[]}
+OK   CA-NR.18 editar nombre y tipo | {"id":"2b63756c-4b1d-420b-b425-aaf22144c164","name":"Salsas","selection_type":"single","is_required":true,"item_option_choices":[]}
 OK   CA-NR.19 opciones con extra (vacío = 0) | ["Crema:0","Dulce de leche:500"]
 OK   CA-NR.19 nombre vacío no agrega
 OK   CA-NR.19 eliminar opción sin confirmación
+OK   H-AD-1 tras eliminar una opción el foco queda en la hoja (opción vecina) | {"label":"Eliminar opción Dulce de leche","inSheet":true}
 OK   CA-13.5 botón de eliminar opción >= 44 px
 OK   CA-NR.18 confirmación '¿Eliminar el grupo "Salsas"?'
 OK   CA-7.12 foco inicial en Cancelar
 OK   CA-NR.18 cancelar no borra
 OK   CA-NR.18 confirmar borra el grupo
+OK   H-AD-1 tras eliminar un grupo el foco va a 'Nuevo grupo' (no a <body>) | {"text":"Nuevo grupo","inSheet":true,"body":false}
 OK   CA-7.9 role=dialog con el nombre del plato
 OK   CA-7.9 aria-modal | true
 OK   CA-7.9 botón Cerrar >= 44 px
@@ -126,4 +128,4 @@ OK   CA-7.10 'Guardar cambios' a la vista al pie | {"x":18,"y":584,"width":324,"
 OK   CA-7.11 Atrás cierra la hoja en celular
 OK   CA-NR.02 cerrar sesión desde el celular
 
-126 OK, 0 FAIL
+128 OK, 0 FAIL

@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useCallback, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Plus, Trash2 } from "lucide-react";
@@ -64,7 +64,16 @@ function RequiredSwitch({ checked, onToggle }: { checked: boolean; onToggle: () 
   );
 }
 
-function OptionGroupEditor({ group, announce }: { group: AdminOptionGroup; announce: Announce }) {
+function OptionGroupEditor({
+  group,
+  announce,
+  focusAfterDelete,
+}: {
+  group: AdminOptionGroup;
+  announce: Announce;
+  /** H-AD-1: el botón de borrar desaparece con el grupo; el foco va a otro control de la hoja. */
+  focusAfterDelete: () => HTMLElement | null;
+}) {
   const router = useRouter();
   const nameId = useId();
   const choiceNameId = useId();
@@ -79,6 +88,9 @@ function OptionGroupEditor({ group, announce }: { group: AdminOptionGroup; annou
   const [newChoicePrice, setNewChoicePrice] = useState("0");
   const [adding, setAdding] = useState(false);
   const [removingChoice, setRemovingChoice] = useState<string | null>(null);
+  const deletedRef = useRef(false);
+  const choicesRef = useRef<HTMLUListElement>(null);
+  const addChoiceRef = useRef<HTMLButtonElement>(null);
 
   const dirty =
     name !== group.name || selectionType !== group.selectionType || isRequired !== group.isRequired;
@@ -101,6 +113,7 @@ function OptionGroupEditor({ group, announce }: { group: AdminOptionGroup; annou
     setDeleting(true);
     try {
       await deleteOptionGroup(group.id);
+      deletedRef.current = true;
       setConfirmDelete(false);
       announce(`Grupo "${group.name}" eliminado`);
       router.refresh();
@@ -133,6 +146,13 @@ function OptionGroupEditor({ group, announce }: { group: AdminOptionGroup; annou
     setRemovingChoice(choiceId);
     try {
       await deleteOptionChoice(choiceId);
+      // H-AD-1: el botón borrado desaparece; el foco pasa a la opción vecina o a "Agregar".
+      const index = group.choices.findIndex((c) => c.id === choiceId);
+      const neighbor = group.choices[index + 1] ?? group.choices[index - 1];
+      const next = neighbor
+        ? choicesRef.current?.querySelector<HTMLButtonElement>(`[data-choice-id="${neighbor.id}"]`)
+        : null;
+      (next ?? addChoiceRef.current)?.focus();
       announce(`Opción "${choiceName}" eliminada`);
       router.refresh();
     } catch {
@@ -187,7 +207,7 @@ function OptionGroupEditor({ group, announce }: { group: AdminOptionGroup; annou
       ) : null}
 
       {group.choices.length > 0 ? (
-        <ul className="adm-choices" aria-label={`Opciones de ${group.name}`}>
+        <ul ref={choicesRef} className="adm-choices" aria-label={`Opciones de ${group.name}`}>
           {group.choices.map((choice) => (
             <li key={choice.id} className="adm-choice">
               <span>
@@ -198,6 +218,7 @@ function OptionGroupEditor({ group, announce }: { group: AdminOptionGroup; annou
                 type="button"
                 className="adm-icon-btn"
                 aria-label={`Eliminar opción ${choice.name}`}
+                data-choice-id={choice.id}
                 disabled={removingChoice === choice.id}
                 onClick={() => handleDeleteChoice(choice.id, choice.name)}
               >
@@ -236,7 +257,7 @@ function OptionGroupEditor({ group, announce }: { group: AdminOptionGroup; annou
             onChange={(e) => setNewChoicePrice(e.target.value)}
           />
         </div>
-        <button type="submit" className="adm-btn" disabled={adding}>
+        <button ref={addChoiceRef} type="submit" className="adm-btn" disabled={adding}>
           {adding ? "Agregando..." : "Agregar"}
         </button>
       </form>
@@ -250,6 +271,7 @@ function OptionGroupEditor({ group, announce }: { group: AdminOptionGroup; annou
         busy={deleting}
         onConfirm={handleDelete}
         onCancel={() => setConfirmDelete(false)}
+        finalFocus={() => (deletedRef.current ? (focusAfterDelete() ?? true) : true)}
       />
     </li>
   );
@@ -341,15 +363,18 @@ export function OptionGroupsPanel({ item }: { item: AdminMenuItem }) {
   const [adding, setAdding] = useState(false);
   const [message, setMessage] = useState("");
   const titleId = useId();
+  const newGroupRef = useRef<HTMLButtonElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const focusAfterDelete = useCallback(() => newGroupRef.current ?? titleRef.current, []);
 
   return (
     <section className="adm-groups" aria-labelledby={titleId}>
       <div className="adm-groups__head">
-        <h3 id={titleId} className="adm-h2" style={{ fontSize: "1.0625rem" }}>
+        <h3 ref={titleRef} id={titleId} tabIndex={-1} className="adm-h2" style={{ fontSize: "1.0625rem", outline: "none" }}>
           Opciones y extras
         </h3>
         {adding ? null : (
-          <button type="button" className="adm-btn" onClick={() => setAdding(true)}>
+          <button ref={newGroupRef} type="button" className="adm-btn" onClick={() => setAdding(true)}>
             <Plus aria-hidden="true" />
             Nuevo grupo
           </button>
@@ -365,7 +390,7 @@ export function OptionGroupsPanel({ item }: { item: AdminMenuItem }) {
       ) : (
         <ul className="adm-groups" style={{ margin: 0, padding: 0, listStyle: "none" }}>
           {item.optionGroups.map((group) => (
-            <OptionGroupEditor key={group.id} group={group} announce={setMessage} />
+            <OptionGroupEditor key={group.id} group={group} announce={setMessage} focusAfterDelete={focusAfterDelete} />
           ))}
         </ul>
       )}

@@ -1655,6 +1655,473 @@ textarea.adm-input {
 }
 
 /* ==========================================================================
+   Mesas (HU-8): mismo lenguaje que la Carta (borde marrón, sombra sello,
+   Bricolage en nombres y datos). Estado por color + ícono + texto (CA-8.3).
+   ========================================================================== */
+.adm-mesas__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.adm-mesas__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  width: 100%;
+}
+.adm-mesas__actions .adm-btn {
+  flex: 1 1 0;
+  padding: 0 0.75rem;
+}
+.adm-mesas__hint {
+  width: 100%;
+  margin: 0;
+  color: var(--ms-patty-soft);
+  font-size: 0.8125rem;
+}
+@media (min-width: 48rem) {
+  .adm-mesas__actions {
+    width: auto;
+    justify-content: flex-end;
+  }
+  .adm-mesas__actions .adm-btn {
+    flex: none;
+    padding: 0 1.125rem;
+  }
+  .adm-mesas__hint {
+    text-align: right;
+  }
+}
+
+.adm-btn--small {
+  font-size: 0.875rem;
+  padding: 0 0.75rem;
+}
+
+/* Colores de estado. Contraste: lechuga oscura sobre verde claro, marrón
+   sobre mostaza clara y papel sobre tomate (medido con axe). */
+.ms-admin {
+  --adm-free-bg: #e4f1da;
+  --adm-busy-bg: #ffe7a3;
+}
+.adm-chip,
+.adm-state {
+  color: var(--ms-lettuce-dark);
+  background: var(--adm-free-bg);
+}
+.adm-chip[data-state="occupied"],
+.adm-state[data-state="occupied"] {
+  color: var(--ms-patty);
+  background: var(--adm-busy-bg);
+}
+.adm-chip[data-state="calling"],
+.adm-state[data-state="calling"] {
+  color: var(--ms-paper);
+  background: var(--ms-tomato);
+}
+.adm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: none;
+  min-height: 28px;
+  padding: 0 0.5rem;
+  border: 2px solid var(--ms-patty);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.adm-chip svg {
+  width: 14px;
+  height: 14px;
+}
+.adm-state {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--ms-patty);
+  border-radius: 12px;
+}
+.adm-state__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-weight: 800;
+  font-size: 0.9375rem;
+}
+.adm-state__label svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.adm-state__sum {
+  font-family: var(--ms-font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* Lista (celular) / grilla de tarjetas (escritorio, 4 por fila en 1440). */
+.adm-tables {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.adm-table {
+  min-width: 0;
+  border: var(--adm-border);
+  border-radius: 14px;
+  background: var(--ms-paper);
+  box-shadow: var(--adm-stamp);
+}
+.adm-table[data-state="calling"] {
+  border-color: var(--ms-tomato);
+  box-shadow: 0 3px 0 var(--ms-tomato);
+}
+.adm-table__sk {
+  height: 76px;
+  border-radius: 14px;
+}
+.adm-table__row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 72px;
+  padding: 0.5rem 0.625rem 0.5rem 0.5rem;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.adm-table__qr {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 124px;
+  height: 124px;
+  padding: 4px;
+  border: 2px solid var(--ms-patty);
+  border-radius: 12px;
+  background: #fff;
+}
+.adm-table__qr img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.adm-table__qr--s {
+  width: 56px;
+  height: 56px;
+  padding: 2px;
+  border-radius: 10px;
+}
+.adm-table__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+.adm-table__name,
+.adm-table__title {
+  font-family: var(--ms-font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+.adm-table__name {
+  font-size: 1.0625rem;
+  line-height: 1.15;
+}
+.adm-table__sum {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ms-patty-soft);
+  overflow-wrap: anywhere;
+}
+.adm-table[data-state="calling"] .adm-table__sum {
+  color: var(--ms-ketchup);
+}
+.adm-table__card {
+  display: none;
+}
+.adm-table__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.5rem 0.5rem 1rem;
+}
+.adm-table__title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 1.3125rem;
+  line-height: 1.1;
+}
+.adm-table__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1rem 0.875rem;
+}
+.adm-table__body .adm-state {
+  align-self: stretch;
+}
+.adm-table__actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem 0.75rem;
+  border-top: 1.5px dashed var(--ms-line);
+}
+.adm-table__actions .adm-btn {
+  flex: 1 1 0;
+  min-width: 0;
+}
+@media (min-width: 48rem) {
+  .adm-tables {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .adm-table__row {
+    display: none;
+  }
+  .adm-table__card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .adm-table__actions {
+    margin-top: auto;
+  }
+  .adm-table__sk {
+    height: 330px;
+  }
+}
+@media (min-width: 64rem) {
+  .adm-tables {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 80rem) {
+  .adm-tables {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Hoja de mesa: QR grande en recuadro blanco sobre tomate (CA-8.8). */
+.adm-qrpanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.125rem 1rem 1rem;
+  border: var(--adm-border);
+  border-radius: 18px;
+  background: var(--ms-tomato);
+  box-shadow: var(--adm-stamp);
+}
+.adm-qrpanel__frame {
+  display: block;
+  padding: 10px;
+  border: 2px solid var(--ms-patty);
+  border-radius: 14px;
+  background: #fff;
+}
+.adm-qrpanel__frame img {
+  display: block;
+  width: min(208px, 60vw);
+  height: auto;
+  aspect-ratio: 1;
+}
+.adm-qrpanel__text {
+  margin: 0;
+  color: var(--ms-paper);
+  font-family: var(--ms-font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  text-align: center;
+}
+.adm-sheet__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+}
+
+/* --------------------------------------------------------------------------
+   "Imprimir todos" (CA-8.11, CA-8.12): vista en pantalla + salida impresa.
+   -------------------------------------------------------------------------- */
+.adm-print {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  overflow-y: auto;
+  background: var(--ms-bun);
+  color: var(--ms-patty);
+  outline: none;
+}
+.adm-print__bar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: var(--adm-border);
+  background: var(--ms-paper);
+}
+.adm-print__title {
+  margin: 0;
+  font-family: var(--ms-font-display);
+  font-weight: 700;
+  font-size: 1.375rem;
+  letter-spacing: -0.02em;
+}
+.adm-print__desc {
+  margin: 0.125rem 0 0;
+  color: var(--ms-patty-soft);
+  font-size: 0.875rem;
+}
+.adm-print__tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.adm-print__warn {
+  max-width: 820px;
+  margin: 1rem auto 0;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--ms-tomato);
+  border-radius: 12px;
+  background: var(--ms-paper);
+  color: var(--ms-ketchup);
+  font-weight: 700;
+}
+.adm-print__warn p {
+  margin: 0;
+}
+.adm-print__paper {
+  max-width: 820px;
+  margin: 1rem auto 2rem;
+  padding: 1rem;
+  border: var(--adm-border);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--adm-stamp);
+}
+.adm-print__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.adm-print__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.875rem 0.5rem 0.625rem;
+  border: 1.5px dashed #000;
+  margin: 0 -0.75px -0.75px 0;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.adm-print__cell img {
+  display: block;
+  width: 100%;
+  max-width: 170px;
+  height: auto;
+  aspect-ratio: 1;
+}
+.adm-print__name {
+  color: #000;
+  font-family: var(--ms-font-display);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.adm-print__fail {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 170px;
+  padding: 0.5rem;
+  border: 2px solid #000;
+  color: #000;
+  font-weight: 700;
+  text-align: center;
+}
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+  /* Solo sale la hoja: ni el menú, ni la barra, ni botones, ni avisos. */
+  body:has(> .adm-print-root) > :not(.adm-print-root) {
+    display: none !important;
+  }
+  html,
+  body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  .adm-print {
+    position: static;
+    overflow: visible;
+    background: #fff;
+  }
+  .adm-print__bar,
+  .adm-print__warn {
+    display: none;
+  }
+  .adm-print__paper {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .adm-print__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .adm-print__cell {
+    padding: 4mm 3mm 3mm;
+    gap: 1.5mm;
+  }
+  .adm-print__cell img,
+  .adm-print__fail {
+    width: 50mm;
+    max-width: none;
+    height: 50mm;
+  }
+  .adm-print__name {
+    font-size: 13pt;
+  }
+}
+
+/* ==========================================================================
    Movimiento (solo sin reduced-motion). Rápido, con rebote en los
    interruptores, hundido al presionar, hojas que suben.
    ========================================================================== */
@@ -1732,6 +2199,21 @@ textarea.adm-input {
   .adm-menu[data-ending-style] {
     opacity: 0;
     transform: scale(0.96);
+  }
+
+  /* Mesas: la fila se hunde al tocarla; la vista de impresión aparece con un fundido. */
+  .adm-table__row {
+    transition: transform var(--ms-dur-fast) var(--ms-ease-out);
+  }
+  .adm-table__row:active {
+    transform: translateY(2px);
+  }
+  .adm-print {
+    transition: opacity var(--ms-dur-fast) var(--ms-ease-out);
+  }
+  .adm-print[data-starting-style],
+  .adm-print[data-ending-style] {
+    opacity: 0;
   }
 
   /* Pomo entra una vez (CA-11.2). */

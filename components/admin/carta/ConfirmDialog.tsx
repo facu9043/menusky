@@ -19,6 +19,7 @@ export function ConfirmDialog({
   tone = "danger",
   onConfirm,
   onCancel,
+  finalFocus,
 }: {
   open: boolean;
   title: string;
@@ -29,6 +30,8 @@ export function ConfirmDialog({
   tone?: "danger" | "neutral";
   onConfirm: () => void;
   onCancel: () => void;
+  /** A dónde vuelve el foco al cerrar (por defecto, al disparador). Útil cuando el disparador desaparece. */
+  finalFocus?: () => HTMLElement | boolean | null;
 }) {
   const cancelRef = useRef<HTMLButtonElement>(null);
   const portalClass = useAdminPortalClass();
@@ -42,7 +45,7 @@ export function ConfirmDialog({
     >
       <AlertDialog.Portal className={portalClass}>
         <AlertDialog.Backdrop className="adm-dialog-backdrop" />
-        <AlertDialog.Popup className="adm-dialog" initialFocus={cancelRef} aria-modal="true">
+        <AlertDialog.Popup className="adm-dialog" initialFocus={cancelRef} finalFocus={finalFocus} aria-modal="true">
           <div className="adm-dialog__top">
             <BrandPomo face="oops" size="s" />
             <div style={{ minWidth: 0 }}>
