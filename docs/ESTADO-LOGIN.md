@@ -9,7 +9,7 @@ cada delegación y después de cada paso verificado.
 - Puertos: 3000 y 53659 ocupados por otros procesos (no tocar). Este frente usa 3200+.
 - Env ficticias (ver docs/ESTADO.md, "Reglas operativas"): `NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co NEXT_PUBLIC_SUPABASE_ANON_KEY=dummy-anon-key NEXT_PUBLIC_SITE_URL=http://localhost:3200`.
 
-Última actualización: 2026-10-02. **Paso actual: 6b (Frontend corrige QA-LG-01; luego re-test delta de QA).** La sesión principal tiene un `next dev` en el 3300 de este worktree: NO tocar.
+Última actualización: 2026-10-02. **Paso actual: 7 (release candidato preparado; esperando autorización del Director). Nada desplegado.** La sesión principal tiene un `next dev` en el 3300 de este worktree: NO tocar.
 
 | Paso | Estado | Evidencia |
 |---|---|---|
@@ -45,8 +45,8 @@ cada delegación y después de cada paso verificado.
 | 5c. Re-auditoría delta de Seguridad | HECHO: **Apto para el alcance login** (SEC-LG-01/02 cerrados; SEC-LG-03, 06, 07 y R-2 preexistentes, fuera de alcance, decide el Director; 06/07 bloquean un release a producción de la app, no el merge del login) | este commit |
 | 6. QA | HECHO: **Aprobado con reservas** (QA-LG-01 Baja: entrada de la mascota 640 ms > 600 ms CA-5.3; QA-LG-02 Baja: GPU 5-11 % los primeros 10-40 s en Chrome recién abierto, a confirmar por el Director con Shift+Esc; CA-10.11.4 +2,05 en una corrida, dentro de la tolerancia del Líder) | docs/qa/login-2026-10-02.md, 9679768 |
 | 6b. Corrección QA-LG-01 (Frontend) | HECHO: .lg-stage 480+120 ms. Solo CSS de una animación: sin superficie de seguridad, el Líder decide NO re-auditar Seguridad | 4ccb8b1 |
-| 6c. Re-test delta de QA | EN CURSO | |
-| 7. Informe de release | PENDIENTE | |
+| 6c. Re-test delta de QA | HECHO: Aprobado con reservas (QA-LG-01 cerrado; QA-LG-02 a confirmar por el Director) | 827014f |
+| 7. Informe de release | HECHO | docs/releases/login-redesign.md |
 
 ## Orden para retomar (tras la pausa)
 1. 4c: decidir el idle (Líder; si se recorta, delegar al Frontend).

@@ -15,6 +15,7 @@ Actualizado: 2026-10-02.
 | P-5 | El repositorio no tenía identidad de git configurada. | Falló el primer commit. | El Líder configuró la identidad local con la del historial (facu9043). |
 | P-6 | (Frente login) El Líder fijó el presupuesto de peso de `/login` con un script propio que no contaba las fuentes (Next 16 las precarga por cabecera HTTP `Link`, no en el HTML). | El presupuesto CA-9.2 (320 KB) era imposible desde el inicio: la línea base real ya era 326,4 KB. Lo detectó el Frontend midiendo con Chrome por CDP. | Se corrigió CA-9.2 (380 KB contando fuentes) y se avisó en el script. Lección: validar una herramienta de medición contra el navegador real antes de fijar presupuestos con ella. |
 | P-7 | (Frente login) El PO no tiene shell y no puede medir la línea base que su propia spec pide. | Dependencia no prevista del Líder. | El Líder midió la línea base antes de delegar al Frontend. Lección: al pedir criterios medibles al PO, el Líder mide la línea base antes o en paralelo. |
+| P-9 | (Frente login) Seguridad y QA usaron veredictos intermedios ("Apto con reservas", "Aprobado con reservas") con reservas fuera del alcance de la tarea (RLS preexistente, medición en el Celeron). | El Líder tuvo que separar qué reserva es del login y cuál del Director. | En la re-auditoría se pidió veredicto explícito "para el alcance login". Lección: pedir siempre el veredicto por alcance y listar aparte lo preexistente. |
 | P-8 | (Frente login) El Frontend commiteó por error una captura PNG suelta. | Archivo de más en el historial de la rama. | Lo borró en 3f298d2. Se limpia al integrar (squash o revisión del diff). |
 
 ## 2. Fallas del entorno
@@ -25,6 +26,7 @@ Actualizado: 2026-10-02.
 | E-2 | El límite de uso de 5 horas del plan llegó al 93% en medio del trabajo. | Riesgo de que el equipo se cortara de golpe sin guardar. | Pausa ordenada a pedido: commit de todo y estado anotado. |
 | E-4 | (Frente login) Captura con `chrome --headless --window-size=360,...`: Chrome tiene un ancho mínimo de ventana y la página se maqueta más ancha que la captura. | Falso positivo de "scroll horizontal" en la verificación del Líder. | Medir con CDP `Emulation.setDeviceMetricsOverride` (320/360/180 px: scrollWidth = clientWidth). |
 | E-5 | (Frente login) Dos Líderes en paralelo (landing y login) comparten la misma carpeta scratchpad temporal. | Riesgo de pisar o confundir archivos y capturas de la otra sesión. | Prefijo `lt-` para los archivos del frente login; no borrar nada ajeno. |
+| E-6 | (Frente login) La herramienta SendMessage no está disponible en la sesión. | No se puede continuar un agente con su contexto (re-auditorías y re-tests). | Se lanza un agente nuevo con todo el contexto y el informe previo; cuesta más tokens pero funciona. |
 | E-3 | La PC del Director (Celeron N4020, 2 núcleos) es demasiado lenta para medir rendimiento con Lighthouse. | La meta de rendimiento dio 56 (meta: 90 o más). Incluso `/login` da malos resultados ahí. | Decisión del Director: medir en una PC más potente. **Pendiente y bloquea el release.** |
 
 ## 3. Requisitos que necesitaron corrección

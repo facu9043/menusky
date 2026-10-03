@@ -220,3 +220,10 @@ Rama `feat/login-redesign` (desde `feat/landing-page` @ efbbfd5), worktree
   de Hora de Aventura ni a ningún personaje con derechos).
 - **Modo oscuro:** el login tiene un único aspecto, sin `.dark` (como la landing).
 - **Cambios fuera del login prohibidos** en esta rama (landing, paneles, carta, `lib`, `globals.css`).
+
+### Estado del login (2026-10-03)
+Implementado en `feat/login-redesign`: `app/login/{layout.tsx,login.css,page.tsx}`, `components/auth/{LoginForm.tsx,safeRedirect.ts}`,
+`components/brand/mascot/{MascotPomo.tsx,index.tsx}` (Pomo en capas: `.m-look`/`.m-eyes` animadas solo con transform/opacity),
+`scripts/check-safe-redirect.mjs`, `scripts/measure-login-weight.mjs` (no cuenta fuentes: medir fuentes por CDP).
+Pruebas QA en `docs/qa/scripts/login/`. Costo de animación medido en el Celeron con CDP `SystemInfo.getProcessInfo` (ver docs/design/mascota/mascota.md).
+Deuda: tokens `--ms-*` duplicados en `app/(landing)/landing.css` y `app/login/login.css` (unificar en un archivo de marca cuando se integre la landing); Bricolage cargada en dos layouts; Geist Mono se precarga en /login sin usarse (layout raíz).
