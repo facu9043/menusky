@@ -1329,13 +1329,18 @@ textarea.adm-input {
   border-radius: 16px;
   background: var(--ms-toasted);
 }
-.adm-photo__frame img {
+.adm-photo__img {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.adm-photo__img img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.adm-photo__frame > svg {
+.adm-photo__img svg {
   position: absolute;
   inset: 0;
   margin: auto;

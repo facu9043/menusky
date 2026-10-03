@@ -1,11 +1,10 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { notFound, redirect } from "next/navigation";
 import { getStaffUser } from "@/lib/auth/getStaffUser";
 import { getAdminMenu } from "@/lib/admin/getAdminMenu";
-import { MenuItemEditForm } from "@/components/admin/MenuItemEditForm";
-import { OptionGroupsEditor } from "@/components/admin/OptionGroupsEditor";
 
+// Entrada directa a un plato (CA-NR.20, CA-7.11): si el plato es de este
+// restaurante, se abre la Carta con su hoja de edición; si no existe o es de
+// otro restaurante, 404 sin filtrar nada. Cerrar la hoja deja en Carta.
 export default async function AdminMenuItemPage({
   params,
 }: PageProps<"/admin/menu/[itemId]">) {
@@ -14,22 +13,9 @@ export default async function AdminMenuItemPage({
   if (!staff) return null;
 
   const categories = await getAdminMenu(staff.restaurantId);
-  const item = categories.flatMap((c) => c.items).find((i) => i.id === itemId);
+  const exists = categories.some((c) => c.items.some((i) => i.id === itemId));
 
-  if (!item) notFound();
+  if (!exists) notFound();
 
-  return (
-    <div className="flex flex-col gap-6 p-4">
-      <Link
-        href="/admin/menu"
-        className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        Volver a la carta
-      </Link>
-
-      <MenuItemEditForm item={item} />
-      <OptionGroupsEditor item={item} />
-    </div>
-  );
+  redirect(`/admin/menu?plato=${encodeURIComponent(itemId)}`);
 }
