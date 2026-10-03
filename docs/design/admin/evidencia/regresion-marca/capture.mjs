@@ -191,12 +191,12 @@ async function diff(dirA, dirB) {
         if (ia.width !== ib.width || ia.height !== ib.height) return { size: [ia.width, ia.height, ib.width, ib.height] };
         const px = (img) => { const c = document.createElement("canvas"); c.width = img.width; c.height = img.height; const x = c.getContext("2d", { willReadFrequently: true }); x.drawImage(img, 0, 0); return x.getImageData(0, 0, img.width, img.height).data; };
         const A = px(ia), B = px(ib);
-        let diffPx = 0, maxDelta = 0;
+        let diffPx = 0, maxDelta = 0, x0 = Infinity, y0 = Infinity, x1 = -1, y1 = -1;
         for (let i = 0; i < A.length; i += 4) {
           const d = Math.max(Math.abs(A[i] - B[i]), Math.abs(A[i + 1] - B[i + 1]), Math.abs(A[i + 2] - B[i + 2]), Math.abs(A[i + 3] - B[i + 3]));
-          if (d > 0) { diffPx++; if (d > maxDelta) maxDelta = d; }
+          if (d > 0) { diffPx++; if (d > maxDelta) maxDelta = d; const p = i / 4, x = p % ia.width, y = (p - x) / ia.width; x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); }
         }
-        return { width: ia.width, height: ia.height, pixels: A.length / 4, diffPx, maxDelta };
+        return { width: ia.width, height: ia.height, pixels: A.length / 4, diffPx, maxDelta, ...(diffPx ? { bbox: [x0, y0, x1, y1] } : {}) };
       })()`);
       results.push({ captura: key(fa), ...r });
     }
