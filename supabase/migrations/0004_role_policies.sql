@@ -87,14 +87,20 @@ create policy "staff read order_items" on order_items for select
 -- cliente no existe como parametro.
 -- p_items: [{ "menu_item_id": uuid, "quantity": int, "choice_ids": [uuid], "note": text|null }]
 -- Errores (message): table_not_found (P0002); invalid_items, item_unavailable,
--- missing_required, single_choice_exceeded (P0001).
+-- missing_required, single_choice_exceeded (P0001); rate_limited (P0429).
+-- Limite de tasa (SEC-AD-01, D-14): como maximo c_rate_max pedidos por mesa en los
+-- ultimos c_rate_window. Vive aca (y no en la app) porque la funcion tambien se puede
+-- llamar directo con la anon key. Un lock por mesa evita que dos llamadas simultaneas
+-- pasen ambas el conteo.
 create or replace function create_order(p_qr_token text, p_items jsonb)
 returns uuid
 language plpgsql
 security definer
-set search_path = public
+set search_path = ''
 as $$
 declare
+  c_rate_max constant int := 10;                          -- pedidos permitidos por mesa...
+  c_rate_window constant interval := interval '10 minutes'; -- ...dentro de esta ventana
   c_uuid constant text := '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$';
   v_table_id uuid;
   v_restaurant_id uuid;
@@ -112,15 +118,25 @@ declare
   v_total numeric := 0;
   v_lines jsonb := '[]'::jsonb;
   v_order_id uuid;
+  v_recent int;
 begin
   if p_qr_token is null or length(p_qr_token) = 0 then
     raise exception 'table_not_found' using errcode = 'P0002';
   end if;
 
   select t.id, t.restaurant_id into v_table_id, v_restaurant_id
-  from tables t where t.qr_token = p_qr_token;
+  from public.tables t where t.qr_token = p_qr_token;
   if v_table_id is null then
     raise exception 'table_not_found' using errcode = 'P0002';
+  end if;
+
+  -- Serializa por mesa y cuenta los pedidos recientes de ESA mesa (incluye cancelados).
+  perform pg_advisory_xact_lock(hashtextextended('create_order:' || v_table_id::text, 0));
+  select count(*) into v_recent
+  from public.orders o
+  where o.table_id = v_table_id and o.created_at > now() - c_rate_window;
+  if v_recent >= c_rate_max then
+    raise exception 'rate_limited' using errcode = 'P0429';
   end if;
 
   if p_items is null or jsonb_typeof(p_items) <> 'array'
@@ -164,7 +180,7 @@ begin
 
     select mi.id, mi.price, mi.is_available, c.restaurant_id as restaurant_id
       into v_item
-    from menu_items mi join categories c on c.id = mi.category_id
+    from public.menu_items mi join public.categories c on c.id = mi.category_id
     where mi.id = v_menu_item_id;
 
     if v_item.id is null or not v_item.is_available
@@ -177,12 +193,12 @@ begin
 
     for v_group in
       select g.id, g.name, g.selection_type, g.is_required
-      from item_option_groups g
+      from public.item_option_groups g
       where g.menu_item_id = v_item.id
       order by g.sort_order, g.id
     loop
       select count(*) into v_chosen
-      from item_option_choices ch
+      from public.item_option_choices ch
       where ch.option_group_id = v_group.id and ch.id = any (v_choice_ids);
 
       if v_group.is_required and v_chosen = 0 then
@@ -200,13 +216,13 @@ begin
           'choiceName', ch.name,
           'extraPrice', ch.extra_price
         ) order by ch.sort_order, ch.id)
-        from item_option_choices ch
+        from public.item_option_choices ch
         where ch.option_group_id = v_group.id and ch.id = any (v_choice_ids)
       ), '[]'::jsonb);
 
       v_extra := v_extra + coalesce((
         select sum(ch.extra_price)
-        from item_option_choices ch
+        from public.item_option_choices ch
         where ch.option_group_id = v_group.id and ch.id = any (v_choice_ids)
       ), 0);
     end loop;
@@ -224,11 +240,11 @@ begin
   end loop;
 
   -- El pedido nace con su total final (Realtime emite el INSERT ya correcto).
-  insert into orders (table_id, restaurant_id, total)
+  insert into public.orders (table_id, restaurant_id, total)
   values (v_table_id, v_restaurant_id, v_total)
   returning id into v_order_id;
 
-  insert into order_items (order_id, menu_item_id, quantity, selected_options, note, subtotal)
+  insert into public.order_items (order_id, menu_item_id, quantity, selected_options, note, subtotal)
   select v_order_id,
          (t.l ->> 'menu_item_id')::uuid,
          (t.l ->> 'quantity')::int,
@@ -249,7 +265,7 @@ returns jsonb
 language plpgsql
 stable
 security definer
-set search_path = public
+set search_path = ''
 as $$
 declare
   v_result jsonb;
@@ -269,14 +285,14 @@ begin
         'menuItemName', mi.name,
         'photoUrl', mi.photo_url
       ) order by oi.id)
-      from order_items oi
-      left join menu_items mi on mi.id = oi.menu_item_id
+      from public.order_items oi
+      left join public.menu_items mi on mi.id = oi.menu_item_id
       where oi.order_id = o.id
     ), '[]'::jsonb)
   )
   into v_result
-  from orders o
-  join tables t on t.id = o.table_id
+  from public.orders o
+  join public.tables t on t.id = o.table_id
   where o.id = p_order_id and t.qr_token = p_qr_token;
 
   return v_result;
@@ -288,11 +304,11 @@ returns text
 language sql
 stable
 security definer
-set search_path = public
+set search_path = ''
 as $$
   select o.status
-  from orders o
-  join tables t on t.id = o.table_id
+  from public.orders o
+  join public.tables t on t.id = o.table_id
   where o.id = p_order_id and t.qr_token = p_qr_token;
 $$;
 
@@ -302,3 +318,14 @@ revoke all on function get_public_order_status(text, uuid) from public;
 grant execute on function create_order(text, jsonb) to anon, authenticated;
 grant execute on function get_public_order(text, uuid) to anon, authenticated;
 grant execute on function get_public_order_status(text, uuid) to anon, authenticated;
+
+-- ---------- 4. Fotos: limite del lado del servidor (SEC-AD-05) ----------
+-- Solo imagenes comunes y hasta 5 MB, igual que la validacion de la app (D-7).
+-- Es configuracion del bucket (no son datos de la app). La reversa lo deja en null.
+update storage.buckets
+set allowed_mime_types = array['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+    file_size_limit = 5242880
+where id = 'menu-photos';
+
+-- PostgREST guarda el esquema en cache: se le avisa que recargue las funciones nuevas.
+notify pgrst, 'reload schema';

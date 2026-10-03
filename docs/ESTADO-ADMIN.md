@@ -6,12 +6,27 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 - Sin push, sin merge a master, nada a producción. Supabase solo con credenciales ficticias (ver "Reglas operativas").
 - Fuentes: `docs/design/admin-boceto-aprobado.md` (dirección de arte APROBADA para Carta y Mesas), `docs/STACK.md`, `docs/DECISIONES.md`.
 
-## Paso actual
-- `feat/admin-sec` y `feat/admin-brand` integradas en `feat/admin-redesign` (e1ec7b8, ec26c4d); build con env ficticias OK (Líder).
-- EN CURSO en paralelo:
-  - Backend: correcciones SEC-AD-01..06 (D-14, D-15) en `menusky-admin-sec` / `feat/admin-sec` (retomado con SendMessage).
-  - Frontend: paso 4 (admin) en `C:/Users/Windows10/Desktop/menusky-admin-brand`, rama `feat/admin-ui` (desde `feat/admin-redesign`). Parte 4a: shell + Carta + hoja de edición. Parte 4b (después): Mesas, imprimir, Inicio, Apariencia, estados vacíos.
-- Después: integrar ambas, Seguridad final (retomar al mismo agente), QA.
+## Paso actual: PAUSA ORDENADA (pedida por el Director, 2026-10-03)
+Los 3 worktrees con `git status` limpio; ningún servidor del equipo escuchando en 3400-3499 (`netstat`).
+- `menusky-admin` / `feat/admin-redesign` @ este commit: docs + merges de sec (e1ec7b8) y brand (ec26c4d).
+- `menusky-admin-sec` / `feat/admin-sec` @ be9d6f8: Backend TERMINADO incluidas las correcciones SEC-AD-01..06 (c116af4, 512ce06, be9d6f8). RLS 131/131, e2e 58/58, sondeo 10/10 + legacy 6/6, build OK. AÚN NO integrado en feat/admin-redesign (lo integrado es hasta 180c0d2 + informe de Seguridad no; ver abajo).
+- `menusky-admin-brand` / `feat/admin-ui` @ e163194: Frontend 4a (shell + Carta + hoja) CASI terminado; últimos 2 commits son WIP.
+
+## Orden para retomar
+1. Integrar `feat/admin-sec` (be9d6f8, trae también el informe de Seguridad 08b220f) en `feat/admin-redesign`, y luego `feat/admin-redesign` en `feat/admin-ui` (o al revés al final). Build.
+2. Frontend (retomar al agente a0fd43d9630640e4a con SendMessage si existe; si no, uno nuevo con su informe): cerrar 4a: build de producción contra el mock, re-correr `docs/design/admin/evidencia/carta-4a/{carta-e2e,quality,captures}.mjs` y guardar salidas (.txt), axe en 0 tras la corrección de contraste "Sin stock hoy", rehacer capturas sin el distintivo de `next dev`, README de cómo levantar, eslint completo.
+3. Backend: sumar `kitchenPending`/`floorPending` a `AdminLiveSnapshot` (pedido del Frontend, R-9: hoy el shell abre un 2.º canal Realtime con `useStaffPendingCounts`).
+4. Frontend 4b: Mesas (en vivo con `useAdminLive`, `refresh()` tras crear/borrar mesa), "Imprimir todos", Inicio, Apariencia, estados vacíos.
+5. Seguridad final (retomar a a88b404df132855eb) y QA (veredictos por alcance, capturas en `docs/qa/capturas/admin/`).
+6. Informe de release al Director.
+
+## Decisiones que esperan al Director
+- D-9: defaults de la spec (pedidos de hoy = día AR; Ocupada = pedido activo; sin sonido en admin; "Default" -> "Clásico"; theme null -> MenuSky; "Tu pedido" con hasta ~3 s de demora; plato nuevo igual que hoy).
+- D-14: límite de 10 pedidos por mesa cada 10 minutos y su texto.
+- D-16: estilo del tema MenuSky en la carta del cliente (`brutal`, esquinas rectas) o un estilo nuevo "sello" redondeado.
+- Desvíos del boceto en Carta (informe del Frontend 4a): edición en panel lateral en escritorio; hoja con Descripción, Opciones y Eliminar; píldoras "Todas" y "+ Categoría"; menú ⋯ por categoría; buscador también en escritorio; Pomo en confirmaciones; textos nuevos de validación.
+- Backlog de seguridad preexistente: PRE-AD-01 (Media: un admin puede borrar fotos de otro restaurante), PRE-AD-02..04.
+- Migración 0004 en la base real: la aplica el Director con `docs/releases/admin-migracion-0004.md` (en feat/admin-sec), DESPUÉS de desplegar el código.
 
 ## Pasos
 | Paso | Estado | Evidencia |
@@ -21,8 +36,9 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 | 2. Arquitectura y contratos (`docs/STACK.md` sección admin, `docs/api/admin.md`, D-3..D-9) | HECHO | f7d256d |
 | 3a. Backend: SEC-LG-06, SEC-LG-07, R-2 + capa de datos del admin + Supabase simulado para pruebas | HECHO. RLS 117/117 (re-ejecutado por el Líder), e2e contra mock 53/53, sondeo 10/10, unitarias 25/25 x 4 zonas, fallback OK. Desvíos aceptados D-10..D-12; rate limit pendiente D-13 | feat/admin-sec ebe42b0..180c0d2 |
 | 3b. Frontend: archivo de marca único + Bricolage centralizada + tema MenuSky predeterminado | HECHO: `--ms-bun:` 1 resultado, Bricolage 1 llamada y 1 archivo descargado, MenuSky 0 avisos, regresión 31/32 idénticas (1 ruido de foto explicado) | feat/admin-brand edda694..c3976f2 |
-| 3c. Seguridad: auditoría temprana de la migración y del flujo de pedidos | HECHO: Apto con reservas (SEC-AD-01 Media, SEC-AD-02/05 Baja, 03/04/06/07 Info); SEC-LG-06 y R-2 cerrados, SEC-LG-07 parcial. Correcciones EN CURSO (D-14, D-15) | feat/admin-sec 08b220f, docs/security/admin-sec-2026-10-03.md |
-| 4. Frontend: admin (shell, Carta, Mesas, Inicio, Apariencia, Pomo) | EN CURSO (feat/admin-ui, worktree menusky-admin-brand, puertos 3420-3449) | |
+| 3c. Seguridad: auditoría temprana de la migración y del flujo de pedidos | HECHO: Apto con reservas (SEC-AD-01 Media, SEC-AD-02/05 Baja, 03/04/06/07 Info); SEC-LG-06 y R-2 cerrados, SEC-LG-07 parcial. Correcciones HECHAS por Backend (c116af4..be9d6f8: RLS 131/131, e2e 58/58), re-auditoría pendiente | feat/admin-sec 08b220f, docs/security/admin-sec-2026-10-03.md |
+| 4a. Frontend: shell + Carta + hoja | CASI HECHO: e2e propio 126/0 (en dev contra el mock), sin scroll horizontal, reduced-motion OK; falta cierre (ver Orden para retomar) | feat/admin-ui 490761c..e163194 |
+| 4b. Frontend: Mesas, imprimir, Inicio, Apariencia | PENDIENTE | |
 | 5. Seguridad final (por alcance) | PENDIENTE | |
 | 6. QA (por alcance) + capturas en `docs/qa/capturas/admin/` | PENDIENTE | |
 | 7. Correcciones, informe de release | PENDIENTE | |

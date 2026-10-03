@@ -11,6 +11,7 @@ import { join } from "node:path";
 const MOCK = process.env.MOCK_URL || "http://127.0.0.1:3401";
 const APP = process.env.APP_URL || "http://127.0.0.1:3402";
 const CHROME = process.env.CHROME_PATH || "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+const LEGACY = process.env.LEGACY === "1"; // mock con MOCK_LEGACY=1 (base sin 0004): prueba el fallback de Realtime
 const CDP = Number(process.env.CDP_PORT || 3410);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const mockPost = (body) => fetch(MOCK + "/__mock/event", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }).then((r) => r.json());
@@ -69,12 +70,30 @@ try {
   const steps = () => evalJs(`document.querySelectorAll('div.rounded-full.bg-primary.text-primary-foreground').length`);
   check('"Tu pedido" cargó con el paso 1 (Recibido) activo', (await steps()) === 1, String(await steps()));
 
+  if (LEGACY) {
+    // Base vieja: la primera consulta da PGRST202 y el hook pasa a Realtime (camino de antes).
+    await sleep(3500);
+    const nPolls = polls.length;
+    check(`base vieja: una sola consulta del sondeo (${nPolls}) y después Realtime, sin seguir sondeando`, nPolls === 1, String(nPolls));
+    await sleep(7000);
+    check("base vieja: pasados 7 s más, no hubo nuevas consultas del sondeo", polls.length === nPolls, String(polls.length));
+    for (const [status, expected] of [["in_kitchen", 2], ["ready", 3], ["delivered", 4]]) {
+      const tChange = Date.now();
+      await mockPost({ type: "order_status", orderId, status });
+      let seen = null;
+      while (Date.now() - tChange < 5000) {
+        if ((await steps()) >= expected) { seen = Date.now() - tChange; break; }
+        await sleep(50);
+      }
+      check(`base vieja: cambio a ${status} llega por Realtime en ${seen == null ? "(no apareció)" : seen + " ms"}`, seen != null && seen <= 2000, String(seen));
+    }
+  } else {
   // 1) cadencia
   const t0 = Date.now();
   await sleep(10000);
   const inWindow = polls.filter((t) => t >= t0);
   const gaps = inWindow.slice(1).map((t, i) => t - inWindow[i]);
-  check(`cadencia: ${inWindow.length} consultas en 10 s (esperado 3 o 4), separación ${gaps.map((g) => (g / 1000).toFixed(1)).join("/")} s`, inWindow.length >= 3 && inWindow.length <= 4 && gaps.every((g) => g >= 2500 && g <= 3800), JSON.stringify(gaps));
+  check(`cadencia: ${inWindow.length} consultas en 10 s (esperado 2 a 4 según cuándo cayó la primera), separación ${gaps.map((g) => (g / 1000).toFixed(1)).join("/")} s`, inWindow.length >= 2 && inWindow.length <= 4 && gaps.every((g) => g >= 2500 && g <= 3800), JSON.stringify(gaps));
   check("sin solapar: nunca hubo más de 1 consulta en vuelo", maxInflight <= 1, String(maxInflight));
 
   // 2) demora de un cambio de estado (5 cambios, <= 5 s)
@@ -117,6 +136,7 @@ try {
   const afterCancel = polls.length;
   await sleep(6000);
   check("tras 'cancelled' ya no consulta más", polls.length === afterCancel, `${polls.length - afterCancel}`);
+  }
 } finally {
   try { ws?.close(); } catch { /* ya cerrado */ }
   chrome.kill();

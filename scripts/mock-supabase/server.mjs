@@ -556,6 +556,8 @@ function handleRest(req, url, ctx, body) {
 }
 
 // ------------------------------------------------------------------ RPC (0004)
+const RATE_MAX = 10;
+const RATE_WINDOW_MS = 10 * 60 * 1000;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const raise = (message, code = "P0001") => new PgError(400, code, message);
 
@@ -564,6 +566,8 @@ function createOrder(qrToken, items) {
   if (!qrToken) throw raise("table_not_found", "P0002");
   const table = db.tables.find((t) => t.qr_token === qrToken);
   if (!table) throw raise("table_not_found", "P0002");
+  // Límite de tasa de 0004 (SEC-AD-01): máx. RATE_MAX pedidos por mesa en RATE_WINDOW_MS (JS es de un solo hilo: sin carreras).
+  if (db.orders.filter((o) => o.table_id === table.id && Date.parse(o.created_at) > Date.now() - RATE_WINDOW_MS).length >= RATE_MAX) throw raise("rate_limited", "P0429");
   if (!Array.isArray(items) || items.length < 1 || items.length > 50) throw raise("invalid_items");
 
   let total = 0;
@@ -902,6 +906,15 @@ function handleMock(req, url, body) {
         emit("waiter_calls", "INSERT", row, null);
         return { status: 200, body: { callId: row.id } };
       }
+      case "age_orders": {
+        // Simula el paso del tiempo: retrasa created_at de los pedidos de una mesa (para el límite de tasa).
+        const tb = t(body.table);
+        if (!tb) throw new PgError(404, "mock", "Mesa no encontrada");
+        const ms = (Number(body.minutes) || 11) * 60000;
+        let k = 0;
+        for (const o of db.orders) if (o.table_id === tb.id) { o.created_at = new Date(Date.parse(o.created_at) - ms).toISOString(); k++; }
+        return { status: 200, body: { aged: k } };
+      }
       case "attend_call": {
         const tb = body.table && t(body.table);
         const c = body.callId ? find("waiter_calls", body.callId) : db.waiter_calls.find((x) => x.status === "pending" && (!tb || x.table_id === tb.id));
@@ -912,7 +925,7 @@ function handleMock(req, url, body) {
         return { status: 200, body: { callId: c.id } };
       }
       default:
-        throw new PgError(400, "mock", "type debe ser new_order | order_status | waiter_call | attend_call");
+        throw new PgError(400, "mock", "type debe ser new_order | order_status | waiter_call | attend_call | age_orders");
     }
   }
   return { status: 404, body: { error: "ruta de control desconocida" } };

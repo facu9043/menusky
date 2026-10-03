@@ -57,3 +57,10 @@ create policy "staff manage option groups" on item_option_groups for all
 create policy "staff manage option choices" on item_option_choices for all
   using (is_staff_of((select c.restaurant_id from item_option_groups g join menu_items mi on mi.id = g.menu_item_id join categories c on c.id = mi.category_id where g.id = item_option_choices.option_group_id)))
   with check (is_staff_of((select c.restaurant_id from item_option_groups g join menu_items mi on mi.id = g.menu_item_id join categories c on c.id = mi.category_id where g.id = item_option_choices.option_group_id)));
+
+-- Fotos: el bucket vuelve a como lo dejaba 0003 (sin limites del lado del servidor).
+update storage.buckets
+set allowed_mime_types = null, file_size_limit = null
+where id = 'menu-photos';
+
+notify pgrst, 'reload schema';

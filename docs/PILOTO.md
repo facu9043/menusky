@@ -52,3 +52,11 @@ Actualizado: 2026-10-02.
 - Probar en Safari y en un iPhone real.
 - Legales (términos y privacidad): no hacen falta en v1 porque no hay formulario ni analítica.
 - Aprobación del Director de los textos y del release.
+
+## Fase Admin (2026-10-03): fallas nuevas
+| # | Qué pasó | Consecuencia | Cómo se manejó |
+|---|---|---|---|
+| P-10 | Cortes de red (ENOTFOUND / ECONNRESET) mataron al Líder y a los subagentes 3 veces (PO, Frontend de marca dos veces). | Trabajo sin commit perdido (el primer Frontend de marca no dejó nada). | ESTADO-ADMIN.md commiteado antes de cada delegación y pedido explícito de commits muy frecuentes en cada delegación; el Backend, que commiteó por pieza, no perdió nada. |
+| P-11 | El encargo citaba una sección "Notas para la fase Admin" en `docs/releases/login-redesign.md` que no existe. | El Líder tomó la deuda de STACK.md y del informe de Seguridad. | Anotado en ESTADO-ADMIN.md. Lección: verificar que los documentos citados existan antes de delegar. |
+| P-12 | El Líder decidió no poner límite de tasa (D-13) con un argumento equivocado (que hacía falta infraestructura); Seguridad mostró que se podía hacer en la base. | Una decisión técnica revertida (D-14). | Funcionó el control cruzado: la auditoría temprana lo detectó antes de construir encima. |
+| P-13 | SendMessage para retomar agentes: funcionó (Backend retomado con su contexto para las correcciones), pero el agente retomado corre en segundo plano y su informe llega como notificación. | Hay que esperar la notificación antes de informar. | Registrado; no se informó con agentes trabajando. |

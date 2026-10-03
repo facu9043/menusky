@@ -176,6 +176,12 @@ export async function POST(request: Request) {
           { error: "Uno de los platos ya no está disponible" },
           { status: 409 }
         );
+      case "rate_limited":
+        // Límite por mesa (0004, SEC-AD-01): máx. 10 pedidos cada 10 minutos.
+        return NextResponse.json(
+          { error: "Recibimos muchos pedidos de esta mesa. Esperá unos minutos o llamá al mozo." },
+          { status: 429 }
+        );
       case "table_not_found":
         return NextResponse.json({ error: "Mesa no encontrada" }, { status: 404 });
       case "invalid_items":
