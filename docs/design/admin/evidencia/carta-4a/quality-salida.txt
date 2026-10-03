@@ -1,0 +1,26 @@
+# node quality.mjs | 2026-10-03 16:21 | app: build de producción (next start 127.0.0.1:3420) de feat/admin-ui @ c476698 | mock propio 3422 detrás de fault-proxy 3421 | Chrome headless (Playwright 1.63.0, @axe-core/playwright 4.13.0)
+OK   preparación: plato de 80 caracteres y $1.234.567
+OK   CA-13.6 sin scroll horizontal a 320px | carta:320/320 hoja-animando:320/320 hoja:320/320 confirmación:320/320 nueva-categoría:320/320 /admin:320/320 /admin/mesas:320/320 /admin/apariencia:320/320
+OK   CA-13.6 sin scroll horizontal a 360px | carta:360/360 hoja-animando:360/360 hoja:360/360 confirmación:360/360 nueva-categoría:360/360 /admin:360/360 /admin/mesas:360/360 /admin/apariencia:360/360
+OK   CA-13.6 sin scroll horizontal a 390px | carta:390/390 hoja-animando:390/390 hoja:390/390 confirmación:390/390 nueva-categoría:390/390 /admin:390/390 /admin/mesas:390/390 /admin/apariencia:390/390
+OK   CA-13.6 sin scroll horizontal a 768px | carta:768/768 hoja-animando:768/768 hoja:768/768 confirmación:768/768 nueva-categoría:768/768 /admin:768/768 /admin/mesas:768/768 /admin/apariencia:768/768
+OK   CA-13.6 sin scroll horizontal a 1440px | carta:1440/1440 hoja-animando:1440/1440 hoja:1440/1440 confirmación:1440/1440 nueva-categoría:1440/1440 /admin:1440/1440 /admin/mesas:1440/1440 /admin/apariencia:1440/1440
+OK   CA-12.4 con reduce: getAnimations() = 0 en reposo y tras cada acción | {"reposo":0,"abrir hoja":0,"cerrar hoja":0,"interruptor":0,"píldora":0,"vacío con Pomo":0,"cambiar de sección":0}
+     sin reduce (control: el movimiento existe): {"reposo":0,"abrir hoja":2,"cerrar hoja":2,"interruptor":2,"píldora":2,"vacío con Pomo":3,"cambiar de sección":0}
+OK   HU-12 sin reduce hay animación al abrir la hoja e interruptor
+OK   CA-5.8 foco visible >= 2 px en los primeros 14 Tab | Saltar al contenido=3px rgb(43, 23, 16) | MenuSky, ir a Inicio=3px rgb(255, 194, 26) | Inicio=3px rgb(255, 194, 26) | Carta=3px rgb(255, 194, 26) | Mesas=3px rgb(255, 194, 26) | Apariencia=3px rgb(255, 194, 26) | Cocina(hay pendientes)=3px rgb(255, 194, 26) | Salón(hay pendientes)=3px rgb(255, 194, 26) | Cerrar sesión=3px rgb(255, 194, 26) | Nuevo plato=3px rgb(43, 23, 16) | Todas, 8 platos=3px rgb(43, 23, 16) | Entradas, 2 platos=3px rgb(43, 23, 16) | Platos principales, 3 pl=3px rgb(43, 23, 16) | Bebidas, 3 platos=3px rgb(43, 23, 16)
+OK   CA-5.8 primer Tab = 'Saltar al contenido' | Saltar al contenido
+OK   CA-13.10 la carta analizada incluye la tarjeta "Sin stock hoy" (contraste d92f920) 1440
+OK   CA-13.10 axe carta 1440: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe hoja abierta 1440: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe confirmación 1440: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe vacío 1440: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe inicio provisorio 1440: 0 críticos/serios | sin violaciones
+OK   CA-13.10 la carta analizada incluye la tarjeta "Sin stock hoy" (contraste d92f920) 360
+OK   CA-13.10 axe carta 360: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe hoja abierta 360: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe confirmación 360: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe vacío 360: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe inicio provisorio 360: 0 críticos/serios | sin violaciones
+
+22 OK, 0 FAIL

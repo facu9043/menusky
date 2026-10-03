@@ -1,0 +1,87 @@
+$ npx eslint  (repo completo, 2026-10-03 16:19, rama feat/admin-ui)
+
+C:\Users\facundo\Desktop\menusky\components\client\CallWaiterButton.tsx
+  30:15  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\facundo\Desktop\menusky\components\client\CallWaiterButton.tsx:30:15
+  28 |     // layout y no se remonta al hacer un pedido, así que si solo dependiera
+  29 |     // de `tableId` nunca se enteraría de pedidos hechos después del montaje.
+> 30 |     if (open) setOrderId(getLastOrderId(tableId));
+     |               ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  31 |   }, [open, tableId]);
+  32 |
+  33 |   const call = async (reason: string) => {  react-hooks/set-state-in-effect
+
+C:\Users\facundo\Desktop\menusky\components\client\CartFab.tsx
+  38:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\facundo\Desktop\menusky\components\client\CartFab.tsx:38:7
+  36 |   useEffect(() => {
+  37 |     if (totalItems > 0) {
+> 38 |       setVisible(true);
+     |       ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  39 |       setLeaving(false);
+  40 |       return;
+  41 |     }  react-hooks/set-state-in-effect
+
+C:\Users\facundo\Desktop\menusky\docs\design\mascota\generar-mascotas.mjs
+  136:15  warning  'viewW' is defined but never used  @typescript-eslint/no-unused-vars
+  136:22  warning  'viewH' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\facundo\Desktop\menusky\docs\qa\scripts\login\01-static.mjs
+  13:7  warning  'cssRaw' is assigned a value but never used   @typescript-eslint/no-unused-vars
+  16:7  warning  'idx' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  40:7  warning  'pushIdx' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\facundo\Desktop\menusky\docs\qa\scripts\login\02-behavior.mjs
+   72:11  warning  't0' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  102:43  warning  't0' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\facundo\Desktop\menusky\docs\qa\scripts\login\04-motion.mjs
+   16:7   warning  'run' is assigned a value but never used    @typescript-eslint/no-unused-vars
+   72:56  warning  'sy' is assigned a value but never used     @typescript-eslint/no-unused-vars
+   95:29  warning  'f' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  110:13  warning  'down' is assigned a value but never used   @typescript-eslint/no-unused-vars
+  110:65  warning  'right' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  125:11  warning  'al' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+C:\Users\facundo\Desktop\menusky\docs\qa\scripts\login\06-responsive-regression.mjs
+  17:23  warning  'log' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  73:61  warning  't' is assigned a value but never used    @typescript-eslint/no-unused-vars
+
+C:\Users\facundo\Desktop\menusky\docs\qa\scripts\login\lib.mjs
+  34:100  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+C:\Users\facundo\Desktop\menusky\lib\animation\useAnimatedNumber.ts
+  18:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\facundo\Desktop\menusky\lib\animation\useAnimatedNumber.ts:18:7
+  16 |       window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  17 |     ) {
+> 18 |       setDisplay(value);
+     |       ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  19 |       fromRef.current = value;
+  20 |       return;
+  21 |     }  react-hooks/set-state-in-effect
+
+✖ 19 problems (3 errors, 16 warnings)
+
+exit code: 1

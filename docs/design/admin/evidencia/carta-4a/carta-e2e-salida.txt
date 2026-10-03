@@ -1,0 +1,129 @@
+# node carta-e2e.mjs | 2026-10-03 16:21 | app: build de producción (next start 127.0.0.1:3420) de feat/admin-ui @ c476698 | mock propio 3422 detrás de fault-proxy 3421 | Chrome headless (Playwright 1.63.0, @axe-core/playwright 4.13.0)
+OK   CA-NR.01 sin sesión /admin | http://127.0.0.1:3420/login?redirect=%2Fadmin
+OK   CA-NR.01 sin sesión /admin/menu | http://127.0.0.1:3420/login?redirect=%2Fadmin%2Fmenu
+OK   CA-NR.01 sin sesión /admin/mesas | http://127.0.0.1:3420/login?redirect=%2Fadmin%2Fmesas
+OK   CA-NR.01 sin sesión /admin/apariencia | http://127.0.0.1:3420/login?redirect=%2Fadmin%2Fapariencia
+OK   CA-NR.01 mozo@demo.test ve el aviso y ningún dato | http://127.0.0.1:3420/admin/menu
+OK   CA-NR.01 cocina@demo.test ve el aviso y ningún dato | http://127.0.0.1:3420/admin/menu
+OK   CA-NR.01 sinstaff@demo.test ve el aviso y ningún dato | http://127.0.0.1:3420/admin/menu
+OK   CA-5.7 /admin muestra Inicio (no redirige) | http://127.0.0.1:3420/admin
+OK   CA-5.7 título Inicio | Inicio | MenuSky
+OK   CA-5.7 un h1 en Inicio
+OK   CA-5.7 título Carta | Carta | MenuSky
+OK   CA-5.7 un h1 en Carta
+OK   CA-5.6 Carta activa con aria-current (uno solo) | ["Carta"]
+OK   CA-5.8 nav 'Principal'
+OK   CA-5.2 tarjeta del local con 'X de Y mesas ocupadas' | El Buen Sabor /  / 3 de 3 mesas ocupadas
+OK   CA-NR.03 nombre y rol Admin | AD /  / Admin Demo /  / Admin
+OK   CA-NR.04 enlaces a Cocina y Salón
+OK   CA-NR.04 indicador de pendientes (hay pedido recibido y uno listo) | puntos=2
+OK   CA-5.8 'Saltar al contenido' apunta a main
+OK   CA-5.9 cambiar de sección no recarga el documento
+OK   CA-5.7 Atrás entre secciones
+OK   CA-6.2 Platos en carta | 8 vs 8
+OK   CA-6.2 Sin stock hoy | 1
+OK   CA-6.2 Pedidos hoy (4 del día sin cancelados) | 4
+OK   CA-NR.10 categorías en el orden de sort_order | ["Entradas","Platos principales","Bebidas"]
+OK   CA-NR.10 todos los platos (incluye sin stock) en orden | 8 platos
+OK   CA-6.2 'Pedidos hoy' sube en vivo con un pedido nuevo | 5
+OK   CA-NR.11 nombre vacío no crea (aviso en línea)
+OK   CA-NR.11 solo espacios no crea
+OK   CA-NR.11 se crea 'Postres' recortado y al final | ["Entradas","Platos principales","Bebidas","Postres"]
+OK   CA-6.3 píldora nueva al final, antes de '+ Categoría' | ["Todas·8","Entradas·2","Platos principales·3","Bebidas·3","Postres·0","Nueva Categoría"]
+OK   CA-6.3 píldora activa anunciada (aria-pressed)
+OK   CA-11.1 vacío de categoría con Pomo
+OK   CA-6.13 hoja del plato nuevo con el nombre seleccionado | {"id":"_r_2i_","v":"Nuevo plato","s":0,"e":11}
+OK   CA-NR.13 'Nuevo plato', precio 0, orden 0, en Postres
+OK   CA-7.7 nombre vacío: aviso en línea y no se guarda
+OK   CA-7.7 precio negativo: aviso y no se guarda
+OK   CA-7.7 precio con teclado numérico
+OK   CA-NR.16 se guardan nombre, precio y descripción
+OK   CA-7.3 la tarjeta muestra nombre y precio nuevos
+OK   CA-7.11 al cerrar queda en Carta sin ?plato | http://127.0.0.1:3420/admin/menu
+OK   CA-NR.16 descripción vacía se guarda como nulo
+OK   CA-7.6 el selector acepta solo imágenes
+OK   CA-7.6 archivo que no es imagen: mensaje claro
+OK   CA-7.6 imagen de más de 5 MB: mensaje claro
+OK   CA-NR.17 subida: vista previa con la URL del bucket | http://127.0.0.1:3421/storage/v1/object/public/menu-photos/8e14257a-3acd-4f07-97d0-ec2a39cbc4b2-1791054949762.png
+OK   CA-7.6 botón 'Cambiar foto' con foto cargada
+OK   CA-NR.17 la URL queda en el plato al guardar
+OK   RNF-S5 link de foto solo http/https
+OK   CA-NR.17 vaciar la URL deja el plato sin foto
+OK   CA-NR.18 grupo sin nombre no se crea
+OK   CA-7.8 'Obligatorio' es interruptor con estado
+OK   CA-NR.18 grupo creado (varias, obligatorio) | {"id":"02e57311-f2d0-4a21-a10b-45c558371b96","name":"Salsa","selection_type":"multiple","is_required":true,"item_option_choices":[]}
+OK   CA-7.8 alta anunciada
+OK   CA-NR.18 sin cambios no hay botón de guardar grupo
+OK   CA-NR.18 editar nombre y tipo | {"id":"02e57311-f2d0-4a21-a10b-45c558371b96","name":"Salsas","selection_type":"single","is_required":true,"item_option_choices":[]}
+OK   CA-NR.19 opciones con extra (vacío = 0) | ["Crema:0","Dulce de leche:500"]
+OK   CA-NR.19 nombre vacío no agrega
+OK   CA-NR.19 eliminar opción sin confirmación
+OK   CA-13.5 botón de eliminar opción >= 44 px
+OK   CA-NR.18 confirmación '¿Eliminar el grupo "Salsas"?'
+OK   CA-7.12 foco inicial en Cancelar
+OK   CA-NR.18 cancelar no borra
+OK   CA-NR.18 confirmar borra el grupo
+OK   CA-7.9 role=dialog con el nombre del plato
+OK   CA-7.9 aria-modal | true
+OK   CA-7.9 botón Cerrar >= 44 px
+OK   CA-7.11 la URL refleja la hoja
+OK   CA-7.9 Escape cierra sin cambios y el foco vuelve al plato
+OK   CA-7.4 Escape con cambios pide confirmar
+OK   CA-7.4 cancelar conserva lo escrito
+OK   CA-7.4 Atrás con cambios pide confirmar
+OK   CA-7.4 descartar cierra y no guarda
+OK   CA-7.11 Atrás cierra la hoja y deja en Carta | http://127.0.0.1:3420/admin/menu
+OK   CA-6.10 la píldora activa se mantiene
+OK   CA-6.6 interruptor con rol switch y nombre con el plato
+OK   CA-13.5 interruptor >= 44x44 | 60x44
+OK   CA-6.7 cambia antes de que responda el servidor (red lenta) | ui=false contador=2 server=true
+OK   CA-6.6 texto 'Sin stock hoy' en la tarjeta
+OK   CA-NR.14 el servidor queda sin stock
+OK   CA-NR.14 la carta del cliente ya no lo muestra
+OK   CA-NR.14 pedir ese plato da 409 | 409 {"error":"Uno de los platos ya no está disponible"}
+OK   CA-NR.14 al volver a Disponible reaparece
+OK   CA-6.9 5 toques: en pantalla queda invertido
+OK   CA-6.9 tras 3 s el servidor coincide
+OK   CA-6.9 tras recargar coincide
+OK   CA-6.8 falla: cambia, revierte, avisa y el contador vuelve | false->true
+OK   CA-6.8 el control queda usable
+OK   CA-NR.50 se puede reintentar
+OK   CA-6.11 sin distinguir mayúsculas
+OK   CA-6.11 sin distinguir tildes
+OK   CA-11.1 sin resultados: Pomo + texto
+OK   RNF-S4 el texto se muestra literal (sin HTML)
+OK   CA-6.11 'Limpiar' >= 44 px
+OK   CA-6.11 limpiar vuelve a todo
+OK   CA-NR.15 confirmación '¿Eliminar "Flan casero" de la carta?'
+OK   CA-7.12 foco inicial en Cancelar
+OK   CA-NR.15 cancelar (Escape) no borra y la hoja sigue
+OK   CA-NR.15 confirmar borra y vuelve a la carta
+OK   CA-NR.12 texto con recuento
+OK   CA-NR.12 cancelar no cambia nada
+OK   CA-NR.12 confirmar borra la categoría
+OK   CA-6.3 la píldora desaparece
+OK   CA-NR.20 /admin/menu/<id> abre la edición completa | grupos=2
+OK   CA-7.11 cerrar deja en Carta | http://127.0.0.1:3420/admin/menu
+OK   CA-NR.20 id inexistente: 404 | 404
+OK   CA-NR.20 plato de otro restaurante: 404 sin datos | 404
+OK   CA-11.5 error distinto del vacío
+OK   CA-11.5 el menú sigue usable
+OK   RNF-S3 sin detalle técnico
+OK   CA-11.5 Reintentar trae la carta sin recargar la página
+OK   CA-NR.02 tras cerrar sesión /admin pide login | http://127.0.0.1:3420/login?redirect=%2Fadmin
+OK   CA-5.3 sin menú lateral
+OK   CA-5.3 4 pestañas Inicio/Carta/Mesas/Estilo | ["Inicio","Carta","Mesas","Estilo"]
+OK   CA-5.6 pestaña Carta activa
+OK   CA-13.5 .adm-tabbar a >= 44x44 | 4 medidos, chicos=[]
+OK   CA-13.5 .adm-pill >= 44x44 | 5 medidos, chicos=[]
+OK   CA-13.5 .adm-dish .adm-switch >= 44x44 | 8 medidos, chicos=[]
+OK   CA-13.5 .adm-fab >= 44x44 | 1 medidos, chicos=[]
+OK   CA-13.5 .adm-account-btn >= 44x44 | 1 medidos, chicos=[]
+OK   CA-5.3 menú de cuenta: nombre, rol, Cocina, Salón, Cerrar sesión | Admin Demo /  / Admin · El Buen Sabor /  / 3 de 3 mesas ocupadas /  / Cocina / (hay pendientes) / Salón / (hay pendientes) / Cerrar sesión
+OK   CA-5.4 el último plato queda visible sobre la barra y el + | [true,true,true,true,true]
+OK   CA-7.1 hoja inferior pegada abajo | {"x":0,"y":38.40625,"width":360,"height":601.59375}
+OK   CA-7.10 'Guardar cambios' a la vista al pie | {"x":18,"y":584,"width":324,"height":44}
+OK   CA-7.11 Atrás cierra la hoja en celular
+OK   CA-NR.02 cerrar sesión desde el celular
+
+126 OK, 0 FAIL
