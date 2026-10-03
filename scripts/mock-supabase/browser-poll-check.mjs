@@ -93,7 +93,7 @@ try {
   await sleep(10000);
   const inWindow = polls.filter((t) => t >= t0);
   const gaps = inWindow.slice(1).map((t, i) => t - inWindow[i]);
-  check(`cadencia: ${inWindow.length} consultas en 10 s (esperado 3 o 4), separación ${gaps.map((g) => (g / 1000).toFixed(1)).join("/")} s`, inWindow.length >= 3 && inWindow.length <= 4 && gaps.every((g) => g >= 2500 && g <= 3800), JSON.stringify(gaps));
+  check(`cadencia: ${inWindow.length} consultas en 10 s (esperado 2 a 4 según cuándo cayó la primera), separación ${gaps.map((g) => (g / 1000).toFixed(1)).join("/")} s`, inWindow.length >= 2 && inWindow.length <= 4 && gaps.every((g) => g >= 2500 && g <= 3800), JSON.stringify(gaps));
   check("sin solapar: nunca hubo más de 1 consulta en vuelo", maxInflight <= 1, String(maxInflight));
 
   // 2) demora de un cambio de estado (5 cambios, <= 5 s)

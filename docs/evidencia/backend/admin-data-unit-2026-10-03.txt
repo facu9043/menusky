@@ -1,4 +1,4 @@
-node scripts/test-admin-data.mjs  (2026-10-03, node v24.19.0)
+node scripts/test-admin-data.mjs (2026-10-03, node v24.19.0)
 
 ##### TZ del proceso = UTC
 process.env.TZ = UTC; offset local de new Date(): 0 min
