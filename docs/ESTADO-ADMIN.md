@@ -7,16 +7,19 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 - Fuentes: `docs/design/admin-boceto-aprobado.md` (dirección de arte APROBADA para Carta y Mesas), `docs/STACK.md`, `docs/DECISIONES.md`.
 
 ## Paso actual
-Paso 1 EN CURSO: spec del Product Owner (delegado).
+Pasos 3a y 3b EN CURSO en paralelo (delegados en primer plano):
+- Backend en worktree `C:\Users\Windows10\Desktop\menusky-admin-sec`, rama `feat/admin-sec`.
+- Frontend en worktree `C:\Users\Windows10\Desktop\menusky-admin-brand`, rama `feat/admin-brand`.
+Ambas salen de `feat/admin-redesign` @ f7d256d, con `npm ci` hecho. Si se corta: revisar `git log` de cada rama y retomar.
 
 ## Pasos
 | Paso | Estado | Evidencia |
 |---|---|---|
-| 0. Preparación: identidad git (facu9043 / facu785@gmail.com, la del historial), `npm install` (exit 0), docs ESTADO-ADMIN y DECISIONES | HECHO | este commit |
-| 1. Spec `docs/specs/admin.md` (PO) | EN CURSO | |
-| 2. Arquitectura y contratos (`docs/STACK.md` sección admin, `docs/api/admin.md`) | PENDIENTE | |
-| 3a. Backend: SEC-LG-06, SEC-LG-07, R-2 + capa de datos del admin + Supabase simulado para pruebas | PENDIENTE | |
-| 3b. Frontend: archivo de marca único + Bricolage centralizada + tema MenuSky predeterminado | PENDIENTE | |
+| 0. Preparación: identidad git (facu9043 / facu785@gmail.com, la del historial), `npm install` (exit 0), docs ESTADO-ADMIN y DECISIONES | HECHO | 556d575 |
+| 1. Spec `docs/specs/admin.md` (PO) | HECHO: v1.0, 7 preguntas abiertas, ninguna bloquea; defaults aplicados (D-9) | 0385176 |
+| 2. Arquitectura y contratos (`docs/STACK.md` sección admin, `docs/api/admin.md`, D-3..D-9) | HECHO | f7d256d |
+| 3a. Backend: SEC-LG-06, SEC-LG-07, R-2 + capa de datos del admin + Supabase simulado para pruebas | EN CURSO (feat/admin-sec, puertos 3400-3419) | |
+| 3b. Frontend: archivo de marca único + Bricolage centralizada + tema MenuSky predeterminado | EN CURSO (feat/admin-brand, puertos 3420-3449) | |
 | 3c. Seguridad: auditoría temprana de la migración y del flujo de pedidos | PENDIENTE | |
 | 4. Frontend: admin (shell, Carta, Mesas, Inicio, Apariencia, Pomo) | PENDIENTE | |
 | 5. Seguridad final (por alcance) | PENDIENTE | |
