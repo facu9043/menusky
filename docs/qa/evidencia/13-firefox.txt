@@ -1,0 +1,10 @@
+browser firefox 155.0
+firefox mobile 3D state after interaction: live
+OK    CA-10.5 firefox mobile: h1 único, CTA visible, sin scroll horizontal (antes y después del 3D) :: {"maxSW":360,"iw":360,"h1":1,"cta":true,"afterSW":360,"state3D":"live"}
+FALLA CA-9.7 firefox mobile: consola sin errores/advertencias :: ["warning: [JavaScript Warning: \"WebGL context was lost.\" {file: \"http://127.0.0.1:3100/_next/static/chunks/18k167he0euag.js\" line: 1}]","warning: THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."]
+firefox tablet 3D state after interaction: live
+OK    CA-10.5 firefox tablet: h1 único, CTA visible, sin scroll horizontal (antes y después del 3D) :: {"maxSW":768,"iw":768,"h1":1,"cta":true,"afterSW":768,"state3D":"live"}
+FALLA CA-9.7 firefox tablet: consola sin errores/advertencias :: ["warning: [JavaScript Warning: \"WebGL context was lost.\" {file: \"http://127.0.0.1:3100/_next/static/chunks/18k167he0euag.js\" line: 1}]","warning: THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."]
+firefox desktop 3D state after interaction: live
+OK    CA-10.5 firefox desktop: h1 único, CTA visible, sin scroll horizontal (antes y después del 3D) :: {"maxSW":1440,"iw":1440,"h1":1,"cta":true,"afterSW":1440,"state3D":"live"}
+FALLA CA-9.7 firefox desktop: consola sin errores/advertencias :: ["warning: [JavaScript Warning: \"WebGL context was lost.\" {file: \"http://127.0.0.1:3100/_next/static/chunks/18k167he0euag.js\" line: 1}]","warning: THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.","warning: [JavaScript Warning: \"WebGL warning: drawElementsInstanced: Drawing to a destination rect smaller than the viewport rect. (This warning will only be given once)"]

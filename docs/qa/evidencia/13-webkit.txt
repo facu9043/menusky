@@ -1,0 +1,10 @@
+browser webkit 26.6
+webkit mobile 3D state after interaction: live
+OK    CA-10.5 webkit mobile: h1 único, CTA visible, sin scroll horizontal (antes y después del 3D) :: {"maxSW":360,"iw":360,"h1":1,"cta":true,"afterSW":360,"state3D":"live"}
+OK    CA-9.7 webkit mobile: consola sin errores/advertencias :: []
+webkit tablet 3D state after interaction: live
+OK    CA-10.5 webkit tablet: h1 único, CTA visible, sin scroll horizontal (antes y después del 3D) :: {"maxSW":768,"iw":768,"h1":1,"cta":true,"afterSW":768,"state3D":"live"}
+OK    CA-9.7 webkit tablet: consola sin errores/advertencias :: []
+webkit desktop 3D state after interaction: live
+OK    CA-10.5 webkit desktop: h1 único, CTA visible, sin scroll horizontal (antes y después del 3D) :: {"maxSW":1440,"iw":1440,"h1":1,"cta":true,"afterSW":1440,"state3D":"live"}
+OK    CA-9.7 webkit desktop: consola sin errores/advertencias :: []

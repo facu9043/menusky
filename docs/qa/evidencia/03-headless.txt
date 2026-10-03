@@ -1,0 +1,64 @@
+browser 154.0.8037.58 HEADLESS
+OK    CA-8.x 3D arranca en estado static (antes de interactuar) :: static
+3D-related resources before interaction: [
+  'http://127.0.0.1:3100/_next/image?url=%2Flanding%2Fburger-1-sq.webp&w=64&q=75',
+  'http://127.0.0.1:3100/_next/image?url=%2Flanding%2Fburger-2-sq.webp&w=64&q=75',
+  'http://127.0.0.1:3100/_next/image?url=%2Flanding%2Fburger-3-sq.webp&w=64&q=75'
+]
+OK    CA-8.x 3D pasa a live tras mover el mouse :: {"headed":false,"state":"live"}
+OK    CA-8.1 el 3D cambia de orientación/posición al mover el puntero :: {"diffAB":true,"sameAsPrevAfterSettle":false}
+OK    CA-8.6 con 3D live ningún CTA queda tapado (elementFromPoint) y canvas pointer-events:none :: {"links":[{"text":"MenuSky","ok":true,"top":"SPAN.ms-logo__word"},{"text":"Funciones","ok":true,"top":"A.ms-navlink"},{"text":"Cómo funciona","ok":true,"top":"A.ms-navlink"},{"text":"Preguntas","ok":true,"top":"A.ms-navlink"},{"text":"Ingresar","ok":true,"top":"A.ms-navlink ms-header__log"},{"text":"Pedí una demo (abre Whats","ok":true,"top":"SPAN."},{"text":"Pedí una demo (abre Whats","ok":true,"top":"SPAN."},{"text":"Mirá cómo funciona","ok":true,"top":"SPAN."},{"text":"Escribinos por email","ok":true,"top":"SPAN."}],"canvasPE":"none","ariaHidden":"true","tabindex":null}
+OK    RNF-A4 canvas aria-hidden y sin foco :: {"links":[{"text":"MenuSky","ok":true,"top":"SPAN.ms-logo__word"},{"text":"Funciones","ok":true,"top":"A.ms-navlink"},{"text":"Cómo funciona","ok":true,"top":"A.ms-navlink"},{"text":"Preguntas","ok":true,"top":"A.ms-navlink"},{"text":"Ingresar","ok":true,"top":"A.ms-navlink ms-header__log"},{"text":"Pedí una demo (abre Whats","ok":true,"top":"SPAN."},{"text":"Pedí una demo (abre Whats","ok":true,"top":"SPAN."},{"text":"Mirá cómo funciona","ok":true,"top":"SPAN."},{"text":"Escribinos por email","ok":true,"top":"SPAN."}],"canvasPE":"none","ariaHidden":"true","tabindex":null}
+OK    CA-8.6 clic real en CTA del hero con 3D live abre WhatsApp en pestaña nueva :: https://wa.me/5493624105311?text=Hola%2C%20vi%20MenuSky%20y%
+FALLA CA-2.8 página no genera error al abrir el enlace (consola) :: ["warning: THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."]
+requestPermission referenced in HTML: false
+OK    CA-8.2 sin giroscopio / sin pedido de permiso en JS cargado :: {"found":false}
+mobile 3D box {"x":61.921875,"y":179.0625,"width":282.078125,"height":282.078125}
+OK    CA-8.2 móvil: 3D con animación continua (dos capturas separadas difieren sin interactuar) :: {"live":true}
+SLOW3G timings(ms): h1 visible 671 CTA clicked 3012 readyState at click interactive 3D state at click static load 6447 paint marks {"first-paint":2664,"first-contentful-paint":2664}
+OK    CA-8.3 Slow 3G: h1 visible y CTA clickeable (abre WhatsApp) antes del load y con el 3D en static :: {"tH1":671,"tCta":3012,"readyStateAtClick":"interactive","state3D":"static","popup":"https://wa.me/5493624105311?text=Hola%2C"}
+OK    CA-8.3 Slow 3G: sin interacción el 3D no se descarga ni arranca (state static tras load+3s) :: {"stEnd":"static"}
+REDUCED {"running":0,"infinite":[],"hidden":0,"withTransform":0,"scrollBehavior":"auto|inline:","motionAttr":null,"res3d":3}
+OK    CA-8.4 reduced-motion: 3D permanece static aunque haya interacción :: static
+OK    CA-8.4 reduced-motion: sin animaciones CSS corriendo, sin entradas, contenido visible, scroll instantáneo :: {"running":0,"infinite":[],"hidden":0,"withTransform":0,"scrollBehavior":"auto|inline:","motionAttr":null,"res3d":3}
+OK    CA-8.4 reduced-motion: pantalla idéntica en dos capturas (nada se mueve solo) :: equal=true
+OK    CA-8.4 reduced-motion: nada reacciona al puntero (se excluye hover de botones: capturas en zona sin controles) :: informativo: hover de CTA puede cambiar color; ver CA-8.8
+OK    CA-8.4/§8.3 reduced-motion: salto a ancla instantáneo (scrollY a 150 ms ≈ final) :: {"y150":2602,"yEnd":2602}
+OK    CA-9.7 reduced-motion consola limpia :: []
+OK    CA-8.5 sin WebGL: fallback visible en el mismo lugar, sin CLS :: {"state":"static","fbVisible":true,"fbOpacity":"1","cls":0.0008799565905242627}
+OK    CA-8.5 sin WebGL: consola sin errores/advertencias :: []
+REVEAL initial: total 25 hidden(op 0) 25 sample [{"id":"beneficios","cls":"ms-benefits__head","op":"0","tr":"opacity 0.56s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.56s cubic-bezier(0.2, ","dur":"0.56s, 0.56s"},{"id":"beneficios","cls":"ms-benefits__item","op":"0","tr":"opacity 0.56s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.56s cubic-bezier(0.2, ","dur":"0.56s, 0.56s"},{"id":"beneficios","cls":"ms-benefits__item","op":"0","tr":"opacity 0.56s cubic-bezier(0.2, 0.8, 0.2, 1) 0.08s, transform 0.56s cubic-bezier","dur":"0.56s, 0.56s"}] [{"id":"preguntas","cls":"ms-faq__list","op":"0","tr":"opacity 0.56s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.56s cubic-bezier(0.2, ","dur":"0.56s, 0.56s"},{"id":"demo","cls":"ms-container ms-final__inner","op":"0","tr":"opacity 0.56s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.56s cubic-bezier(0.2, ","dur":"0.56s, 0.56s"}]
+reveal transition durations: [ '0.56s, 0.56s' ]
+OK    CA-8.7 secciones entran por scroll (algunos bloques arrancan ocultos) y quedan visibles :: {"hiddenBelow":25,"notVisibleAfterScroll":0}
+OK    CA-8.7 una sola vez: al volver arriba siguen visibles :: {"n":5,"notVisible":0}
+OK    CA-8.7 duración de entrada 200-600 ms :: ["0.56s, 0.56s"]
+OK    RNF-K2 sin JS: h1, subtítulo, CTA y secciones visibles; CTA es un enlace; sin elementos ocultos por reveal :: {"h1":"Que tus clientes pidan desde l","h1v":true,"leadv":true,"ctaHref":"https://wa.me/5493624105311?te","ctav":true,"revealHidden":0,"secs":[],"faq":7,"scrollW":1440,"iw":1440}
+OK    RNF-A5 primer Tab = enlace 'Saltar al contenido' visible :: {"text":"Saltar al contenido","href":"#contenido","visible":true,"outline":"solid 3px","top":12}
+OK    RNF-A5 el skip link lleva a #contenido :: {"hash":"#contenido","focus":"contenido","y":77}
+TAB ORDER 22 ["A:Saltar al contenido:-70","A:MenuSky:16","A:Funciones:16","A:Cómo funciona:16","A:Preguntas:16","A:Ingresar:16","A:Pedí una demo (abre WhatsApp:16","A:Pedí una demo (abre WhatsApp:682","A:Mirá cómo funciona:682","A:Escribinos por email:748","BUTTON:Pausar animación:2602","SUMMARY:¿Mis clientes tienen que ins:7118","SUMMARY:¿Cómo piden la cuenta?:7179","SUMMARY:¿Puedo cargar y cambiar mi c:7240","SUMMARY:¿Cómo consigo los QR de mis :7301","SUMMARY:¿Puedo cambiar los colores d:7362","SUMMARY:¿Cómo empiezo?:7423","A:Pedí una demo (abre WhatsApp:8078","A:Escribinos por email:8083","A:Pedí una demoWhatsApp +54 9 :8319","A:Escribinos por emailfacu785@:8375","A:Ingresar:8319"]
+OK    RNF-A2 foco visible (outline o box-shadow) en cada elemento tabulable :: []
+OK    RNF-A4 foco nunca cae en canvas ni en contenido aria-hidden :: []
+OK    RNF-A2 orden de tabulación sigue el orden visual (y no decrece) :: []
+OK    CA-5.3 'Ingresar' alcanzable con Tab y Enter navega a /login :: {"reached":true,"url":"http://127.0.0.1:3100/login"}
+OK    CA-7.3 título de /login con MenuSky (no Create Next App) :: MenuSky | Carta digital y pedidos por QR para restaurantes
+OK    CA-5.2 con cookie de sesión (ficticia) '/' sigue en '/' y responde 200, sin redirección :: {"status":200,"url":"http://127.0.0.1:3100/"}
+CTA states {"base":{"t":"none","bg":"rgb(255, 194, 26)","sh":"rgb(43, 23, 16) 0px 4px 0px 0px","outline":"none3pxoklab(0.707999 -0.00000712276 0.0000166297 / 0.5)","dur":"0.16s, 0.16s, 0.16s","filter":"none"},"hov":{"t":"matrix(1, 0, 0, 1, 0, -2)","bg":"rgb(255, 205, 63)","sh":"rgb(43, 23, 16) 0px 6px 0px 0px","outline":"none3pxoklab(0.707999 -0.00000712276 0.0000166297 / 0.5)","dur":"0.16s, 0.16s, 0.16s","filter":"none"},"foc":{"t":"none","bg":"rgb(255, 194, 26)","sh":"rgb(43, 23, 16) 0px 4px 0px 0px","outline":"solid3pxrgb(215, 38, 30)","dur":"0.16s, 0.16s, 0.16s","filter":"none"},"act":{"t":"matrix(1, 0, 0, 1, 0, 3)","bg":"rgb(255, 205, 63)","sh":"rgb(43, 23, 16) 0px 1px 0px 0px","outline":"solid3pxrgb(215, 38, 30)","dur":"0.16s, 0.16s, 0.16s","filter":"none"}}
+OK    CA-8.8 efecto visible en hover, foco y active :: {"hover":true,"focus":true,"active":true}
+OK    CA-8.8 duración de transición <= 300 ms :: [160,160,160,160,160,160,160,160,160,160,160,160]
+OK    CA-4.2 los nombres Recibido/En preparación/Listo/Entregado están en el flujo :: [true,true,true,true]
+flow current-step markers observed over 20s: ["3Cocina recibe el pedido y ell|2En preparación","1Escanean el QR de su mesaCada|1Recibido","2Eligen sus platos, con opcion|1Recibido","3Cocina recibe el pedido y ell|1Recibido","3Cocina recibe el pedido y ell|3Listo","3Cocina recibe el pedido y ell|4Entregado"]
+OK    CA-4.2/8.9 la secuencia avanza sola (>=4 estados distintos observados) :: ["3Cocina recibe el pedido y ell|2En preparación","1Escanean el QR de su mesaCada|1Recibido","2Eligen sus platos, con opcion|1Recibido","3Cocina recibe el pedido y ell|1Recibido","3Cocina recibe el pedido y ell|3Listo","3Cocina recibe el pedido y ell|4Entregado"]
+OK    RNF-A7 existe control para pausar la secuencia (>5 s) :: {"aria":null,"text":"Pausar animación"}
+OK    RNF-A7 la pausa detiene la secuencia (DOM idéntico 4 s después) :: equal=true
+DARK colors {"body":"lab(100 0 0)/lab(2.75381 0 0)","h1":"rgb(43, 23, 16)/rgba(0, 0, 0, 0)","lead":"rgb(106, 74, 60)/rgba(0, 0, 0, 0)","footer":"rgb(255, 245, 225)/rgb(43, 23, 16)","faq":"rgb(43, 23, 16)/rgba(0, 0, 0, 0)","htmlClass":"geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__variable h-full antialiased"}
+LIGHT colors {"body":"lab(100 0 0)/lab(2.75381 0 0)","h1":"rgb(43, 23, 16)/rgba(0, 0, 0, 0)","lead":"rgb(106, 74, 60)/rgba(0, 0, 0, 0)","footer":"rgb(255, 245, 225)/rgb(43, 23, 16)","faq":"rgb(43, 23, 16)/rgba(0, 0, 0, 0)","htmlClass":"geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__variable h-full antialiased"}
+OK    CA-8.12 modo oscuro del sistema: mismos colores computados que en claro :: {"same":true}
+OK    CA-8.12 (informativo; la prueba real es 04-dark-diff.mjs) captura byte a byte, sujeta a ruido de decodificación :: {"sameShot":false,"dark":255460,"light":255460}
+desktop@200pct {"maxSW":720,"iw":720,"off":[],"cta":true,"nav":{"loginLinkVisible":true,"buttons":[]}}
+OK    CA-10.4 desktop@200pct sin scroll horizontal, CTA presente :: {"maxSW":720,"iw":720,"off":[],"cta":true}
+tablet@200pct {"maxSW":384,"iw":384,"off":[],"cta":true,"nav":{"loginLinkVisible":true,"buttons":[]}}
+OK    CA-10.4 tablet@200pct sin scroll horizontal, CTA presente :: {"maxSW":384,"iw":384,"off":[],"cta":true}
+mobile@200pct(180px) {"maxSW":337,"iw":180,"off":["DIV.ms-header__actions:337","A.ms-btn ms-btn--cheddar ms-btn-:285","SPAN.:270","SPAN.ms-sr-only:218","DETAILS.ms-mmenu:337","SUMMARY.ms-mmenu__toggle:337"],"cta":true,"nav":{"loginLinkVisible":true,"buttons":[]}}
+FALLA CA-10.4 mobile@200pct(180px) sin scroll horizontal, CTA presente :: {"maxSW":337,"iw":180,"off":["DIV.ms-header__actions:337","A.ms-btn ms-btn--cheddar ms-btn-:285","SPAN.:270","SPAN.ms-sr-only:218","DETAILS.ms-mmenu:337","SUMMARY.ms-mmenu__toggle:337"],"cta":true}
+mobile@320px(WCAG reflow) {"maxSW":337,"iw":320,"off":["DIV.ms-header__actions:337","DETAILS.ms-mmenu:337","SUMMARY.ms-mmenu__toggle:337","NAV.ms-mmenu__panel:334","UL.:324","LI.:324"],"cta":true,"nav":{"loginLinkVisible":true,"buttons":[]}}
+FALLA CA-10.4 mobile@320px(WCAG reflow) sin scroll horizontal, CTA presente :: {"maxSW":337,"iw":320,"off":["DIV.ms-header__actions:337","DETAILS.ms-mmenu:337","SUMMARY.ms-mmenu__toggle:337","NAV.ms-mmenu__panel:334","UL.:324","LI.:324"],"cta":true}

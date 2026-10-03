@@ -1,0 +1,127 @@
+OK    CA-1.1 sin plantilla en HTML (sin scripts) :: []
+OK    CA-1.1 app/page.tsx borrado :: exists=false
+OK    CA-1.3 un solo h1 :: ["Que tus clientes pidan desde la mesa. Y tu cocina lo vea al instante."]
+ORDER ["HEADER#","SECTION#inicio","SECTION#beneficios","SECTION#como-funciona","SECTION#funciones","SECTION#equipo","HEADER#","HEADER#","HEADER#","SECTION#a-tu-medida","SECTION#preguntas","SECTION#demo","FOOTER#"]
+HEADINGS
+H1: Que tus clientes pidan desde la mesa. Y tu cocina lo vea al instante.
+H2: Menos idas y vueltas en cada mesa
+H3: La carta llega sola
+H3: El pedido va directo a cocina
+H3: Tu equipo, en la misma página
+H2: Así de simple
+H3: Escanean el QR de su mesa
+H3: Eligen sus platos, con opciones y extras
+H3: Cocina recibe el pedido y ellos lo siguen en vivo
+H2: Todo lo que pasa en tu salón, en un solo lugar
+H3: Carta digital
+H3: Pedidos por QR
+H3: Llamado al mozo
+H3: Pedir la cuenta
+H2: Cocina, salón y administración, en tiempo real
+H3: Cocina
+H3: Salón
+H3: Administración
+H2: Tu carta, con tu estilo
+H3: Opciones y extras por plato
+H3: Seguimiento del pedido
+H3: Temas de color
+H2: Preguntas frecuentes
+H3: ¿Mis clientes tienen que instalar una app?
+H3: ¿Cómo piden la cuenta?
+H3: ¿Puedo cargar y cambiar mi carta?
+H3: ¿Cómo consigo los QR de mis mesas?
+H3: ¿Puedo cambiar los colores de mi carta?
+H3: ¿Cómo empiezo?
+H2: ¿Querés ver MenuSky en tu restaurante?
+H2: Contacto
+H2: Equipo
+OK    RNF-A3 jerarquía sin saltos :: []
+OK    CA-1.4 sin peticiones a Supabase ni /api :: {"total":22,"bad":[]}
+OK    RNF-S4/S5 sin peticiones de terceros :: []
+OK    RNF-S4 sin cookies desde / :: []
+OK    RNF-S4 sin Set-Cookie :: none
+OK    CA-1.6 aviso comensal en el pie :: footer
+DEMO LINKS [{"href":"https://wa.me/5493624105311?text=Hola%2C%20vi%20MenuSky%20y%20quiero%20pedir%20una%20demo%20para%20mi%20restaurante%2C%20bar%20o%20caf%C3%A9.","text":"Pedí una demo (abre WhatsApp en una pestaña nueva)","target":"_blank","rel":"noopener noreferrer","aria":null,"area":"header"},{"href":"https://wa.me/5493624105311?text=Hola%2C%20vi%20MenuSky%20y%20quiero%20pedir%20una%20demo%20para%20mi%20restaurante%2C%20bar%20o%20caf%C3%A9.","text":"Pedí una demo (abre WhatsApp en una pestaña nueva)","target":"_blank","rel":"noopener noreferrer","aria":null,"area":"main"},{"href":"https://wa.me/5493624105311?text=Hola%2C%20vi%20MenuSky%20y%20quiero%20pedir%20una%20demo%20para%20mi%20restaurante%2C%20bar%20o%20caf%C3%A9.","text":"Pedí una demo (abre WhatsApp en una pestaña nueva)","target":"_blank","rel":"noopener noreferrer","aria":null,"area":"main"},{"href":"https://wa.me/5493624105311?text=Hola%2C%20vi%20MenuSky%20y%20quiero%20pedir%20una%20demo%20para%20mi%20restaurante%2C%20bar%20o%20caf%C3%A9.","text":"Pedí una demoWhatsApp +54 9 362 410-5311 (abre WhatsApp en una pestaña nueva)","target":"_blank","rel":"noopener noreferrer","aria":null,"area":"footer"}]
+OK    CA-2.1 todos 'Pedí una demo' con URL exacta :: {"n":4,"areas":["header","main","main","footer"],"mismatches":[]}
+OK    CA-2.1 presentes en header, main (hero+final) y footer :: ["header","main","footer"]
+OK    CA-2.1 todo enlace wa.me es la URL exacta :: 4
+OK    CA-2.4 WhatsApp target=_blank rel noopener noreferrer :: [["_blank","noopener noreferrer"],["_blank","noopener noreferrer"],["_blank","noopener noreferrer"],["_blank","noopener noreferrer"]]
+OK    CA-2.3 mailto exacto :: {"n":3,"items":["main:Escribinos por email","main:Escribinos por email","footer:Escribinos por emailfacu785@gmail.com"]}
+OK    CA-2.3 texto 'Escribinos por email' en hero y CTA final :: ["Escribinos por email","Escribinos por email","Escribinos por emailfacu785@gmail.com"]
+decoded mail: mailto:facu785@gmail.com?subject=Quiero una demo de MenuSky&body=Hola, vi MenuSky y quiero pedir una demo.
+
+Nombre:
+Local (restaurante, bar o café):
+Ciudad:
+Teléfono:
+
+decoded wa: https://wa.me/5493624105311?text=Hola, vi MenuSky y quiero pedir una demo para mi restaurante, bar o café.
+OK    CA-2.5 solo un email :: ["facu785@gmail.com"]
+long digit strings in markup: ["5493624105311","1 1 0 0 0 1","2 2 0 0 1 1","092 10 10 0 1 0-4","19 12-7 7-7-7","2 2 0 0 1-2","0 0 600 600","172 48 0 0 0 472 522","172 48 0 0 1 128 478","172 48 0 0 0 344 0","168 46 0 0 0 468 440","168 46 0 0 1 132 398","500 352 488 360","470 398 464 386","296 430 286 400","98 366 92 372","84 378 86 360","84 26 0 0 0 306 310","84 26 0 0 1 138 296","84 26 0 0 0 464 306","84 26 0 0 1 296 292","124 84 204 40 300 40","396 40 476 84 476 194","476 214 124 214 124 194","164 92 226 60 300 60","352 60 400 78 428 112","380 92 332 86 290 90","224 96 178 124 160 160","30 222 118","35 386 120","20 244 148","18 338 134","12 328 170","40 206 162","40 392 160","4 4 0 0 1-8 0","2 2 0 0 0 2 2","2 2 0 0 0 2-2","2 2 0 0 0 17 2","2 2 0 0 0-1","2 2 0 0 0 3","1 1 0 0 0 4 17","6 6 0 0 0 6 8","2 2 0 0 0-2 2","2 2 0 0 1-2 2","1 1 0 0 0 1-1","4 4 0 0 0-2","589 5 5 0 0 0-9","186 0 4 4 0 0 0-2","1 1 0 0 0 1 1","4 4 0 0 0-4-4","4 4 0 0 0-4 4","4 4 0 0 1 0 7","4 4 0 0 0-3-3","2 -2 25 25","9 12 2 2 4-4","2 2 0 0 1-2-2","7 10 5 5 5-5","0 0 120 120","0-24 19-38 42-38","42 14 42 38","10 0 10 0 10 0 10 0 10 0 10 0 10 0 10 0","+54 9 362 410-5311"]
+OK    CA-2.5 sin redes :: []
+OK    CA-2.5 sin formulario/inputs :: count 0
+OK    RNF-S2 externos con rel/target :: 4 externos
+ALL HREFS ["#contenido","#inicio","#funciones","#como-funciona","#preguntas","/login","https://wa.me/5493624105311?text=Hola%2C%20vi%20MenuSky%20y%","mailto:facu785@gmail.com?subject=Quiero%20una%20demo%20de%20"]
+OK    CA-2.6 anclas válidas, sin # vacío :: {"anchors":["#contenido","#inicio","#funciones","#como-funciona","#preguntas"],"bad":[],"empty":[]}
+internal /login 200
+OK    CA-2.6 rutas internas existentes (solo /login) :: ["/login"]
+OK    CA-2.7 sin Registrate/Probá gratis :: ok
+OK    CA-4.5 sin enlaces a /m/ ni 'Ver demo' :: ok
+OK    CA-5.1 Ingresar en header y footer -> /login :: ["header:/login","header:/login","footer:/login"]
+FORBIDDEN HITS:
+stock => s y opciones, marcás un plato como “Sin stock hoy”, creás las mesas y descargás sus Q
+Vercel => meta:og:url=https://menusky.vercel.app
+OK    CA-3.2 palabras prohibidas (salvo excepciones de la spec) :: {"real":[],"allowed":2}
+'$' contexts: ["panceta, tomate y lechuga$ 12.900Doble cheddarDos m","llones, cheddar y pepinos$ 14.500Clásica con papasM","n, lechuga y papas fritas$ 11.200Ver pedido · 2 íte","ms · $ 27.400Por qué MenuSkyMen"," pedido1× Burger completa$ 12.900A punto · Papas fr","itas1× Napolitana$ 13.800Total$ 26.700Envia","panceta, tomate y lechuga$ 12.900Doble cheddarDos m","llones, cheddar y pepinos$ 14.500Clásica con papasM","n, lechuga y papas fritas$ 11.200NapolitanaMuzzarel","la, tomate y albahaca$ 13.800Rúcula y morronesS","tomate, morrones y verdes$ 14.200Ver pedido · 2 íte","ms · $ 27.400Pedidos por QRCada","sOpcionalCheddar extra + $ 1.200Panceta + $ 1.500No","lla, por favor1Agregar · $ 14.100Seguimiento del pe"]
+'cuenta' contexts:
+iene una consulta · 21:12AtendidoPedir la cuentaTus clientes piden la cuenta sin levantar la mano. Tu equipo ve el llamado y la cuenta de la mesa 
+en sus paneles.Es una cuenta orientativa: no reemplaza a tu caja.¿En qué te ayudamos?Pedir la cuen
+taHacer una consultaLlamados de mozoMesa 4Pide la cuenta · 21:31Cuenta de hoy: AtendidoPara tu equipoCocina, salón y administr
+y el estado de cada mesa, de un vistazo.Llamados de mozoMesa 7Pide la cuenta · 21:14AtendidoMesasMesa 1LibreMesa 2Con pedidoMesa 3LibreMesa 4Listo
+ mesa y la carta se abre en el navegador de su celular.¿Cómo piden la cuenta?Desde la carta tocan “Llamar al mozo” y eligen “Pedir la cuenta”. Tu 
+equipo ve el llamado en el panel de salón y la cuenta de la mesa en sus paneles. Es una cuenta orientativa: no reemplaza a 
+aria-label=Ilustración: desde la carta el cliente elige Pedir la cuenta y en el panel de salón aparece Mesa 4, pide la cuenta, junto a la cue
+=Ilustración: panel de salón con el llamado de la Mesa 7, que pide la cuenta, y la grilla de mesas con los estados Libre, Con pedido, Listo y Llam
+digit+%/+/x metrics: null
+{
+ "title": "MenuSky | Carta digital y pedidos por QR para restaurantes",
+ "desc": "Carta digital y pedidos por QR para restaurantes, bares y cafés. Tus clientes piden desde la mesa y cocina lo ve al instante. Pedí tu demo por WhatsApp.",
+ "lang": "es-AR",
+ "canon": "https://menusky.vercel.app/",
+ "robots": null,
+ "og": {
+  "og:title": "MenuSky | Carta digital y pedidos por QR para restaurantes",
+  "og:description": "Carta digital y pedidos por QR para restaurantes, bares y cafés. Tus clientes piden desde la mesa y cocina lo ve al instante. Pedí tu demo por WhatsApp.",
+  "og:url": "https://menusky.vercel.app",
+  "og:site_name": "MenuSky",
+  "og:locale": "es_AR",
+  "og:image": "https://menusky.vercel.app/opengraph-image.png?opengraph-image.1jz7xfcnt27pg.png",
+  "og:image:type": "image/png",
+  "og:image:width": "1200",
+  "og:image:height": "630",
+  "og:image:alt": "MenuSky: carta digital y pedidos por QR para restaurantes, bares y cafés. Ilustración de una hamburguesa completa desarmada.",
+  "og:type": "website"
+ },
+ "tw": {
+  "twitter:card": "summary_large_image",
+  "twitter:title": "MenuSky | Carta digital y pedidos por QR para restaurantes",
+  "twitter:description": "Carta digital y pedidos por QR para restaurantes, bares y cafés. Tus clientes piden desde la mesa y cocina lo ve al instante. Pedí tu demo por WhatsApp.",
+  "twitter:image": "https://menusky.vercel.app/twitter-image.png?twitter-image.1jz7xfcnt27pg.png",
+  "twitter:image:alt": "MenuSky: carta digital y pedidos por QR para restaurantes, bares y cafés. Ilustración de una hamburguesa completa desarmada.",
+  "twitter:image:type": "image/png",
+  "twitter:image:width": "1200",
+  "twitter:image:height": "630"
+ },
+ "icons": [
+  "/favicon.ico?favicon.3azbvgt6mdexg.ico",
+  "/icon.svg?icon.1w6jm-jbhohrc.svg",
+  "/apple-icon.png?apple-icon.2j7cyafjx9-hs.png"
+ ]
+}
+OK    CA-6.1 title <=60 con MenuSky :: MenuSky | Carta digital y pedidos por QR para restaurantes (58)
+OK    CA-6.2 description 120-160 :: 152
+OK    CA-6.3 lang es-AR :: es-AR
+OK    CA-6.4 canonical == https://menusky.vercel.app/ (normalizado) :: literal: https://menusky.vercel.app/
+OK    CA-6.5 OG/Twitter completos :: https://menusky.vercel.app/opengraph-image.png?opengraph-image.1jz7xfcnt27pg.png
+OK    CA-6.7 sin noindex :: null
+OK    CA-6.9 sin lorem/TODO :: ok

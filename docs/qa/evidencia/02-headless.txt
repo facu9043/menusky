@@ -1,0 +1,85 @@
+browser 154.0.8037.58 HEADLESS
+mobile FOLD {"h1":true,"subtitle":true,"subText":"Carta digital + pedidos por QR","cta":true,"ctaBottom":481,"logo":true,"vh":640}
+OK    CA-1.2 mobile above-the-fold (logo, h1, subtítulo, CTA) :: {"h1":true,"subtitle":true,"subText":"Carta digital + pedidos por QR","cta":true,"ctaBottom":481,"logo":true,"vh":640}
+mobile 3D state before interaction: static after: live chunks: 12
+OK    CA-10.1 mobile sin scroll horizontal antes del 3D :: {"label":"before3D","maxSW":360,"iw":360,"samples":31,"offenders":[]}
+OK    CA-10.1 mobile sin scroll horizontal después del 3D (estado=live) :: {"label":"after3D","maxSW":360,"iw":360,"samples":31,"offenders":[]}
+OK    CA-9.3 mobile primera carga <= 1 MB (sin interacción) :: {"bytesKB":351.8,"requests":20}
+mobile bytes incl. 3D: {"bytesKB":383.7,"requests":25}
+OK    CA-9/RNF-P1 mobile CLS <= 0,1 en carga+scroll+3D :: {"cls":0}
+mobile IMGS [{"src":"image?url=%2Flanding%2Fburger-1-sq.webp&","nat":"64x64","rend":"26x26","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa con cheddar, panceta y tomate","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-2-sq.webp&","nat":"64x64","rend":"26x26","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa doble con cheddar","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-3-sq.webp&","nat":"64x64","rend":"26x26","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa con papas fritas","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-1-sq.webp&","nat":"64x64","rend":"48x48","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa con cheddar, panceta y tomate","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-2-sq.webp&","nat":"64x64","rend":"48x48","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa doble con cheddar","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-3-sq.webp&","nat":"64x64","rend":"48x48","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa con papas fritas","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fpizza-2-sq.webp&w","nat":"64x64","rend":"48x48","fit":"cover","loaded":true,"alt":"Foto de ejemplo: pizza napolitana con albahaca","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fpizza-1-sq.webp&w","nat":"64x64","rend":"48x48","fit":"cover","loaded":true,"alt":"Foto de ejemplo: pizza con morrones y hojas verdes","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fambiente-1.webp&w","nat":"360x270","rend":"284x213","fit":"cover","loaded":true,"alt":"Foto de ejemplo: mesa de un restaurante con platos y copas, en una terraza.","lazy":"lazy","w":"1200","h":"900"},{"src":"image?url=%2Flanding%2Fburger-1-wide.web","nat":"324x202","rend":"324x203","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa completa con cheddar","lazy":"lazy","w":"960","h":"600"}]
+OK    CA-10.2 mobile sin textos fuera de pantalla ni recortados en X :: []
+OK    CA-10.3 mobile objetivos táctiles >= 44x44 :: []
+FALLA CA-9.7 mobile consola sin errores/advertencias (3D live) :: ["warning: THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."]
+tablet FOLD {"h1":true,"subtitle":true,"subText":"Carta digital + pedidos por QR","cta":true,"ctaBottom":548,"logo":true,"vh":1024}
+OK    CA-1.2 tablet above-the-fold (logo, h1, subtítulo, CTA) :: {"h1":true,"subtitle":true,"subText":"Carta digital + pedidos por QR","cta":true,"ctaBottom":548,"logo":true,"vh":1024}
+tablet 3D state before interaction: static after: live chunks: 12
+OK    CA-10.1 tablet sin scroll horizontal antes del 3D :: {"label":"before3D","maxSW":768,"iw":768,"samples":17,"offenders":[]}
+OK    CA-10.1 tablet sin scroll horizontal después del 3D (estado=live) :: {"label":"after3D","maxSW":768,"iw":768,"samples":17,"offenders":[]}
+OK    CA-9.3 tablet primera carga <= 1 MB (sin interacción) :: {"bytesKB":351.8,"requests":20}
+tablet bytes incl. 3D: {"bytesKB":358.1,"requests":23}
+OK    CA-9/RNF-P1 tablet CLS <= 0,1 en carga+scroll+3D :: {"cls":0.0007797390377769868}
+tablet IMGS [{"src":"image?url=%2Flanding%2Fburger-1-sq.webp&","nat":"64x64","rend":"43x43","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa con cheddar, panceta y tomate","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-2-sq.webp&","nat":"64x64","rend":"43x43","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa doble con cheddar","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-3-sq.webp&","nat":"64x64","rend":"43x43","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa con papas fritas","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-1-sq.webp&","nat":"64x64","rend":"53x53","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa con cheddar, panceta y tomate","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-2-sq.webp&","nat":"64x64","rend":"53x53","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa doble con cheddar","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-3-sq.webp&","nat":"64x64","rend":"53x53","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa con papas fritas","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fpizza-2-sq.webp&w","nat":"64x64","rend":"53x53","fit":"cover","loaded":true,"alt":"Foto de ejemplo: pizza napolitana con albahaca","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fpizza-1-sq.webp&w","nat":"64x64","rend":"53x53","fit":"cover","loaded":true,"alt":"Foto de ejemplo: pizza con morrones y hojas verdes","lazy":"lazy","w":"120","h":"120"},{"src":"","nat":"0x0","rend":"657x369","fit":"cover","loaded":false,"alt":"Foto de ejemplo: mesa de un restaurante con platos y copas, en una terraza.","lazy":"lazy","w":"1200","h":"900"},{"src":"","nat":"0x0","rend":"416x260","fit":"cover","loaded":false,"alt":"Foto de ejemplo: hamburguesa completa con cheddar","lazy":"lazy","w":"960","h":"600"}]
+OK    CA-10.2 tablet sin textos fuera de pantalla ni recortados en X :: []
+FALLA CA-9.7 tablet consola sin errores/advertencias (3D live) :: ["warning: THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."]
+desktop FOLD {"h1":true,"subtitle":true,"subText":"Carta digital + pedidos por QR","cta":true,"ctaBottom":736,"logo":true,"vh":900}
+OK    CA-1.2 desktop above-the-fold (logo, h1, subtítulo, CTA) :: {"h1":true,"subtitle":true,"subText":"Carta digital + pedidos por QR","cta":true,"ctaBottom":736,"logo":true,"vh":900}
+desktop 3D state before interaction: static after: live chunks: 12
+OK    CA-10.1 desktop sin scroll horizontal antes del 3D :: {"label":"before3D","maxSW":1440,"iw":1440,"samples":16,"offenders":[]}
+OK    CA-10.1 desktop sin scroll horizontal después del 3D (estado=live) :: {"label":"after3D","maxSW":1440,"iw":1440,"samples":16,"offenders":[]}
+OK    CA-9.3 desktop primera carga <= 1 MB (sin interacción) :: {"bytesKB":353.6,"requests":21}
+desktop bytes incl. 3D: {"bytesKB":408.2,"requests":26}
+OK    CA-9/RNF-P1 desktop CLS <= 0,1 en carga+scroll+3D :: {"cls":0.0008555842228223594}
+desktop IMGS [{"src":"image?url=%2Flanding%2Fburger-1-sq.webp&","nat":"64x64","rend":"41x41","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa con cheddar, panceta y tomate","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-2-sq.webp&","nat":"64x64","rend":"41x41","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa doble con cheddar","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-3-sq.webp&","nat":"64x64","rend":"41x41","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa con papas fritas","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-1-sq.webp&","nat":"64x64","rend":"61x61","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa con cheddar, panceta y tomate","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-2-sq.webp&","nat":"64x64","rend":"61x61","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa doble con cheddar","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fburger-3-sq.webp&","nat":"64x64","rend":"61x61","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa con papas fritas","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fpizza-2-sq.webp&w","nat":"64x64","rend":"61x61","fit":"cover","loaded":true,"alt":"Foto de ejemplo: pizza napolitana con albahaca","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fpizza-1-sq.webp&w","nat":"64x64","rend":"61x61","fit":"cover","loaded":true,"alt":"Foto de ejemplo: pizza con morrones y hojas verdes","lazy":"lazy","w":"120","h":"120"},{"src":"image?url=%2Flanding%2Fambiente-1.webp&w","nat":"640x480","rend":"280x348","fit":"cover","loaded":true,"alt":"Foto de ejemplo: mesa de un restaurante con platos y copas, en una terraza.","lazy":"lazy","w":"1200","h":"900"},{"src":"image?url=%2Flanding%2Fburger-1-wide.web","nat":"420x262","rend":"416x260","fit":"cover","loaded":true,"alt":"Foto de ejemplo: hamburguesa completa con cheddar","lazy":"lazy","w":"960","h":"600"}]
+OK    CA-10.2 desktop sin textos fuera de pantalla ni recortados en X :: []
+FALLA CA-9.7 desktop consola sin errores/advertencias (3D live) :: ["warning: THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported."]
+SUMMARY {
+ "mobile": {
+  "firstLoad": {
+   "bytesKB": 351.8,
+   "requests": 20
+  },
+  "tot": {
+   "bytesKB": 383.7,
+   "requests": 25
+  },
+  "cls": 0,
+  "stateBefore": "static",
+  "stateAfter": "live",
+  "live": true,
+  "before": 360,
+  "after": 360
+ },
+ "tablet": {
+  "firstLoad": {
+   "bytesKB": 351.8,
+   "requests": 20
+  },
+  "tot": {
+   "bytesKB": 358.1,
+   "requests": 23
+  },
+  "cls": 0.0007797390377769868,
+  "stateBefore": "static",
+  "stateAfter": "live",
+  "live": true,
+  "before": 768,
+  "after": 768
+ },
+ "desktop": {
+  "firstLoad": {
+   "bytesKB": 353.6,
+   "requests": 21
+  },
+  "tot": {
+   "bytesKB": 408.2,
+   "requests": 26
+  },
+  "cls": 0.0008555842228223594,
+  "stateBefore": "static",
+  "stateAfter": "live",
+  "live": true,
+  "before": 1440,
+  "after": 1440
+ }
+}

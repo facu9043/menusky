@@ -1,0 +1,3 @@
+{ "name": "menusky-qa-scripts", "private": true, "version": "0.0.0",
+  "description": "QA scripts (independent from the app). Run: npm install && node <script>.mjs",
+  "dependencies": { "playwright": "1.63.0", "@axe-core/playwright": "4.13.0" } }
