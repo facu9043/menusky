@@ -9,7 +9,7 @@ import { todayRangeAR } from "@/lib/time/today";
 export type AdminLiveValue = AdminLiveSnapshot & {
   /** Estado de la conexión en vivo (CA-8.15). */
   connected: boolean;
-  /** Vuelve a leer todo (al reconectar o tras crear/borrar mesa). */
+  /** Vuelve a leer todo. Lo llama la pantalla tras crear/borrar una mesa; también se usa al reconectar. */
   refresh(): Promise<void>;
   /** Para aria-live (CA-8.6). Sin sonido ni toast. */
   lastCallEvent: { tableLabel: string; at: number } | null;
@@ -89,13 +89,8 @@ export function AdminLiveProvider({
         { event: "UPDATE", schema: "public", table: "waiter_calls", filter: `restaurant_id=eq.${restaurantId}` },
         scheduleRefresh
       )
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "tables", filter: `restaurant_id=eq.${restaurantId}` },
-        scheduleRefresh
-      )
-      // DELETE no admite filtro por restaurante (solo trae la clave): se relee y listo.
-      .on("postgres_changes", { event: "DELETE", schema: "public", table: "tables" }, scheduleRefresh)
+      // `tables` NO se escucha (SEC-AD-04): no está en la publicación de Realtime y los DELETE
+      // no admiten filtro por restaurante. Quien crea o borra una mesa llama a `refresh()`.
       .subscribe((status) => {
         const ok = status === "SUBSCRIBED";
         if (aliveRef.current) setConnected(ok);
