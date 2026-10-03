@@ -1,45 +1,13 @@
 /* ==========================================================================
    MenuSky: login (/login). Dirección: docs/design/login-direccion.md
-   Tokens --ms-* con los MISMOS valores que app/(landing)/landing.css
-   (duplicados a propósito, ver docs/STACK.md; deuda: archivo de marca común).
+   Tokens --ms-* comunes en app/brand.css (.ms-brand); acá solo se usan.
    Movimiento liviano (PC viejas): solo transform y opacity, sin filtros,
    sin blur, sin backdrop-filter, bucles finitos. Un único aspecto.
    ========================================================================== */
 
 .ms-login {
-  /* Paleta "hamburguesa completa" */
-  --ms-bun: #fff5e1;
-  --ms-paper: #fffdf8;
-  --ms-toasted: #f4d9a6;
-  --ms-crust: #8a5a3b;
-  --ms-cheddar: #ffc21a;
-  --ms-mustard: #e3a008;
-  --ms-tomato: #d7261e;
-  --ms-ketchup: #a8141b;
-  --ms-lettuce: #4c9a2a;
-  --ms-lettuce-dark: #2e6b1a;
-  --ms-patty: #2b1710;
-  --ms-patty-soft: #6a4a3c;
-  --ms-line: rgba(43, 23, 16, 0.14);
-
-  /* Tipografía */
-  --ms-font-display: var(--font-ms-display), var(--font-geist-sans), system-ui, sans-serif;
-  --ms-font-body: var(--font-geist-sans), system-ui, sans-serif;
-  --ms-font-mono: var(--font-geist-mono), ui-monospace, monospace;
-
-  /* Forma */
-  --ms-radius-s: 8px;
-  --ms-radius: 14px;
-  --ms-radius-l: 24px;
-  --ms-radius-xl: 36px;
-  --ms-shadow-stamp: 0 4px 0 0 var(--ms-patty);
-
-  /* Movimiento */
-  --ms-dur-fast: 160ms;
-  --ms-dur: 280ms;
-  --ms-dur-reveal: 560ms;
-  --ms-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ms-ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Tokens de marca (paleta, tipografía, forma, movimiento): app/brand.css,
+     clase .ms-brand en el mismo elemento. Acá solo los propios del login. */
 
   /* Propios del login */
   --lg-pad: clamp(12px, 4vw, 24px);
