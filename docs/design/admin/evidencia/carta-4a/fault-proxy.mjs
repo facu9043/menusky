@@ -1,10 +1,10 @@
 // Proxy de pruebas (solo Frontend, scratchpad): reenvía todo al mock de
 // Supabase y, si se pide, hace fallar lecturas concretas con 500.
-// POST /__fault {"categories":true} | {"categories":false}
+// POST /__fault {"categories":true} | {"categories":false} | {"tables":true} (lectura de mesas)
 import http from "node:http";
 import net from "node:net";
 const [listen, target] = [Number(process.argv[2]), Number(process.argv[3])];
-const faults = { categories: false, menuItemsWrite: false };
+const faults = { categories: false, menuItemsWrite: false, tables: false };
 const server = http.createServer((req, res) => {
   if (req.url.startsWith("/__fault")) {
     let body = "";
@@ -17,6 +17,11 @@ const server = http.createServer((req, res) => {
     return;
   }
   if (faults.categories && req.method === "GET" && req.url.startsWith("/rest/v1/categories")) {
+    res.writeHead(500, { "content-type": "application/json" });
+    res.end(JSON.stringify({ code: "XX000", message: "fault injected" }));
+    return;
+  }
+  if (faults.tables && req.method === "GET" && req.url.startsWith("/rest/v1/tables")) {
     res.writeHead(500, { "content-type": "application/json" });
     res.end(JSON.stringify({ code: "XX000", message: "fault injected" }));
     return;
