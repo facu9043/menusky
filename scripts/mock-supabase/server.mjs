@@ -494,8 +494,9 @@ function handleRest(req, url, ctx, body) {
     for (const item of items) {
       if (!item || typeof item !== "object") throw new PgError(400, "PGRST102", "Invalid JSON body");
       const row = { id: uuid(), ...SCHEMA[table].defaults(), ...item };
-      validateRow(table, row);
+      // Postgres evalúa el WITH CHECK de RLS antes que las claves foráneas.
       if (!allowed(ctx, table, "insert", row)) throw rlsError(ctx, table);
+      validateRow(table, row);
       created.push(row);
     }
     for (const row of created) {
