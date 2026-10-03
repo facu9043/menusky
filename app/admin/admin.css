@@ -973,6 +973,13 @@ textarea.adm-input {
   position: absolute;
   right: 0.125rem;
 }
+/* Sin la cruz nativa de type=search: el botón "Limpiar búsqueda" es el propio. */
+.adm-search input::-webkit-search-cancel-button,
+.adm-search input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
 
 /* Secciones por categoría */
 .adm-cat {
@@ -1124,7 +1131,7 @@ textarea.adm-input {
 
 /* Sin stock: se atenúan foto y fondo; el texto sigue en AA (CA-6.5). */
 .adm-dish[data-off="true"] {
-  background: #f7eedd;
+  background: var(--ms-bun); /* tomate sobre miga: 4,64:1 (CA-6.5) */
   border-color: var(--ms-patty-soft);
   box-shadow: 0 3px 0 var(--ms-patty-soft);
 }
