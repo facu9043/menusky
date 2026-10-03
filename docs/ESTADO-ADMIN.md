@@ -7,13 +7,13 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 - Fuentes: `docs/design/admin-boceto-aprobado.md` (dirección de arte APROBADA para Carta y Mesas), `docs/STACK.md`, `docs/DECISIONES.md`.
 
 ## Paso actual
-Paso 0 hecho (preparación). Siguiente: paso 1, spec del Product Owner.
+Paso 1 EN CURSO: spec del Product Owner (delegado).
 
 ## Pasos
 | Paso | Estado | Evidencia |
 |---|---|---|
 | 0. Preparación: identidad git (facu9043 / facu785@gmail.com, la del historial), `npm install` (exit 0), docs ESTADO-ADMIN y DECISIONES | HECHO | este commit |
-| 1. Spec `docs/specs/admin.md` (PO) | PENDIENTE | |
+| 1. Spec `docs/specs/admin.md` (PO) | EN CURSO | |
 | 2. Arquitectura y contratos (`docs/STACK.md` sección admin, `docs/api/admin.md`) | PENDIENTE | |
 | 3a. Backend: SEC-LG-06, SEC-LG-07, R-2 + capa de datos del admin + Supabase simulado para pruebas | PENDIENTE | |
 | 3b. Frontend: archivo de marca único + Bricolage centralizada + tema MenuSky predeterminado | PENDIENTE | |
