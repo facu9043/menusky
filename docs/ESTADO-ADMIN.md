@@ -76,7 +76,7 @@ el Celeron se usa como meta.
 
 ## Procesos levantados (puerto, PID, dueño)
 - Ninguno: en la pausa se pararon el 3500 (`next dev`), el 3501 (mock) y el 4317 (oficina), todos de la sesión principal.
-- Equipo: (ninguno)
+- Equipo: (ninguno). Frontend paso 4b paró sus procesos (3420 next start, 3421 fault-proxy, 3422 mock) el 2026-10-05; netstat 3420-3449 sin LISTENING (solo TIME_WAIT de cierre).
 
 ## Reglas operativas
 - Puertos: ver D-1 en `docs/DECISIONES.md`. 3500 = `next dev` del Director: no tocar. Nunca matar procesos ajenos.

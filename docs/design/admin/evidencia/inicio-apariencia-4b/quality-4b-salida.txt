@@ -1,0 +1,51 @@
+OK   axe Inicio 1440: 0 violaciones | 23 reglas pasan
+OK   axe Inicio con error parcial 1440: 0 violaciones | 23 reglas pasan
+OK   axe Inicio sin poder leer nada 1440: 0 violaciones | 23 reglas pasan
+OK   axe Apariencia 1440: 0 violaciones | 28 reglas pasan
+OK   axe Apariencia con hex inválido y aviso de contraste 1440: 0 violaciones | 28 reglas pasan
+OK   axe Apariencia error del tema 1440: 0 violaciones | 23 reglas pasan
+OK   axe Carta error 1440: 0 violaciones | 23 reglas pasan
+OK   axe Mesas error 1440: 0 violaciones | 23 reglas pasan
+OK   axe Carta búsqueda sin resultados 1440: 0 violaciones | 27 reglas pasan
+OK   axe Mesas filtro sin resultados 1440: 0 violaciones | 23 reglas pasan
+OK   axe Inicio cargando 1440: 0 violaciones | 23 reglas pasan
+OK   axe Apariencia cargando 1440: 0 violaciones | 23 reglas pasan
+OK   axe Carta cargando 1440: 0 violaciones | 23 reglas pasan
+OK   axe Mesas cargando 1440: 0 violaciones | 23 reglas pasan
+OK   axe Inicio sin pedidos 1440: 0 violaciones | 23 reglas pasan
+OK   axe Carta vacía 1440: 0 violaciones | 23 reglas pasan
+OK   axe Mesas vacía 1440: 0 violaciones | 24 reglas pasan
+OK   axe Inicio 360: 0 violaciones | 23 reglas pasan
+OK   axe Inicio con error parcial 360: 0 violaciones | 23 reglas pasan
+OK   axe Inicio sin poder leer nada 360: 0 violaciones | 23 reglas pasan
+OK   axe Apariencia 360: 0 violaciones | 28 reglas pasan
+OK   axe Apariencia con hex inválido y aviso de contraste 360: 0 violaciones | 28 reglas pasan
+OK   axe Apariencia error del tema 360: 0 violaciones | 23 reglas pasan
+OK   axe Carta error 360: 0 violaciones | 23 reglas pasan
+OK   axe Mesas error 360: 0 violaciones | 23 reglas pasan
+OK   axe Carta búsqueda sin resultados 360: 0 violaciones | 28 reglas pasan
+OK   axe Mesas filtro sin resultados 360: 0 violaciones | 24 reglas pasan
+OK   axe Inicio cargando 360: 0 violaciones | 23 reglas pasan
+OK   axe Apariencia cargando 360: 0 violaciones | 23 reglas pasan
+OK   axe Carta cargando 360: 0 violaciones | 23 reglas pasan
+OK   axe Mesas cargando 360: 0 violaciones | 23 reglas pasan
+OK   axe Inicio sin pedidos 360: 0 violaciones | 23 reglas pasan
+OK   axe Carta vacía 360: 0 violaciones | 23 reglas pasan
+OK   axe Mesas vacía 360: 0 violaciones | 24 reglas pasan
+OK   Sin scroll horizontal a 320px en 10 pantallas/estados
+OK   Sin scroll horizontal a 360px en 10 pantallas/estados
+OK   Sin scroll horizontal a 390px en 10 pantallas/estados
+OK   Sin scroll horizontal a 768px en 10 pantallas/estados
+OK   Sin scroll horizontal a 1440px en 10 pantallas/estados
+     orden de Tab desde el h1: Mesas ocupadas3 de 3Ver ocup > Llamados pendientes1Ver mesa > Platos sin stock1Ver en la c > Nuevo plato > Nueva mesa > Imprimir todos los QR > Ir al Salón > Saltar al contenidoMenuSkyIn > Saltar al contenido > MenuSky > Inicio > Carta
+OK   Teclado Inicio: Tab recorre los 3 datos enlace y los 4 accesos en orden visual
+OK   Foco visible >= 2 px en los enlaces de Inicio
+OK   Teclado: Enter en 'Nueva mesa' abre el alta
+OK   Teclado Apariencia: el selector de color se alcanza y su muestra muestra el foco (>= 2 px) | {"w":3,"s":"solid"}
+OK   Tab del selector va a su campo hex
+OK   Foco visible en 'Usar este tema' | 3px
+OK   reduced-motion: accesos y datos sin transición, Pomo sin entrada | {"tile":"0s","kpi":"0s","pomo":"none"}
+OK   Sin reduced-motion: hundido de accesos (transform) y entrada de Pomo activos | {"tile":"0.16s, 0.16s","kpi":"0.16s, 0.16s","pomo":"adm-rise"}
+     pasadas de axe: 34
+
+47 OK, 0 FAIL

@@ -1,0 +1,12 @@
+Primera corrida de quality-4b.mjs (2026-10-05), ANTES de marcar las vistas previas de tema como imagen.
+Las 4 fallas eran de color-contrast DENTRO de las muestras de los temas (ThemeMockupCard), que pintan
+la paleta de cada tema con sus propios colores (p. ej. el precio en "acento primario" sobre "fondo de
+tarjeta" de Clásico, Glaciar y Madera). Es preexistente: el editor anterior usaba las mismas muestras.
+Arreglo: cada muestra es UNA imagen con nombre (role="img", aria-label "Vista previa del tema <X>")
+con su interior inert. El contraste real de esas paletas en la carta del cliente queda como hallazgo
+aparte (no es de esta pantalla).
+
+FAIL axe Apariencia 1440: 0 violaciones | color-contrast(serious) x9: .adm-preset:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) ; .adm-preset:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) ; .adm-preset:nth-child(5) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3)
+FAIL axe Apariencia con hex inválido y aviso de contraste 1440: 0 violaciones | color-contrast(serious) x11: .adm-preset:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) ; .adm-preset:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) ; .adm-preset:nth-child(5) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3)
+FAIL axe Apariencia 360: 0 violaciones | color-contrast(serious) x9: (mismos nodos)
+FAIL axe Apariencia con hex inválido y aviso de contraste 360: 0 violaciones | color-contrast(serious) x11: (mismos nodos)
