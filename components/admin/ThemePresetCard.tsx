@@ -1,39 +1,44 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
 import { ThemeMockupCard } from "@/components/admin/ThemeMockupCard";
-import { cn } from "@/lib/utils";
 import type { ThemePreset } from "@/lib/theme/presets";
 
+// Tarjeta de un tema (CA-10.2): borde y sombra sello; el activo se marca con
+// el texto "Activo" + ícono además del aro cheddar, y su botón dice "Tema
+// actual" (deshabilitado). Mientras se aplica uno, todos quedan deshabilitados
+// y el elegido dice "Aplicando..." (CA-10.4).
 export function ThemePresetCard({
   preset,
   isActive,
+  isDefault,
+  applying,
   disabled,
   onSelect,
 }: {
   preset: ThemePreset;
   isActive: boolean;
+  isDefault: boolean;
+  applying: boolean;
   disabled: boolean;
   onSelect: () => void;
 }) {
   return (
-    <Card className={cn("flex flex-col gap-2 p-3", isActive && "ring-2 ring-primary")}>
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium">{preset.label}</span>
-        {isActive && <Badge variant="secondary">Activo</Badge>}
+    <li className="adm-preset" data-active={isActive || undefined}>
+      <div className="adm-preset__head">
+        <h3 className="adm-preset__name">{preset.label}</h3>
+        {isDefault ? <span className="adm-tag adm-tag--default">Predeterminado</span> : null}
+        {isActive ? (
+          <span className="adm-tag adm-tag--active">
+            <Check aria-hidden="true" />
+            Activo
+          </span>
+        ) : null}
       </div>
-      <ThemeMockupCard theme={preset.theme} />
-      <Button
-        type="button"
-        size="sm"
-        variant={isActive ? "outline" : "default"}
-        disabled={disabled || isActive}
-        onClick={onSelect}
-      >
-        {isActive ? "Tema actual" : "Usar este tema"}
-      </Button>
-    </Card>
+      <ThemeMockupCard theme={preset.theme} label={`Vista previa del tema ${preset.label}`} />
+      <button type="button" className="adm-btn" disabled={disabled || isActive} onClick={onSelect}>
+        {isActive ? "Tema actual" : applying ? "Aplicando..." : "Usar este tema"}
+      </button>
+    </li>
   );
 }

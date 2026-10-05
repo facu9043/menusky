@@ -7,12 +7,14 @@ export const metadata: Metadata = {
   title: "Apariencia",
 };
 
-// Parte 4a: el editor de temas sigue con su componente actual (que trae su
-// propio h1 "Apariencia"), dentro del shell nuevo. Rediseño en la parte 4b.
+// Apariencia (HU-10). Si la lectura del tema falla, la atrapa error.tsx
+// (CA-11.5): nunca se edita sobre el tema predeterminado como si fuera el
+// guardado.
 export default async function AdminAppearancePage() {
   const staff = await getStaffUser();
   if (!staff) return null;
 
+  // Lanza AdminDataError si la lectura falla.
   const theme = await getRestaurantTheme(staff.restaurantId);
 
   return (

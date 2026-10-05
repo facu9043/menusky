@@ -1,11 +1,14 @@
 // Proxy de pruebas (solo Frontend, scratchpad): reenvía todo al mock de
 // Supabase y, si se pide, hace fallar lecturas concretas con 500.
 // POST /__fault {"categories":true} | {"categories":false} | {"tables":true} (lectura de mesas)
+// Paso 4b: {"calls":true} (lectura de llamados: hace fallar la instantánea en vivo)
+// y {"theme":true} (lectura del tema: GET restaurants?select=theme).
+// {"delay":ms}: demora las lecturas GET /rest/v1/* (para ver los esqueletos de carga).
 import http from "node:http";
 import net from "node:net";
 const [listen, target] = [Number(process.argv[2]), Number(process.argv[3])];
-const faults = { categories: false, menuItemsWrite: false, tables: false };
-const server = http.createServer((req, res) => {
+const faults = { categories: false, menuItemsWrite: false, tables: false, calls: false, theme: false, delay: 0 };
+const server = http.createServer(async (req, res) => {
   if (req.url.startsWith("/__fault")) {
     let body = "";
     req.on("data", (c) => (body += c));
@@ -16,6 +19,9 @@ const server = http.createServer((req, res) => {
     });
     return;
   }
+  if (faults.delay > 0 && req.method === "GET" && req.url.startsWith("/rest/v1/")) {
+    await new Promise((r) => setTimeout(r, faults.delay));
+  }
   if (faults.categories && req.method === "GET" && req.url.startsWith("/rest/v1/categories")) {
     res.writeHead(500, { "content-type": "application/json" });
     res.end(JSON.stringify({ code: "XX000", message: "fault injected" }));
@@ -23,6 +29,14 @@ const server = http.createServer((req, res) => {
   }
   if (faults.tables && req.method === "GET" && req.url.startsWith("/rest/v1/tables")) {
     res.writeHead(500, { "content-type": "application/json" });
+    res.end(JSON.stringify({ code: "XX000", message: "fault injected" }));
+    return;
+  }
+  if (
+    (faults.calls && req.method === "GET" && req.url.startsWith("/rest/v1/waiter_calls")) ||
+    (faults.theme && req.method === "GET" && req.url.startsWith("/rest/v1/restaurants") && req.url.includes("select=theme"))
+  ) {
+    res.writeHead(500, { "content-type": "application/json", "access-control-allow-origin": req.headers.origin || "*" });
     res.end(JSON.stringify({ code: "XX000", message: "fault injected" }));
     return;
   }
