@@ -163,7 +163,7 @@ export function ThemeCustomEditor({
               aria-labelledby={previewId}
               aria-describedby={warnings.length > 0 ? warnId : undefined}
             >
-              <ThemeMockupCard theme={theme} />
+              <ThemeMockupCard theme={theme} label="Vista previa de tu paleta" />
             </figure>
             <div id={warnId} role="status" className={warnings.length > 0 ? "adm-look__warn" : undefined}>
               {warnings.map((warning) => (

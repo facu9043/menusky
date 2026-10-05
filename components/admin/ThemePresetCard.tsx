@@ -35,7 +35,7 @@ export function ThemePresetCard({
           </span>
         ) : null}
       </div>
-      <ThemeMockupCard theme={preset.theme} />
+      <ThemeMockupCard theme={preset.theme} label={`Vista previa del tema ${preset.label}`} />
       <button type="button" className="adm-btn" disabled={disabled || isActive} onClick={onSelect}>
         {isActive ? "Tema actual" : applying ? "Aplicando..." : "Usar este tema"}
       </button>
