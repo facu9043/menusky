@@ -20,6 +20,10 @@ import type { AdminCategory, AdminMenuItem } from "@/lib/types/adminMenu";
 
 const ALL = "all";
 const DISH_PARAM = "plato";
+// Acceso "Nuevo plato" de Inicio (CA-9.5): ?nuevo=plato arranca el mismo
+// flujo que el botón "Nuevo plato" (elegir categoría, o crear la primera si
+// no hay). Otros valores se ignoran; al montar se quita de la URL.
+const NEW_PARAM = "nuevo";
 
 function dishUrl(id: string): string {
   return `/admin/menu?${DISH_PARAM}=${encodeURIComponent(id)}`;
@@ -62,8 +66,10 @@ export function MenuBoard({
   const [openId, setOpenId] = useState<string | null>(() => searchParams.get(DISH_PARAM));
   const [newId, setNewId] = useState<string | null>(null);
   const [discardOpen, setDiscardOpen] = useState(false);
-  const [catFormOpen, setCatFormOpen] = useState(false);
-  const [pickOpen, setPickOpen] = useState(false);
+  const [catFormOpen, setCatFormOpen] = useState(
+    () => searchParams.get(NEW_PARAM) === "plato" && categories.length === 0
+  );
+  const [pickOpen, setPickOpen] = useState(() => searchParams.get(NEW_PARAM) === "plato" && categories.length > 0);
   const [creating, setCreating] = useState(false);
   const [deleteCat, setDeleteCat] = useState<AdminCategory | null>(null);
   const [deleteCatOpen, setDeleteCatOpen] = useState(false);
@@ -78,6 +84,13 @@ export function MenuBoard({
   useEffect(() => {
     openIdRef.current = openId;
   }, [openId]);
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.has(NEW_PARAM)) {
+      url.searchParams.delete(NEW_PARAM);
+      window.history.replaceState(null, "", url.pathname + url.search);
+    }
+  }, []);
 
   // ---------- Datos que se ven ----------
   const view = useMemo(

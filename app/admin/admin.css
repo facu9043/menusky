@@ -2229,6 +2229,408 @@ textarea.adm-input {
   .adm-skip {
     transition: transform var(--ms-dur-fast) var(--ms-ease-out);
   }
+
+  /* Inicio: las tarjetas que son enlace y los accesos se hunden al tocarlos. */
+  a.adm-kpi,
+  .adm-tile {
+    transition:
+      transform var(--ms-dur-fast) var(--ms-ease-out),
+      box-shadow var(--ms-dur-fast) var(--ms-ease-out);
+  }
+  a.adm-kpi:active,
+  .adm-tile:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 var(--ms-patty);
+  }
+}
+
+/* =====================================================================
+   Paso 4b: Inicio (HU-9) y Apariencia (HU-10), idénticos a
+   docs/design/admin/maquetas/ (piezas mq-* de maquetas.css, renombradas).
+   ===================================================================== */
+
+/* ---------- Inicio ---------- */
+.adm-home__head {
+  margin-bottom: 1.25rem;
+}
+.adm-home__date {
+  margin: 0.5rem 0 0;
+  color: var(--ms-patty-soft);
+  font-weight: 600;
+  font-size: 1rem;
+}
+.adm-home__h2 {
+  margin: 0 0 0.75rem;
+}
+.adm-kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+  margin: 0 0 1.75rem;
+}
+.adm-kpi {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+a.adm-kpi:hover {
+  background: #fff8ea;
+}
+.adm-kpi .adm-stat__value small {
+  font-size: 0.5em;
+  letter-spacing: -0.02em;
+}
+.adm-kpi__sub {
+  margin-top: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ms-patty-soft);
+  overflow-wrap: anywhere;
+}
+.adm-kpi__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.adm-kpi__go svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+.adm-kpi__err {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-weight: 700;
+  color: var(--ms-ketchup);
+}
+.adm-kpi__err .adm-btn svg {
+  width: 16px;
+  height: 16px;
+}
+.adm-quick {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.adm-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.625rem;
+  height: 100%;
+  min-height: 96px;
+  padding: 0.875rem;
+  border: var(--adm-border);
+  border-radius: 16px;
+  background: var(--ms-paper);
+  box-shadow: var(--adm-stamp);
+  color: var(--ms-patty);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+  text-decoration: none;
+}
+.adm-tile:hover {
+  background: #fff8ea;
+}
+.adm-tile__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--ms-patty);
+  border-radius: 12px;
+  background: var(--ms-bun);
+}
+.adm-tile__icon svg {
+  width: 20px;
+  height: 20px;
+}
+.adm-tile--primary {
+  background: var(--ms-cheddar);
+}
+.adm-tile--primary:hover {
+  background: var(--ms-mustard);
+}
+.adm-tile--primary .adm-tile__icon {
+  background: var(--ms-paper);
+}
+.adm-home__date-sk {
+  display: block;
+  width: 170px;
+  height: 22px;
+  margin-top: 0.5rem;
+}
+.adm-home__h2-sk {
+  display: block;
+  width: 180px;
+  height: 26px;
+  margin: 0 0 0.75rem;
+}
+.adm-kpi__sk {
+  height: 104px;
+  border-radius: 14px;
+}
+.adm-tile__sk {
+  height: 96px;
+  border-radius: 16px;
+}
+@media (min-width: 48rem) {
+  .adm-kpis {
+    grid-template-columns: 1.3fr 1fr 1fr 1fr;
+    gap: 1rem;
+  }
+  .adm-quick {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    max-width: 920px;
+  }
+  .adm-tile {
+    flex-direction: row;
+    align-items: center;
+    min-height: 72px;
+  }
+  .adm-tile__sk {
+    height: 72px;
+  }
+}
+
+/* ---------- Apariencia ---------- */
+.adm-look__intro {
+  max-width: 62ch;
+  margin: 0.625rem 0 1.5rem;
+  color: var(--ms-patty-soft);
+}
+.adm-presets {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.875rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+.adm-preset {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: var(--adm-border);
+  border-radius: 16px;
+  background: var(--ms-paper);
+  box-shadow: var(--adm-stamp);
+}
+.adm-preset[data-active] {
+  box-shadow:
+    0 0 0 3px var(--ms-cheddar),
+    0 5px 0 var(--ms-patty);
+}
+.adm-preset__head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+.adm-preset__name {
+  margin: 0 auto 0 0;
+  font-family: var(--ms-font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+}
+.adm-preset .adm-btn {
+  width: 100%;
+}
+.adm-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 24px;
+  padding: 0 0.5rem;
+  border: 2px solid var(--ms-patty);
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--ms-paper);
+}
+.adm-tag svg {
+  width: 12px;
+  height: 12px;
+}
+.adm-tag--active {
+  background: #e4f1da;
+  color: var(--ms-lettuce-dark);
+}
+.adm-tag--default {
+  background: var(--ms-cheddar);
+}
+.adm-custom {
+  padding: 1rem;
+  border: var(--adm-border);
+  border-radius: 16px;
+  background: var(--ms-paper);
+  box-shadow: var(--adm-stamp);
+}
+.adm-custom__grid {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+.adm-colors {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.adm-color {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.625rem;
+}
+.adm-color .adm-field {
+  flex: 1;
+  min-width: 0;
+}
+/* La muestra ES el selector de color: el <input type="color"> la cubre,
+   transparente, y el foco se dibuja en la muestra. */
+.adm-swatch {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border: 2px solid var(--ms-patty);
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 2px var(--ms-paper);
+}
+.adm-swatch--invalid {
+  background: repeating-linear-gradient(45deg, #fff 0 6px, #f1e3c6 6px 12px);
+}
+.adm-swatch input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.adm-swatch:has(input:focus-visible) {
+  outline: 3px solid var(--ms-patty);
+  outline-offset: 2px;
+}
+.adm-hex {
+  font-family: var(--ms-font-mono);
+  text-transform: uppercase;
+}
+.adm-preview-label {
+  display: block;
+  margin-bottom: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--ms-patty-soft);
+}
+.adm-preview {
+  margin: 0;
+}
+.adm-look__warn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-top: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border: 2px solid var(--ms-tomato);
+  border-radius: 12px;
+  background: #fff1ee;
+  color: var(--ms-ketchup);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.adm-look__warn p {
+  display: flex;
+  gap: 0.375rem;
+  margin: 0;
+}
+.adm-look__warn svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin-top: 2px;
+}
+.adm-look__actions {
+  position: sticky;
+  bottom: calc(var(--adm-tabbar-h) + var(--adm-safe-b) + 8px);
+  z-index: 2;
+  display: flex;
+  gap: 0.625rem;
+  margin-top: 1rem;
+  padding: 0.625rem;
+  border: var(--adm-border);
+  border-radius: 16px;
+  background: var(--ms-paper);
+  box-shadow: var(--adm-stamp);
+}
+.adm-look__actions .adm-btn {
+  flex: 1 1 0;
+}
+.adm-look__intro-sk {
+  display: block;
+  max-width: 560px;
+  height: 44px;
+  margin: 0.625rem 0 1.5rem;
+}
+.adm-preset__sk {
+  height: 300px;
+  border-radius: 16px;
+}
+.adm-custom__sk {
+  display: block;
+  height: 420px;
+  border-radius: 16px;
+}
+@media (min-width: 48rem) {
+  .adm-presets {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .adm-custom {
+    padding: 1.25rem 1.5rem;
+  }
+  .adm-custom__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2rem;
+  }
+  .adm-look__actions {
+    position: static;
+    justify-content: flex-end;
+  }
+  .adm-look__actions .adm-btn {
+    flex: none;
+  }
+}
+@media (min-width: 80rem) {
+  .adm-presets {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 @keyframes adm-pop {

@@ -18,6 +18,22 @@ import type { AdminLiveTable } from "@/lib/admin/live/types";
 
 const TABLE_PARAM = "mesa";
 
+// Accesos desde Inicio (CA-9.5): ?filtro=libres|ocupadas|llamando|todas,
+// ?imprimir=1 (vista de imprimir todos) y ?nueva=1 (alta abierta). Valores
+// desconocidos se ignoran sin error; al montar se quitan de la URL para que
+// recargar no vuelva a abrir nada.
+const FILTER_PARAM: Record<string, TableFilter> = {
+  todas: "all",
+  libres: "free",
+  ocupadas: "occupied",
+  llamando: "calling",
+};
+const ENTRY_PARAMS = ["filtro", "imprimir", "nueva"];
+
+function filterFromParam(value: string | null): TableFilter {
+  return value && Object.hasOwn(FILTER_PARAM, value) ? FILTER_PARAM[value] : "all";
+}
+
 function mesas(n: number): string {
   return n === 1 ? "mesa" : "mesas";
 }
@@ -40,10 +56,10 @@ export function TablesBoard({ restaurantId, tables }: { restaurantId: string; ta
     setHidden({});
   }
 
-  const [filter, setFilter] = useState<TableFilter>("all");
+  const [filter, setFilter] = useState<TableFilter>(() => filterFromParam(searchParams.get("filtro")));
   const [openId, setOpenId] = useState<string | null>(() => searchParams.get(TABLE_PARAM));
-  const [newOpen, setNewOpen] = useState(false);
-  const [printOpen, setPrintOpen] = useState(false);
+  const [newOpen, setNewOpen] = useState(() => searchParams.get("nueva") === "1");
+  const [printOpen, setPrintOpen] = useState(() => searchParams.get("imprimir") === "1" && tables.length > 0);
   const [toDelete, setToDelete] = useState<AdminTable | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -60,6 +76,11 @@ export function TablesBoard({ restaurantId, tables }: { restaurantId: string; ta
   }, [openId]);
   useEffect(() => {
     mountedAt.current = Date.now();
+    const url = new URL(window.location.href);
+    if (ENTRY_PARAMS.some((p) => url.searchParams.has(p))) {
+      for (const p of ENTRY_PARAMS) url.searchParams.delete(p);
+      window.history.replaceState(null, "", url.pathname + url.search);
+    }
   }, []);
 
   // ---------- Datos ----------

@@ -6,9 +6,13 @@ import { toast } from "sonner";
 import { ThemePresetCard } from "@/components/admin/ThemePresetCard";
 import { ThemeCustomEditor } from "@/components/admin/ThemeCustomEditor";
 import { updateRestaurantTheme } from "@/lib/admin/theme";
-import { THEME_PRESETS, findPresetByTheme } from "@/lib/theme/presets";
+import { DEFAULT_THEME, THEME_PRESETS, findPresetByTheme } from "@/lib/theme/presets";
 import type { RestaurantTheme } from "@/lib/theme/types";
 
+// Apariencia (HU-10), idéntica a docs/design/admin/maquetas/apariencia.html.
+// Misma función que antes (CA-10.1): mismos temas, misma paleta, mismo
+// guardado y restablecer; solo cambia el aspecto y se suma la validación de
+// hex (CA-10.6, en ThemeCustomEditor).
 export function AppearanceEditor({
   restaurantId,
   currentTheme,
@@ -19,6 +23,7 @@ export function AppearanceEditor({
   const router = useRouter();
   const [applyingKey, setApplyingKey] = useState<string | null>(null);
   const activePreset = findPresetByTheme(currentTheme);
+  const defaultKey = findPresetByTheme(DEFAULT_THEME)?.key;
 
   const handleSelectPreset = async (theme: RestaurantTheme, key: string) => {
     setApplyingKey(key);
@@ -34,28 +39,30 @@ export function AppearanceEditor({
   };
 
   return (
-    <div className="flex flex-col gap-6 p-4">
-      <div>
-        <h1 className="mb-1 font-[family-name:var(--font-staff-display)] text-lg font-semibold">
-          Apariencia
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Elegí un tema predefinido o armá tu propia paleta. Se aplica en la
-          carta que ven tus clientes al escanear el QR de la mesa.
-        </p>
-      </div>
+    <>
+      <header className="adm-home__head">
+        <p className="adm-eyebrow">Apariencia</p>
+        <h1 className="adm-h1">Tu carta, a tu estilo</h1>
+      </header>
+      <p className="adm-look__intro">
+        Elegí un tema predefinido o armá tu propia paleta. Se aplica en la carta que ven tus clientes al
+        escanear el QR de la mesa.
+      </p>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <h2 className="adm-h2 adm-home__h2">Temas</h2>
+      <ul className="adm-presets">
         {THEME_PRESETS.map((preset) => (
           <ThemePresetCard
             key={preset.key}
             preset={preset}
             isActive={activePreset?.key === preset.key}
+            isDefault={preset.key === defaultKey}
+            applying={applyingKey === preset.key}
             disabled={applyingKey !== null}
             onSelect={() => handleSelectPreset(preset.theme, preset.key)}
           />
         ))}
-      </div>
+      </ul>
 
       <ThemeCustomEditor
         // key: fuerza un remount cuando cambia el theme guardado (ej. al
@@ -65,6 +72,6 @@ export function AppearanceEditor({
         restaurantId={restaurantId}
         initialTheme={currentTheme}
       />
-    </div>
+    </>
   );
 }
