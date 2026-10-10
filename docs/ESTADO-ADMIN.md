@@ -85,6 +85,7 @@ el Celeron se usa como meta.
 - Seguridad paso 5a (2026-10-10): mock 3451 (PIDs 2924 y 11100, modo legado) y `next start` 3452 (PID 7920) DETENIDOS con taskkill; netstat 3450-3469 sin LISTENING (docs/security/evidencia/admin-final-2026-10-10/netstat-final.txt).
 - Frontend SEC-AF-01 (2026-10-10, rama fix/admin-role-pages): `next start` 3420 (PIDs 2364, 7816, 22396: uno por build), fault-proxy 3421 (PID 7104), mock 3422 (PID 12620) DETENIDOS con taskkill; netstat 3420-3449 sin LISTENING (docs/design/admin/evidencia/sec-af-01/netstat-final.txt). El 4317 (PID 8904) no es del Frontend: no se tocó.
 - Equipo: (ninguno). Frontend paso 4b paró sus procesos (3420 next start, 3421 fault-proxy, 3422 mock) el 2026-10-05; netstat 3420-3449 sin LISTENING (solo TIME_WAIT de cierre).
+- QA paso 5b (2026-10-10): next start 3470 (PID 8996), fault-proxy 3471 (PID 8960), mock 3472 (PID 12232) y, antes, next start 3472 para los scripts de login (PID 3576) DETENIDOS con taskkill; netstat 3470-3489 sin LISTENING (docs/qa/evidencia/admin-2026-10-10/netstat-final.txt: solo TIME_WAIT). El 4317 (PID 8904) no es de QA: no se tocó. Informe: docs/qa/admin-2026-10-10.md.
 
 ## Reglas operativas
 - Puertos: ver D-1 en `docs/DECISIONES.md`. 3500 = `next dev` del Director: no tocar. Nunca matar procesos ajenos.

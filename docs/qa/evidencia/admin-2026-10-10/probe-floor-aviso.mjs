@@ -1,0 +1,20 @@
+// QA 5b: CA-RNF.7 / CA-8.6: en /floor un llamado nuevo SIGUE mostrando el toast (y suena el aviso); en /admin/mesas NO.
+import { launch, login, APP, MOCK, resetMock, mockEvent, check, summary } from "../../../design/admin/evidencia/carta-4a/lib.mjs";
+await resetMock();
+const b = await launch();
+const c = await b.newContext({ viewport: { width: 1440, height: 900 } });
+await c.addInitScript(() => { window.__chimes = 0; const A = window.AudioContext || window.webkitAudioContext; if (A) { const o = A.prototype.createOscillator; A.prototype.createOscillator = function () { window.__chimes++; return o.call(this); }; } });
+const floor = await c.newPage(); await login(floor, "admin@demo.test", "/floor"); await floor.waitForTimeout(2500);
+const adm = await c.newPage(); await login(adm, "admin@demo.test", "/admin/mesas"); await adm.waitForTimeout(2500);
+await mockEvent({ type: "waiter_call", table: "Mesa 1", reason: "consulta" });
+await floor.waitForTimeout(2500);
+const ft = await floor.locator("body").innerText();
+const at = await adm.locator("body").innerText();
+check("/floor: sale el toast 'Una mesa está llamando al mozo' al entrar un llamado", /Una mesa está llamando al mozo/.test(ft));
+check("/floor: el llamado aparece en la lista", /Tiene una consulta/.test(ft));
+check("/admin/mesas: NO sale el toast (CA-8.6) pero la mesa pasa a 'Llama al mozo'", !/Una mesa está llamando al mozo/.test(at) && /Llama al mozo/.test(at));
+const chF = await floor.evaluate(() => window.__chimes), chA = await adm.evaluate(() => window.__chimes);
+console.log(`     osciladores creados (aviso sonoro): /floor=${chF}, /admin=${chA}`);
+check("CA-8.6 el aviso sonoro no suena en el admin (0 osciladores) ", chA === 0);
+await b.close();
+process.exit(summary() ? 1 : 0);
