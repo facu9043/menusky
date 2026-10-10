@@ -1,0 +1,74 @@
+// ===================== Casos propios de Seguridad (2026-10-10) =====================
+// Se pega despues de las primeras 125 lineas de supabase/tests/rls/run.mjs (stubs, 0001..0003, seed, 2 restaurantes, 6 actores).
+await db.exec(sql("supabase/migrations/0004_role_policies.sql"));
+const log = (id, ok, msg) => { console.log(`${ok ? "OK  " : "FAIL"} ${id.padEnd(14)} ${msg}`); if (!ok) failures++; };
+await su(`delete from order_items`); await su(`delete from orders`);
+for (let i = 4; i <= 8; i++) await su(`insert into tables (restaurant_id, label, qr_token) values ($1, $2, $3)`, [A, `Mesa ${i}`, `mesa-${i}-sec`]);
+
+// 1) TOKENS: el anonimo sigue leyendo todos los qr_token (raiz PRE-AD-03)
+const tok = await as("anon", `select qr_token, restaurant_id from tables`);
+log("TOKENS", true, `anon lee ${tok.rows.length} qr_token de ${new Set(tok.rows.map(r => r.restaurant_id)).size} restaurantes`);
+
+// 2) XTABLE: 11 intentos por cada mesa de A con un pedido maximo (50 renglones x 99)
+const big = Array.from({ length: 50 }, () => ({ menu_item_id: ITEM.agua, quantity: 99 }));
+const tokA = tok.rows.filter(r => r.restaurant_id === A).map(r => r.qr_token);
+let ok = 0, rl = 0, other = 0; const t0 = Date.now();
+for (const t of tokA) for (let k = 0; k < 11; k++) {
+  const r = await as("anon", `select create_order($1, $2::jsonb) as id`, [t, JSON.stringify(big)]);
+  if (!r.err) ok++; else if (/rate_limited/.test(r.err.message)) rl++; else { other++; if (other < 3) console.log("  err", r.err.message); }
+}
+const sum = (await su(`select count(*)::int n, sum(total)::numeric s, (select count(*)::int from order_items) li from orders where restaurant_id=$1`, [A]))[0];
+log("XTABLE", ok === tokA.length * 10 && rl === tokA.length, `${tokA.length} mesas x 11 intentos en ${Date.now() - t0} ms: ${ok} pedidos creados, ${rl} rate_limited, ${other} otros; en A quedan ${sum.n} pedidos, ${sum.li} renglones, "ventas" = ${sum.s}`);
+
+// 3) DOS: el cliente real de la mesa queda bloqueado (la cuota la gasto el atacante)
+const legit = await as("anon", `select create_order($1, $2::jsonb) as id`, [tokA[0], JSON.stringify([{ menu_item_id: ITEM.agua, quantity: 1 }])]);
+log("DOS-LEGIT", !!legit.err && /rate_limited/.test(legit.err.message), `pedido legitimo en ${tokA[0]} tras el ataque -> ${legit.err ? legit.err.message + " (" + legit.err.code + ")" : "creado"}`);
+await as("adminA", `update orders set status='cancelled' where restaurant_id='${A}'`);
+const del = await as("adminA", `delete from orders where restaurant_id='${A}' returning id`);
+const legit2 = await as("anon", `select create_order($1, $2::jsonb) as id`, [tokA[0], JSON.stringify([{ menu_item_id: ITEM.agua, quantity: 1 }])]);
+log("DOS-CANCEL", !!legit2.err, `tras cancelar todo: admin borra ${del.count} filas (err=${del.err ? "si" : "no"}); pedido legitimo -> ${legit2.err ? legit2.err.message : "creado"}`);
+
+// 4) Restaurante B no se ve afectado por la cuota de A
+const rb = await as("anon", `select create_order('mesa-b-token', $1::jsonb) as id`, [JSON.stringify([{ menu_item_id: T.itemB, quantity: 1 }])]);
+log("ISOLATION", !rb.err, `mesa de B tras el ataque a A -> ${rb.err ? rb.err.message : "creado"}`);
+
+// 5) search_path, security definer y grants
+const fn = await su(`select proname, prosecdef, proconfig, proacl::text acl, pg_get_userbyid(proowner) owner from pg_proc where proname in ('create_order','get_public_order','get_public_order_status','is_staff_of','is_admin_of') order by proname`);
+for (const f of fn) console.log(`INFO FN            ${f.proname}: secdef=${f.prosecdef} config=${JSON.stringify(f.proconfig)} owner=${f.owner} acl=${f.acl}`);
+log("SEARCHPATH", fn.filter(f => ["create_order", "get_public_order", "get_public_order_status"].includes(f.proname)).every(f => f.prosecdef && JSON.stringify(f.proconfig) === JSON.stringify(['search_path=""'])), "las 3 RPC: security definer y search_path vacio");
+const mk = await as("anon", `create table public.orders_fake (id int)`);
+log("SCHEMA-PRIV", !!mk.err, `anon crea tabla en public -> ${mk.err ? mk.err.message : "permitido"}`);
+
+// 6) waiter_calls (preexistente): el anonimo inserta llamados sin limite y con restaurante/mesa cruzados
+let wc = 0; for (let k = 0; k < 50; k++) { const r = await as("anon", `insert into waiter_calls (table_id, restaurant_id, reason) values ($1,$2,'cuenta')`, [T.tableA.id, A]); if (!r.err) wc++; }
+const cross = await as("anon", `insert into waiter_calls (table_id, restaurant_id, reason) values ($1,$2,'cuenta')`, [T.tableA.id, B]);
+log("PRE-CALLS", wc === 50, `anon: ${wc}/50 llamados insertados en la misma mesa; llamado con mesa de A y restaurant_id de B -> ${cross.err ? "rechazado: " + cross.err.message : "ACEPTADO"}`);
+
+// 7) Tema: la base acepta cualquier JSON en restaurants.theme (validacion de hex solo en el cliente)
+const th = await as("adminA", `update restaurants set theme = $2::jsonb where id = $1 returning id`, [A, JSON.stringify({ background: "red;background-image:url(http://127.0.0.1:3459/t)", accentPrimary: "x", style: "zzz" })]);
+log("THEME-ANY", th.count === 1, `admin A guarda un tema con valores no hex -> ${th.count} fila(s)`);
+const thB = await as("adminB", `update restaurants set theme = '{}'::jsonb where id = $1 returning id`, [A]);
+const thW = await as("waiterA", `update restaurants set theme = '{}'::jsonb where id = $1 returning id`, [A]);
+log("THEME-AUTHZ", thB.count === 0 && thW.count === 0, `admin B sobre A -> ${thB.count} filas; mozo A -> ${thW.count} filas`);
+
+// 8) Mesas: solo el admin del restaurante crea/borra
+const tw = await as("waiterA", `insert into tables (restaurant_id, label, qr_token) values ($1,'x','x-w') returning id`, [A]);
+const tb = await as("adminB", `insert into tables (restaurant_id, label, qr_token) values ($1,'x','x-b') returning id`, [A]);
+const tdel = await as("adminB", `delete from tables where restaurant_id=$1 returning id`, [A]);
+const ta = await as("adminA", `insert into tables (restaurant_id, label, qr_token) values ($1,$2,'q-sec') returning id`, [A, "Mesa \"x\" \u{1F355}"]);
+log("TABLES-AUTHZ", denied(tw) && denied(tb) && tdel.count === 0 && !ta.err, `mozo crea -> ${denied(tw) ? "rechazado" : "OK"}; admin B crea en A -> ${denied(tb) ? "rechazado" : "OK"}; admin B borra mesas de A -> ${tdel.count}; admin A crea mesa con comillas y emoji -> ${ta.err ? ta.err.message : "OK"}`);
+
+// 9) Reversa y reaplicacion con los pedidos del ataque
+const nBefore = (await su(`select count(*)::int n from orders`))[0].n;
+await db.exec(sql("supabase/rollback/0004_role_policies_down.sql"));
+const fnGone = (await su(`select count(*)::int n from pg_proc where proname in ('create_order','get_public_order','get_public_order_status')`))[0].n;
+const bucket1 = (await su(`select allowed_mime_types, file_size_limit from storage.buckets where id='menu-photos'`))[0];
+const anonRead = await as("anon", `select count(*)::int n from orders`);
+await db.exec(sql("supabase/migrations/0004_role_policies.sql"));
+const nAfter = (await su(`select count(*)::int n from orders`))[0].n;
+const bucket2 = (await su(`select allowed_mime_types, file_size_limit from storage.buckets where id='menu-photos'`))[0];
+const anonRead2 = await as("anon", `select count(*)::int n from orders`);
+log("ROLLBACK", fnGone === 0 && nBefore === nAfter && anonRead2.rows[0].n === 0, `reversa: funciones restantes=${fnGone}, bucket=${JSON.stringify(bucket1)}, anon lee ${anonRead.rows[0].n} pedidos (agujero reabierto, esperado y documentado); reaplicada: pedidos ${nBefore}->${nAfter}, bucket=${JSON.stringify(bucket2)}, anon lee ${anonRead2.rows[0].n}`);
+
+console.log(`\nFALLAS: ${failures}`);
+process.exit(failures ? 1 : 0);

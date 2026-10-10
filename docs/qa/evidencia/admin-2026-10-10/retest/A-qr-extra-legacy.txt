@@ -1,0 +1,7 @@
+# modo: LEGADO
+PASS  "Tu pedido" se actualiza en <= 5 s  [119 ms]
+PASS  LEGADO: sin 0004 no hay limite (comportamiento previo conocido)  [200]
+PASS  admin/mesas lista Mesa 1, 2 y 3
+PASS  descarga QR: 200 image/png con firma PNG  [{"s":200,"t":"image/png","sig":"137,80,78,71"}]
+
+4/4 OK

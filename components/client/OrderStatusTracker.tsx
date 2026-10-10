@@ -13,13 +13,15 @@ const STEPS: { key: OrderStatus; label: string }[] = [
 ];
 
 export function OrderStatusTracker({
+  qrToken,
   orderId,
   initialStatus,
 }: {
+  qrToken: string;
   orderId: string;
   initialStatus: OrderStatus;
 }) {
-  const status = useOrderStatus(orderId, initialStatus);
+  const status = useOrderStatus(qrToken, orderId, initialStatus);
   const [justActivated, setJustActivated] = useState(false);
   const prevStatus = useRef(status);
 

@@ -1,0 +1,24 @@
+# node mesas-quality.mjs | 2026-10-03 | app: build de producción (next start 127.0.0.1:3420) de feat/admin-mesas, código de la app = b559313 | mock propio 3422 detrás de fault-proxy 3421 | Chrome headless (Playwright 1.63.0, @axe-core/playwright 4.13.0)
+OK   preparación: mesa de 40 caracteres
+OK   CA-13.6 sin scroll horizontal en Mesas a 320px (mesa de 40 caracteres incluida) | mesas:320/320 hoja-animando:320/320 hoja:320/320 confirmación:320/320 nueva-mesa:320/320 vista-impresión:320/320 filtro-libres:320/320
+OK   CA-13.6 sin scroll horizontal en Mesas a 360px (mesa de 40 caracteres incluida) | mesas:360/360 hoja-animando:360/360 hoja:360/360 confirmación:360/360 nueva-mesa:360/360 vista-impresión:360/360 filtro-libres:360/360
+OK   CA-13.6 sin scroll horizontal en Mesas a 390px (mesa de 40 caracteres incluida) | mesas:390/390 hoja-animando:390/390 hoja:390/390 confirmación:390/390 nueva-mesa:390/390 vista-impresión:390/390 filtro-libres:390/390
+OK   CA-13.6 sin scroll horizontal en Mesas a 768px (mesa de 40 caracteres incluida) | mesas:768/768 confirmación:768/768 nueva-mesa:768/768 vista-impresión:768/768 filtro-libres:768/768
+OK   CA-13.6 sin scroll horizontal en Mesas a 1440px (mesa de 40 caracteres incluida) | mesas:1440/1440 confirmación:1440/1440 nueva-mesa:1440/1440 vista-impresión:1440/1440 filtro-libres:1440/1440
+OK   CA-12.4 con reduce: getAnimations() = 0 en reposo y tras cada acción | {"reposo":0,"abrir hoja":0,"cerrar hoja":0,"píldora":0,"vacío con Pomo":0,"vista impresión":0}
+     sin reduce (control: el movimiento existe): {"reposo":0,"abrir hoja":2,"cerrar hoja":2,"píldora":2,"vacío con Pomo":3,"vista impresión":2}
+OK   HU-12 sin reduce hay animación al abrir la hoja
+OK   CA-13.3 foco visible >= 2 px en botones, píldoras, ⋯ y enlaces de las tarjetas | Imprimir todos=3px rgb(43, 23, 16) | Nueva mesa=3px rgb(43, 23, 16) | Todas, 3 mesas=3px rgb(43, 23, 16) | Libres, 0 mesas=3px rgb(43, 23, 16) | Ocupadas, 2 mesas=3px rgb(43, 23, 16) | Llamando, 1 mesa=3px rgb(43, 23, 16) | Más acciones de Mesa 1=3px rgb(43, 23, 16) | Descargar QR de Mesa 1=3px rgb(43, 23, 16) | Ver carta de Mesa 1=3px rgb(43, 23, 16) | Más acciones de Mesa 2=3px rgb(43, 23, 16) | Descargar QR de Mesa 2=3px rgb(43, 23, 16) | Ver carta de Mesa 2=3px rgb(43, 23, 16) | Más acciones de Mesa 3=3px rgb(43, 23, 16) | Descargar QR de Mesa 3=3px rgb(43, 23, 16) | Ver carta de Mesa 3=3px rgb(43, 23, 16)
+OK   CA-13.10 axe mesas 1440: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe confirmación 1440: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe nueva mesa 1440: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe vista de impresión 1440: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe filtro (Libres) 1440: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe mesas 360: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe hoja de mesa 360: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe confirmación 360: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe nueva mesa 360: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe vista de impresión 360: 0 críticos/serios | sin violaciones
+OK   CA-13.10 axe filtro (Libres) 360: 0 críticos/serios | sin violaciones
+
+20 OK, 0 FAIL

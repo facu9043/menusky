@@ -1,0 +1,2 @@
+$ npx eslint app/admin/(inicio) app/admin/apariencia components/admin/inicio components/admin/AppearanceEditor.tsx components/admin/ThemeCustomEditor.tsx components/admin/ThemePresetCard.tsx components/admin/ThemeMockupCard.tsx components/admin/mesas/TablesBoard.tsx components/admin/carta/MenuBoard.tsx docs/design/admin/evidencia/inicio-apariencia-4b docs/design/admin/evidencia/carta-4a/fault-proxy.mjs
+exit=0

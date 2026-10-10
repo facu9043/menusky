@@ -1,21 +1,14 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque } from "next/font/google";
+import { brandDisplay } from "@/components/brand/fonts";
+import "../brand.css";
 import "./login.css";
-
-// Misma fuente display que la landing (docs/STACK.md, "Arquitectura del
-// rediseño del login"): un archivo variable, subset latin, eje opsz.
-const display = Bricolage_Grotesque({
-  subsets: ["latin"],
-  axes: ["opsz"],
-  variable: "--font-ms-display",
-  display: "swap",
-});
 
 // Con el template "%s | MenuSky" de app/layout.tsx queda "Ingresar | MenuSky".
 export const metadata: Metadata = {
   title: "Ingresar",
 };
 
+// Marca común (tokens y fuente display) + estilos propios del login.
 export default function LoginLayout({ children }: LayoutProps<"/login">) {
-  return <div className={`ms-login ${display.variable}`}>{children}</div>;
+  return <div className={`ms-brand ms-login ${brandDisplay.variable}`}>{children}</div>;
 }

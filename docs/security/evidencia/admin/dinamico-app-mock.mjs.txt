@@ -1,0 +1,76 @@
+// Seguridad (TEMPORAL): pruebas dinámicas locales contra el mock (3451) y la app (3452). Datos ficticios.
+import { createRequire } from "node:module";
+const req = createRequire("C:/Users/Windows10/Desktop/menusky-admin-sec/package.json");
+const { createServerClient } = req("@supabase/ssr");
+const MOCK = "http://127.0.0.1:3451", APP = "http://127.0.0.1:3452", ANON = "mock-anon-key";
+const log = (id, msg) => console.log(`${id.padEnd(12)} ${msg}`);
+const mock = (p, o = {}) => fetch(MOCK + p, { ...o, headers: { apikey: ANON, "content-type": "application/json", ...(o.headers || {}) } });
+await fetch(MOCK + "/__mock/reset", { method: "POST" });
+
+async function login(email) {
+  const jar = new Map();
+  const s = createServerClient(MOCK, ANON, { cookies: { getAll: () => [...jar].map(([name, value]) => ({ name, value })), setAll: (l) => l.forEach(({ name, value }) => jar.set(name, value)) } });
+  const { data, error } = await s.auth.signInWithPassword({ email, password: "demo-1234" });
+  if (error) throw error;
+  return { cookie: [...jar].map(([k, v]) => `${k}=${v}`).join("; "), token: data.session.access_token };
+}
+const post = async (body, raw = false) => {
+  const r = await fetch(APP + "/api/orders", { method: "POST", headers: { "content-type": "application/json" }, body: raw ? body : JSON.stringify(body) });
+  const t = await r.text();
+  return `${r.status} ${t.length > 160 ? t.slice(0, 160) + "...(" + t.length + " bytes)" : t}`;
+};
+
+// --- /api/orders: entradas raras
+const menu = await (await mock("/rest/v1/menu_items?select=id,name")).json();
+const id = (n) => menu.find((m) => m.name === n).id;
+const QR = "mesa-1-demo0001";
+log("API-null", await post("null", true));
+log("API-array", await post("[]", true));
+log("API-items0", await post({ qrToken: QR, items: [null] }));
+log("API-choiceObj", await post({ qrToken: QR, items: [{ menuItemId: id("Provoleta"), quantity: 1, choiceIds: {} }] }));
+log("API-choiceStr", await post({ qrToken: QR, items: [{ menuItemId: id("Provoleta"), quantity: 1, choiceIds: "abc" }] }));
+log("API-idNum", await post({ qrToken: QR, items: [{ menuItemId: 123, quantity: 1 }] }));
+log("API-qrObj", await post({ qrToken: { $ne: 1 }, items: [{ menuItemId: id("Provoleta"), quantity: 1 }] }));
+log("API-qrSQL", await post({ qrToken: "x' or '1'='1", items: [{ menuItemId: id("Provoleta"), quantity: 1 }] }));
+log("API-bigNote", await post({ qrToken: QR, items: [{ menuItemId: id("Provoleta"), quantity: 1, note: "A".repeat(200000) }] }));
+const st = await (await fetch(MOCK + "/__mock/state")).json();
+const last = (st.order_items || []).filter((x) => x.note && x.note.startsWith("AAA")).pop();
+log("API-bigNote", `nota guardada: ${last ? last.note.length + " caracteres" : "n/d (state sin order_items)"}`);
+log("API-overTotal", await post({ qrToken: QR, total: 1, restaurant_id: "x", status: "delivered", items: [{ menuItemId: id("Provoleta"), quantity: 1, price: 0, subtotal: 0 }] }));
+
+// --- RPC directo con la anon key, sin pasar por la app (el límite de tasa en /api/orders no lo frenaría)
+let ok = 0;
+const tb = (await (await mock("/rest/v1/tables?select=id,restaurant_id,qr_token&qr_token=eq.mesa-b1-demo0001")).json())[0];
+const itemsB = await (await mock("/rest/v1/menu_items?select=id,name,categories!inner(restaurant_id)&categories.restaurant_id=eq." + tb.restaurant_id)).json();
+for (let i = 0; i < 30; i++) {
+  const r = await mock("/rest/v1/rpc/create_order", { method: "POST", body: JSON.stringify({ p_qr_token: tb.qr_token, p_items: [{ menu_item_id: itemsB[0].id, quantity: 99 }] }) });
+  if (r.status === 200) ok++;
+}
+log("RPC-direct", `30 llamadas a /rest/v1/rpc/create_order con la anon key: ${ok} con 200 (la ruta /api/orders no interviene)`);
+const tables = await (await mock("/rest/v1/tables?select=restaurant_id,label,qr_token")).json();
+log("TABLES-anon", `anon lee ${tables.length} mesas con qr_token: ${tables.map((t) => t.qr_token).join(", ")}`);
+
+// --- "Tu pedido": cabeceras y casos
+const o = JSON.parse((await post({ qrToken: QR, items: [{ menuItemId: id("Provoleta"), quantity: 1, note: "<img src=x onerror=alert(1)>" }] })).slice(4));
+let r = await fetch(`${APP}/m/${QR}/pedido/${o.orderId}`);
+let html = await r.text();
+log("PEDIDO-xss", `${r.status}; nota escapada: ${html.includes("&lt;img src=x onerror=alert(1)&gt;")}; cruda: ${html.includes("<img src=x onerror")}`);
+log("PEDIDO-hdrs", ["content-security-policy", "x-frame-options", "x-content-type-options", "referrer-policy", "strict-transport-security"].map((h) => `${h}=${r.headers.get(h) ? "si" : "NO"}`).join(" "));
+r = await fetch(`${APP}/m/${encodeURIComponent("' or 1=1 --")}/pedido/${o.orderId}`);
+log("PEDIDO-sqli", `token inyectado -> ${r.status}`);
+
+// --- R-2 y cabeceras en redirecciones
+const mozo = await login("mozo@demo.test"), cocina = await login("cocina@demo.test"), sin = await login("sinstaff@demo.test"), adminB = await login("admin-b@demo.test");
+for (const [who, c, path] of [["mozo", mozo, "/kitchen"], ["cocina", cocina, "/floor"], ["sinstaff", sin, "/floor"], ["sinstaff", sin, "/kitchen"], ["mozo", mozo, "/kitchen?x=1"], ["mozo", mozo, "/kitchen/"], ["cocina", cocina, "/admin"], ["adminB", adminB, "/kitchen"]]) {
+  r = await fetch(APP + path, { redirect: "manual", headers: { cookie: c.cookie } });
+  const t = await r.text();
+  log("R2", `${who} ${path} -> ${r.status} ${r.headers.get("location") || ""} | len=${t.length} | datos A (Mesa 2/Provoleta) en cuerpo: ${/Provoleta|Bife de chorizo/.test(t)} | CSP=${!!r.headers.get("content-security-policy")}`);
+}
+// RSC: el mozo pide /kitchen como navegación de cliente (RSC) para ver si se filtran datos
+r = await fetch(APP + "/kitchen", { redirect: "manual", headers: { cookie: mozo.cookie, RSC: "1" } });
+const rsc = await r.text();
+log("R2-RSC", `mozo /kitchen (RSC) -> ${r.status} | datos de pedidos: ${/Provoleta|Bife de chorizo|in_kitchen/.test(rsc)} | ${rsc.slice(0, 120).replace(/\n/g, " ")}`);
+
+// --- Mock: CORS reflejado y bind
+r = await fetch(MOCK + "/__mock/state", { headers: { Origin: "https://evil.example" } });
+log("MOCK-CORS", `Origin evil -> ACAO=${r.headers.get("access-control-allow-origin")} ACAC=${r.headers.get("access-control-allow-credentials")}`);

@@ -1,0 +1,206 @@
+Fuente del body (D-19), 2026-10-03. Frontend, rama fix/body-font.
+Cambio: app/globals.css línea 10, `--font-sans: var(--font-sans);` -> `--font-sans: var(--font-geist-sans);`.
+Medido con: docs/evidencia/frontend/body-font.mjs (Playwright 1.63 + Chrome del sistema, headless, 1024x700).
+Contra: build de producción (`next build` + `next start -H 127.0.0.1 -p 3420`) y mock de Supabase propio
+(3422, detrás del fault-proxy transparente en 3421). Usuarios: admin@demo.test (/admin/menu),
+cocina@demo.test (/kitchen), mozo@demo.test (/floor); anónimo en /, /login y /m/mesa-1-demo0001.
+"computed" = getComputedStyle(el).fontFamily. "pintada" = fuente real usada al pintar el texto propio del
+nodo (CDP CSS.getPlatformFontsForNode; xN = glifos). El body no tiene texto propio: solo se informa su computed.
+Qué cubre: la primera pantalla visible de cada ruta (texto visible al cargar). Qué no cubre: diálogos,
+hojas y estados que se abren con interacción, ni otros navegadores que no sean Chrome.
+
+RESUMEN
+- /kitchen: antes 18 de 19 textos visibles en Times New Roman (pintado Times); después 0 (pintado Geist web).
+- /floor:   antes 24 de 25 textos visibles en Times New Roman (pintado Times); después 0 (pintado Geist web).
+- /, /login, /admin/menu, /m/<mesa>: 0 textos en Times antes y después; los textos de muestra mantienen
+  la misma fuente computada y pintada (Geist / Geist Mono / Bricolage / Plus Jakarta Sans). Solo cambia el
+  computed del <body> (Times -> Geist), que no pinta texto propio en esas pantallas.
+- Pantallas que también estaban en Times y cambian: ninguna fuera de /kitchen y /floor.
+- Efecto lateral (mismo arreglo): `--font-heading: var(--font-sans)` también resolvía a una variable inválida.
+  CSS compilado después: `.font-heading{font-family:var(--font-sans)}` y `--font-sans:var(--font-geist-sans)`, o sea
+  los títulos de los componentes shadcn que usan font-heading (CardTitle, DialogTitle, SheetTitle) pasan de
+  Times a Geist donde no tengan fuente propia. El h1 de /floor y /kitchen sigue en Fraunces (`--font-staff-display`, intencional).
+
+=================== ANTES (sin el cambio) ===================
+
+== / (landing)  (URL final: /)
+  elementos visibles con texto propio: 299; con fuente computada Times New Roman: 0
+  body
+      computed: "Times New Roman"
+      pintada:  - (sin texto propio)
+  p.ms-eyebrow "Carta digital + pedidos por QR"
+      computed: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace
+      pintada:  Geist Mono (web) x30
+  li.ms-fscreen__sub "A punto · Papas fritas"
+      computed: Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Geist (web) x22
+  span.ms-logo__word "Menu"
+      computed: "Bricolage Grotesque", "Bricolage Grotesque Fallback", Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Bricolage Grotesque 96pt ExtraBold (web) x7
+
+== /login  (URL final: /login)
+  elementos visibles con texto propio: 8; con fuente computada Times New Roman: 0
+  body
+      computed: "Times New Roman"
+      pintada:  - (sin texto propio)
+  p.lg-brand__claim "Cocina, salón y administración, en un so"
+      computed: "Bricolage Grotesque", "Bricolage Grotesque Fallback", Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Bricolage Grotesque 96pt ExtraBold (web) x47
+  button.lg-submit "Entrar"
+      computed: Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Geist (web) x6
+  span.ms-logo__word "Menu"
+      computed: "Bricolage Grotesque", "Bricolage Grotesque Fallback", Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Bricolage Grotesque 96pt ExtraBold (web) x7
+
+== /admin/menu  (URL final: /admin/menu)
+  elementos visibles con texto propio: 68; con fuente computada Times New Roman: 0
+  body
+      computed: "Times New Roman"
+      pintada:  - (sin texto propio)
+  p.adm-side__label "Paneles"
+      computed: Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Geist (web) x7
+  button.adm-side__link "Cerrar sesión"
+      computed: Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Geist (web) x13
+  span.ms-logo__word "Menu"
+      computed: "Bricolage Grotesque", "Bricolage Grotesque Fallback", Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Bricolage Grotesque 96pt ExtraBold (web) x7
+
+== /kitchen  (URL final: /kitchen)
+  elementos visibles con texto propio: 19; con fuente computada Times New Roman: 18 (p. ej. p "El Buen Sabor · Cocina De", span "Cocina", span "Cerrar sesión")
+  body
+      computed: "Times New Roman"
+      pintada:  - (sin texto propio)
+  p.truncate "El Buen Sabor · Cocina Demo"
+      computed: "Times New Roman"
+      pintada:  Times New Roman x27
+  button.group/button "Marcar listo"
+      computed: "Times New Roman"
+      pintada:  Times New Roman x12
+  span.group/badge "Cocina"
+      computed: "Times New Roman"
+      pintada:  Times New Roman x6
+
+== /floor  (URL final: /floor)
+  elementos visibles con texto propio: 25; con fuente computada Times New Roman: 24 (p. ej. p "El Buen Sabor · Mozo Demo", span "Mozo", span "Cerrar sesión")
+  body
+      computed: "Times New Roman"
+      pintada:  - (sin texto propio)
+  p.truncate "El Buen Sabor · Mozo Demo"
+      computed: "Times New Roman"
+      pintada:  Times New Roman x25
+  button.group/button "Atendido"
+      computed: "Times New Roman"
+      pintada:  Times New Roman x8
+  span.group/badge "Mozo"
+      computed: "Times New Roman"
+      pintada:  Times New Roman x4
+
+== /m/mesa-1-demo0001 (carta cliente)  (URL final: /m/mesa-1-demo0001)
+  elementos visibles con texto propio: 30; con fuente computada Times New Roman: 0
+  body
+      computed: "Times New Roman"
+      pintada:  - (sin texto propio)
+  p.text-sm "Carne cortada a cuchillo, jamón y queso,"
+      computed: "Plus Jakarta Sans", "Plus Jakarta Sans Fallback"
+      pintada:  Plus Jakarta Sans (web) x50
+  button.relative "Entradas"
+      computed: "Plus Jakarta Sans", "Plus Jakarta Sans Fallback"
+      pintada:  Plus Jakarta Sans (web) x8
+  span.group/badge "Mesa 1"
+      computed: "Plus Jakarta Sans", "Plus Jakarta Sans Fallback"
+      pintada:  Plus Jakarta Sans (web) x6
+
+=================== DESPUÉS (con el cambio) ===================
+
+== / (landing)  (URL final: /)
+  elementos visibles con texto propio: 299; con fuente computada Times New Roman: 0
+  body
+      computed: Geist, "Geist Fallback"
+      pintada:  - (sin texto propio)
+  p.ms-eyebrow "Carta digital + pedidos por QR"
+      computed: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace
+      pintada:  Geist Mono (web) x30
+  li.ms-fscreen__sub "A punto · Papas fritas"
+      computed: Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Geist (web) x22
+  span.ms-logo__word "Menu"
+      computed: "Bricolage Grotesque", "Bricolage Grotesque Fallback", Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Bricolage Grotesque 96pt ExtraBold (web) x7
+
+== /login  (URL final: /login)
+  elementos visibles con texto propio: 8; con fuente computada Times New Roman: 0
+  body
+      computed: Geist, "Geist Fallback"
+      pintada:  - (sin texto propio)
+  p.lg-brand__claim "Cocina, salón y administración, en un so"
+      computed: "Bricolage Grotesque", "Bricolage Grotesque Fallback", Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Bricolage Grotesque 96pt ExtraBold (web) x47
+  button.lg-submit "Entrar"
+      computed: Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Geist (web) x6
+  span.ms-logo__word "Menu"
+      computed: "Bricolage Grotesque", "Bricolage Grotesque Fallback", Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Bricolage Grotesque 96pt ExtraBold (web) x7
+
+== /admin/menu  (URL final: /admin/menu)
+  elementos visibles con texto propio: 68; con fuente computada Times New Roman: 0
+  body
+      computed: Geist, "Geist Fallback"
+      pintada:  - (sin texto propio)
+  p.adm-side__label "Paneles"
+      computed: Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Geist (web) x7
+  button.adm-side__link "Cerrar sesión"
+      computed: Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Geist (web) x13
+  span.ms-logo__word "Menu"
+      computed: "Bricolage Grotesque", "Bricolage Grotesque Fallback", Geist, "Geist Fallback", system-ui, sans-serif
+      pintada:  Bricolage Grotesque 96pt ExtraBold (web) x7
+
+== /kitchen  (URL final: /kitchen)
+  elementos visibles con texto propio: 19; con fuente computada Times New Roman: 0
+  body
+      computed: Geist, "Geist Fallback"
+      pintada:  - (sin texto propio)
+  p.truncate "El Buen Sabor · Cocina Demo"
+      computed: Geist, "Geist Fallback"
+      pintada:  Geist (web) x27
+  button.group/button "Marcar listo"
+      computed: Geist, "Geist Fallback"
+      pintada:  Geist (web) x12
+  span.group/badge "Cocina"
+      computed: Geist, "Geist Fallback"
+      pintada:  Geist (web) x6
+
+== /floor  (URL final: /floor)
+  elementos visibles con texto propio: 25; con fuente computada Times New Roman: 0
+  body
+      computed: Geist, "Geist Fallback"
+      pintada:  - (sin texto propio)
+  p.truncate "El Buen Sabor · Mozo Demo"
+      computed: Geist, "Geist Fallback"
+      pintada:  Geist (web) x25
+  button.group/button "Atendido"
+      computed: Geist, "Geist Fallback"
+      pintada:  Geist (web) x8
+  span.group/badge "Mozo"
+      computed: Geist, "Geist Fallback"
+      pintada:  Geist (web) x4
+
+== /m/mesa-1-demo0001 (carta cliente)  (URL final: /m/mesa-1-demo0001)
+  elementos visibles con texto propio: 30; con fuente computada Times New Roman: 0
+  body
+      computed: Geist, "Geist Fallback"
+      pintada:  - (sin texto propio)
+  p.text-sm "Carne cortada a cuchillo, jamón y queso,"
+      computed: "Plus Jakarta Sans", "Plus Jakarta Sans Fallback"
+      pintada:  Plus Jakarta Sans (web) x50
+  button.relative "Entradas"
+      computed: "Plus Jakarta Sans", "Plus Jakarta Sans Fallback"
+      pintada:  Plus Jakarta Sans (web) x8
+  span.group/badge "Mesa 1"
+      computed: "Plus Jakarta Sans", "Plus Jakarta Sans Fallback"
+      pintada:  Plus Jakarta Sans (web) x6

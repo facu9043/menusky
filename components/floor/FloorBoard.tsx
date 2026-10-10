@@ -6,7 +6,8 @@ import { useFloorOrders } from "@/lib/realtime/useFloorOrders";
 import { useTableTotals } from "@/lib/realtime/useTableTotals";
 import { WaiterCallRow } from "@/components/floor/WaiterCallRow";
 import { ReadyOrderCard } from "@/components/floor/ReadyOrderCard";
-import { TableGrid, type TableStatus } from "@/components/floor/TableGrid";
+import { TableGrid } from "@/components/floor/TableGrid";
+import { deriveTableStatus } from "@/lib/floor/tableStatus";
 import type { FloorTable } from "@/lib/floor/getFloorTables";
 import type { WaiterCallView } from "@/lib/waiterCalls/getPendingWaiterCalls";
 import type { BoardOrder } from "@/lib/orders/board";
@@ -32,20 +33,13 @@ export function FloorBoard({
   const readyOrders = useMemo(() => orders.filter((o) => o.status === "ready"), [orders]);
 
   const tablesWithStatus = useMemo(() => {
-    const callingTableIds = new Set(calls.map((c) => c.tableId));
-    const readyTableIds = new Set(readyOrders.map((o) => o.tableId));
-    const activeTableIds = new Set(orders.map((o) => o.tableId));
+    const sources = {
+      callingTableIds: new Set(calls.map((c) => c.tableId)),
+      readyTableIds: new Set(readyOrders.map((o) => o.tableId)),
+      activeTableIds: new Set(orders.map((o) => o.tableId)),
+    };
 
-    return tables.map((table) => {
-      const status: TableStatus = callingTableIds.has(table.id)
-        ? "calling"
-        : readyTableIds.has(table.id)
-          ? "ready"
-          : activeTableIds.has(table.id)
-            ? "active"
-            : "free";
-      return { ...table, status };
-    });
+    return tables.map((table) => ({ ...table, status: deriveTableStatus(table.id, sources) }));
   }, [tables, calls, readyOrders, orders]);
 
   return (

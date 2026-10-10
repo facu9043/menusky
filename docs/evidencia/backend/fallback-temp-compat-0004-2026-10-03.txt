@@ -1,0 +1,11 @@
+Prueba del fallback TEMP-COMPAT-0004 (código nuevo contra una base SIN la migración 0004)
+Mock con MOCK_LEGACY=1 (políticas de 0001, sin funciones RPC) en 127.0.0.1:3401 + next start en 127.0.0.1:3402. 2026-10-03.
+
+$ curl -X POST http://127.0.0.1:3401/rest/v1/rpc/create_order -d '{}'
+{"code":"PGRST202","details":null,"hint":null,"message":"Could not find the function public.create_order in the schema cache"}
+
+$ curl -X POST http://127.0.0.1:3402/api/orders -d '{"qrToken":"mesa-1-demo0001","items":[{"menuItemId":"<Provoleta>","quantity":2,"choiceIds":[]}]}'
+{"orderId":"f20450ed-fade-486a-90e1-dda231aa63e9"}          <- camino viejo (insert directo)
+
+$ curl -o /dev/null -w "%{http_code}" http://127.0.0.1:3402/m/mesa-1-demo0001/pedido/<orderId>   -> 200 (y contiene "Provoleta")
+$ curl -o /dev/null -w "%{http_code}" http://127.0.0.1:3402/m/mesa-2-demo0002/pedido/<orderId>   -> 404 (token de otra mesa)

@@ -1,0 +1,9 @@
+# modo: 0004
+PASS  "Tu pedido" se actualiza en <= 5 s  [111 ms]
+PASS  pedido 11: status 429  [[200,200,200,200,200,200,200,200,200,200] 429]
+PASS  pedido 11: texto exacto  [{"error":"Recibimos muchos pedidos de esta mesa. Esperá unos minutos o llamá al mozo."}]
+PASS  interfaz: el toast muestra el texto exacto del 429
+PASS  admin/mesas lista Mesa 1, 2 y 3
+PASS  descarga QR: 200 image/png con firma PNG  [{"s":200,"t":"image/png","sig":"137,80,78,71"}]
+
+6/6 OK

@@ -1,0 +1,7 @@
+OK   /floor: sale el toast 'Una mesa está llamando al mozo' al entrar un llamado
+OK   /floor: el llamado aparece en la lista
+OK   /admin/mesas: NO sale el toast (CA-8.6) pero la mesa pasa a 'Llama al mozo'
+     osciladores creados (aviso sonoro): /floor=1, /admin=0
+OK   CA-8.6 el aviso sonoro no suena en el admin (0 osciladores) 
+
+4 OK, 0 FAIL

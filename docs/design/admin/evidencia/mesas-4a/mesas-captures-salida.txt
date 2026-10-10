@@ -1,0 +1,2 @@
+# node mesas-captures.mjs | 2026-10-03 | app: build de producción (next start 127.0.0.1:3420) de feat/admin-mesas, código de la app = b559313 | mock propio 3422 detrás de fault-proxy 3421 | Chrome headless (Playwright 1.63.0, @axe-core/playwright 4.13.0)
+capturas en C:\Users\facundo\Desktop\menusky\docs\design\admin\capturas

@@ -1,0 +1,12 @@
+peticiones RSC de navegación capturadas (admin): 3
+RSC-nav  mozo@demo.test    /admin/menu        -> 200 | NotAdminAccess en la respuesta=false | datos de la página: isAvailable | 8244 bytes
+   router-state-tree enviado: ["",{"children":["admin",{"children":["menu",{"children":["(lista)",{"children":["__PAGE__",{},null,"refetch",4096]},null,null,4100]},null,null,4104]},null,null,4104]},null,null,4120]
+   fragmento: me":"Ajíes en vinagre","extraPrice":300}]}]},{"id":"5879b8f8-3e62-4845-a7ef-2fb233d07008","categoryId":"7d69b479-588a-4aed-85b4-16baef0070f4","name":"Provoleta","description":"Provolone a la parrilla con orégano y aceite de oliva","price":5200,"photoUrl":null,"isAvailab
+RSC-nav  mozo@demo.test    /admin/mesas       -> 200 | NotAdminAccess en la respuesta=false | datos de la página: qrToken | 4758 bytes
+RSC-nav  mozo@demo.test    /admin/apariencia  -> 200 | NotAdminAccess en la respuesta=false | datos de la página: accentPrimary | 4755 bytes
+RSC-nav  cocina@demo.test  /admin/menu        -> 200 | NotAdminAccess en la respuesta=false | datos de la página: isAvailable | 8244 bytes
+RSC-nav  cocina@demo.test  /admin/mesas       -> 200 | NotAdminAccess en la respuesta=false | datos de la página: qrToken | 4758 bytes
+RSC-nav  cocina@demo.test  /admin/apariencia  -> 200 | NotAdminAccess en la respuesta=false | datos de la página: accentPrimary | 4755 bytes
+RSC-nav  admin@demo.test   /admin/menu        -> 200 | NotAdminAccess en la respuesta=false | datos de la página: isAvailable | 8244 bytes
+RSC-nav  admin@demo.test   /admin/mesas       -> 200 | NotAdminAccess en la respuesta=false | datos de la página: qrToken | 4758 bytes
+RSC-nav  admin@demo.test   /admin/apariencia  -> 200 | NotAdminAccess en la respuesta=false | datos de la página: accentPrimary | 4755 bytes

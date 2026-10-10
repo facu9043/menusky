@@ -7,7 +7,13 @@ import { attendWaiterCall } from "@/lib/waiterCalls/attendWaiterCall";
 import type { WaiterCallView } from "@/lib/waiterCalls/getPendingWaiterCalls";
 import { playChime } from "@/lib/notify/playChime";
 
-export function useWaiterCalls(restaurantId: string, initialCalls: WaiterCallView[]) {
+// notify (default true, como siempre en /floor): suena el aviso y sale el cartel
+// cuando entra un llamado. El admin en vivo lo apaga (CA-8.6).
+export function useWaiterCalls(
+  restaurantId: string,
+  initialCalls: WaiterCallView[],
+  { notify = true }: { notify?: boolean } = {}
+) {
   const [calls, setCalls] = useState(initialCalls);
 
   useEffect(() => {
@@ -38,8 +44,10 @@ export function useWaiterCalls(restaurantId: string, initialCalls: WaiterCallVie
               createdAt: row.created_at,
             },
           ]);
-          playChime();
-          toast.info("Una mesa está llamando al mozo");
+          if (notify) {
+            playChime();
+            toast.info("Una mesa está llamando al mozo");
+          }
         }
       )
       .on(
@@ -62,7 +70,7 @@ export function useWaiterCalls(restaurantId: string, initialCalls: WaiterCallVie
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [restaurantId]);
+  }, [restaurantId, notify]);
 
   const attend = useCallback(async (callId: string) => {
     await attendWaiterCall(callId);

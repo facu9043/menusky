@@ -1,0 +1,25 @@
+OK   CA-4.3 theme nulo: MenuSky figura activo en Apariencia | MenuSky
+OK   CA-4.3 /m con theme nulo usa el fondo MenuSky #FFF5E1
+OK   CA-5.1 con tema Galaxia el admin conserva sus colores (fondo, menú lateral, ítem activo, h1) | {"body":"rgb(255, 245, 225)","side":"rgb(43, 23, 16)","active":"rgb(255, 194, 26)","h1":"rgb(43, 23, 16)"} -> {"body":"rgb(255, 245, 225)","side":"rgb(43, 23, 16)","active":"rgb(255, 194, 26)","h1":"rgb(43, 23, 16)"}
+OK   CA-5.1 colores del admin = MenuSky (fondo bun, menú patty, activo cheddar) | {"body":"rgb(255, 245, 225)","side":"rgb(43, 23, 16)","active":"rgb(255, 194, 26)","h1":"rgb(43, 23, 16)"}
+OK   CA-5.1 títulos en Bricolage Grotesque y cuerpo Geist | "Bricolage Grotesque", "Bricolage Grotesque Fallback", Geist, "Geist Fallback", system-ui, sans-serif || Geist, "Geist Fallback", system-ui, sans-serif
+OK   CA-NR.40/4.6 tras aplicar Galaxia la carta del cliente ya no usa el fondo MenuSky
+OK   RNF-S4 mesa con nombre HTML se ve literal (sin <img> ni <script> inyectados) | dialogs=0
+OK   RNF-S4 categoría con nombre HTML se ve literal
+OK   RNF-S4 no se disparó ningún alert() | []
+OK   CA-11.7 Offline: aviso persistente 'Sin conexión' | Sin conexión
+OK   CA-11.7 al volver la red el aviso desaparece
+OK   CA-13.7/13.8 640x360 (zoom 200% de 1280x720 / celular horizontal): sin scroll horizontal en las 4 pantallas | /admin:true /admin/menu:true /admin/mesas:true /admin/apariencia:true
+OK   CA-13.8 la barra inferior no se come la pantalla (<= 90 px de 360) | 64px
+OK   CA-13.5 768x1024 (táctil): controles visibles de Carta >= 44x44 | []
+OK   CA-13.5 768x1024 (táctil): controles visibles de Mesas >= 44x44 | []
+OK   CA-5.10 768x1024 /admin sin scroll horizontal
+OK   CA-5.10 768x1024 /admin/menu sin scroll horizontal
+OK   CA-5.10 768x1024 /admin/mesas sin scroll horizontal
+OK   CA-5.10 768x1024 /admin/apariencia sin scroll horizontal
+OK   CA-13.9 sin emojis en el texto de las 4 pantallas
+     cabeceras (xfo,xcto,refpol,csp): {"/admin":"1111","/kitchen":"1111","/floor":"1111","/m/mesa-1-demo0001":"1111"}
+OK   RNF-S7 cabeceras de seguridad presentes e iguales en /admin, /kitchen, /floor y /m | {"/admin":"1111","/kitchen":"1111","/floor":"1111","/m/mesa-1-demo0001":"1111"}
+OK   RNF-S1 'service_role' en .next/static = 0 | 0 archivos
+
+22 OK, 0 FAIL

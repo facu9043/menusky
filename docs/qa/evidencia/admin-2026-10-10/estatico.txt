@@ -1,0 +1,56 @@
+## CA-RNF.3 secretos en diff (sin docs/, lineas < 400 car.)
+## RNF-S3: error.message al usuario en admin
+## RNF-S5: _blank con rel
+3:components/admin/mesas/TableCard.tsx-93-            rel="noopener noreferrer"
+9:components/admin/mesas/TableSheet.tsx-86-                    rel="noopener noreferrer"
+## CA-12.3: propiedades animadas en CSS del admin
+app/admin/admin.css:2130:    transition: transform var(--ms-dur) var(--ms-ease-pop);
+app/admin/admin.css:2133:    transition: opacity var(--ms-dur-fast) var(--ms-ease-out);
+app/admin/admin.css:2146:    transition: transform var(--ms-dur-fast) var(--ms-ease-out);
+app/admin/admin.css:2153:    animation: adm-pop var(--ms-dur) var(--ms-ease-pop);
+app/admin/admin.css:2159:    transition: opacity var(--ms-dur) var(--ms-ease-out);
+app/admin/admin.css:2168:    transition: transform var(--ms-dur) var(--ms-ease-out);
+app/admin/admin.css:2182:    transition:
+app/admin/admin.css:2193:    transition:
+app/admin/admin.css:2206:    transition: transform var(--ms-dur-fast) var(--ms-ease-out);
+app/admin/admin.css:2212:    transition: opacity var(--ms-dur-fast) var(--ms-ease-out);
+app/admin/admin.css:2221:    animation: adm-rise var(--ms-dur-reveal) var(--ms-ease-pop) both;
+app/admin/admin.css:2226:    animation: adm-pulse 1.6s ease-in-out infinite;
+app/admin/admin.css:2230:    transition: transform var(--ms-dur-fast) var(--ms-ease-out);
+app/admin/admin.css:2236:    transition:
+app/admin/admin.css:2636:@keyframes adm-pop {
+app/admin/admin.css:2644:@keyframes adm-rise {
+app/admin/admin.css:2650:@keyframes adm-pulse {
+components/admin/carta/:
+BrandPomo.tsx
+BrandSwitch.tsx
+CategoryFormDialog.tsx
+CategoryMenu.tsx
+ConfirmDialog.tsx
+DishItem.tsx
+DishSheet.tsx
+EmptyState.tsx
+MenuBoard.tsx
+OptionGroupsPanel.tsx
+PickCategoryDialog.tsx
+normalize.ts
+useAvailability.ts
+
+components/admin/inicio/:
+HomeBoard.tsx
+
+components/admin/mesas/:
+NewTableDialog.tsx
+PrintView.tsx
+TableCard.tsx
+TableMenu.tsx
+TableSheet.tsx
+TablesBoard.tsx
+tableState.ts
+
+components/admin/shell/:
+AdminShell.tsx
+OfflineNotice.tsx
+nav.ts
+portal.tsx
+useLogout.ts

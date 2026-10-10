@@ -1,0 +1,5 @@
+360x640: 2/20 cargas con document.title vacio en el momento en que aparece 'Tu carta esta vacia'
+1440x900: 1/20 cargas con document.title vacio en el momento en que aparece 'Tu carta esta vacia'
+360px intento 2: titulo vacio al aparecer el estado vacio; 1,5 s despues: "Carta | MenuSky"
+360px intento 20: titulo vacio al aparecer el estado vacio; 1,5 s despues: "Carta | MenuSky"
+1440px intento 15: titulo vacio al aparecer el estado vacio; 1,5 s despues: "Carta | MenuSky"

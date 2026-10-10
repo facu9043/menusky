@@ -1,0 +1,55 @@
+PASS  sin sesión: /admin/menu -> 307 a /login?redirect=/admin/menu
+PASS  admin: /admin/menu -> 200 y contiene "Bife de chorizo"
+PASS  admin: /admin/mesas -> 200 y contiene "Mesa 1"
+PASS  admin: /admin/apariencia -> 200 y contiene "Apariencia"
+PASS  admin: /kitchen -> 200 y contiene "Cocina"
+PASS  admin: /floor -> 200 y contiene "Mesa 3"
+PASS  admin: /admin/menu muestra los platos de A y no los de B
+PASS  POST /api/orders -> 200 { orderId }
+PASS  total recalculado en servidor (2 x 5200 = 10400), campos extra ignorados, status received
+PASS  cocina: /kitchen -> 200 y muestra el pedido nuevo (Provoleta, bien dorada)
+PASS  /api/orders Body inválido -> 400
+PASS  /api/orders sin items -> 400 Faltan datos
+PASS  /api/orders mesa inexistente -> 404
+PASS  /api/orders plato de otro restaurante -> 409
+PASS  /api/orders plato sin stock -> 409
+PASS  /api/orders falta elegir guarnición -> 400
+PASS  /api/orders cantidad 100 -> 400
+PASS  "Tu pedido": 200, muestra Provoleta, nota y total
+PASS  "Tu pedido" con el qr de OTRA mesa -> 404
+PASS  "Tu pedido" con un id inexistente -> 404
+PASS  "Tu pedido" con un id que no es uuid -> 404
+PASS  mozo: /kitchen -> 307 a /floor (sin contenido de cocina)
+PASS  mozo: /floor -> 200
+PASS  cocina: /floor -> 307 a /kitchen
+PASS  cocina: /kitchen -> 200
+PASS  admin: /kitchen -> 200 sin redirección
+PASS  admin: /floor -> 200 sin redirección
+PASS  mozo: /admin no muestra el panel (NotAdminAccess)
+PASS  autenticado sin staff: /kitchen no lee pedidos (no aparece Provoleta)
+PASS  anónimo: GET orders -> []
+PASS  anónimo: insert directo en orders -> rechazado (401/403)
+PASS  mozo: cambiar precio de un plato -> 0 filas afectadas
+PASS  admin: cambiar precio de un plato -> 1 fila
+PASS  admin B: no edita platos de A
+PASS  admin B: ve solo pedidos de B
+PASS  cocina: lee pedidos de A
+PASS  admin (supabase-js): crear plato
+PASS  admin (supabase-js): editar plato
+PASS  admin (supabase-js): subir foto a menu-photos
+PASS  foto: URL pública 200 y content-type image/png
+PASS  admin (supabase-js): borrar plato
+PASS  admin: borrar un plato con pedidos -> error 23503 (restringe)
+PASS  mozo: subir foto -> rechazado
+PASS  mozo: crear categoría -> error de permisos
+PASS  Realtime: canal de staff y canal anónimo SUBSCRIBED
+PASS  Realtime: pedido nuevo llega al staff por postgres_changes
+PASS  Realtime: llamado de mozo llega al staff
+PASS  Realtime: el anónimo NO recibe eventos de orders (RLS)
+PASS  sondeo: get_public_order_status = received
+PASS  sondeo: tras el cambio el RPC devuelve in_kitchen (47 ms)
+PASS  Realtime: el cambio de estado llega al staff
+PASS  sondeo: token de otra mesa -> null
+PASS  POST /api/waiter-calls -> 2xx
+
+53/53 OK

@@ -1,0 +1,19 @@
+OK   TOKENS         anon lee 9 qr_token de 2 restaurantes
+OK   XTABLE         8 mesas x 11 intentos en 561 ms: 80 pedidos creados, 8 rate_limited, 0 otros; en A quedan 80 pedidos, 4000 renglones, "ventas" = 792000000.00
+OK   DOS-LEGIT      pedido legitimo en mesa-1-41d37006 tras el ataque -> rate_limited (P0429)
+OK   DOS-CANCEL     tras cancelar todo: admin borra 0 filas (err=no); pedido legitimo -> rate_limited
+OK   ISOLATION      mesa de B tras el ataque a A -> creado
+INFO FN            create_order: secdef=true config=["search_path=\"\""] owner=postgres acl={postgres=X/postgres,anon=X/postgres,authenticated=X/postgres}
+INFO FN            get_public_order: secdef=true config=["search_path=\"\""] owner=postgres acl={postgres=X/postgres,anon=X/postgres,authenticated=X/postgres}
+INFO FN            get_public_order_status: secdef=true config=["search_path=\"\""] owner=postgres acl={postgres=X/postgres,anon=X/postgres,authenticated=X/postgres}
+INFO FN            is_admin_of: secdef=true config=["search_path=public"] owner=postgres acl={=X/postgres,postgres=X/postgres,anon=X/postgres,authenticated=X/postgres}
+INFO FN            is_staff_of: secdef=true config=["search_path=public"] owner=postgres acl={=X/postgres,postgres=X/postgres,anon=X/postgres,authenticated=X/postgres}
+OK   SEARCHPATH     las 3 RPC: security definer y search_path vacio
+OK   SCHEMA-PRIV    anon crea tabla en public -> permission denied for schema public
+OK   PRE-CALLS      anon: 50/50 llamados insertados en la misma mesa; llamado con mesa de A y restaurant_id de B -> ACEPTADO
+OK   THEME-ANY      admin A guarda un tema con valores no hex -> 1 fila(s)
+OK   THEME-AUTHZ    admin B sobre A -> 0 filas; mozo A -> 0 filas
+OK   TABLES-AUTHZ   mozo crea -> rechazado; admin B crea en A -> rechazado; admin B borra mesas de A -> 0; admin A crea mesa con comillas y emoji -> OK
+OK   ROLLBACK       reversa: funciones restantes=0, bucket={"allowed_mime_types":null,"file_size_limit":null}, anon lee 81 pedidos (agujero reabierto, esperado y documentado); reaplicada: pedidos 81->81, bucket={"allowed_mime_types":["image/jpeg","image/png","image/webp","image/gif"],"file_size_limit":5242880}, anon lee 0
+
+FALLAS: 0

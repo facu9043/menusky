@@ -1,0 +1,3 @@
+pointer coarse: true | hover none: true
+[["Todas·8",97,41,"44px"],["Entradas·2",125,44,"44px"],["Platos principales·3",190,44,"44px"],["Bebidas·3",119,44,"44px"],["Nueva Categoría",128,44,"44px"]]
+[["MAIN.adm-main","rgba(0, 0, 0, 0)"],["DIV.adm-frame","rgba(0, 0, 0, 0)"],["DIV.ms-brand.ms-admin.bricolage_grotesque_44a75536-module__S5cxCG__variable.adm-root","rgb(255, 245, 225)"],["BODY.min-h-full.flex.flex-col","lab(100 0 0)"],["HTML.geist_a71539c9-module__T19VSG__variable.geist_mono_8d43a2aa-module__8Li5zG__variable.h-full.antialiased","rgba(0, 0, 0, 0)"]]

@@ -1,0 +1,42 @@
+Regresión visual de marca (CA-RNF.1 b, c, d, e) - 2026-10-03
+==============================================================
+Antes: build de f7d256d. Después: build de la rama feat/admin-brand (tokens en
+app/brand.css, Bricolage en components/brand/fonts.ts, Pomo estático en brand.css,
+preset MenuSky). Ambos con `next build` + `next start -H 127.0.0.1 -p 3420` y env
+ficticias. Capturas con Chrome headless por CDP (capture.mjs), prefers-reduced-motion:
+reduce (el 3D de la landing no carga), deviceScaleFactor 1.
+
+Capturas (32 por corrida): landing 1440x900 y 360x640 (primera pantalla + toda la
+página por tramos del alto de la pantalla: 9 y 18 tramos), login 1440x900 y 360x640 en
+reposo y con error de red (peticiones a *.supabase.co cortadas por CDP).
+
+1. Diff de píxeles antes vs después (diff-antes-despues.txt)
+   31 de 32 capturas: 0 píxeles distintos.
+   1 captura con diferencia: landing-1440x900 (primera pantalla), 264 px de 1.296.000
+   (0,02 %), delta máx. 21/255, recuadro x 790-835, y 493-585 (foto del celular del hero).
+
+2. Ruido de la medición (ruido-antes-vs-antes.txt): dos corridas del MISMO build base
+   (antes vs antes repetido) dan exactamente esa misma diferencia en landing-1440x900
+   (264 px, delta 21, mismo recuadro) y además 43.199 px en landing-360x640-tramo13 (la
+   foto de la hamburguesa). Es decodificación/escalado de fotos de Chrome entre corridas,
+   no CSS. La segunda corrida base vs después: 31 de 32 en 0 y solo ese tramo13 de foto.
+   Conclusión: antes y después son idénticos salvo ruido de decodificación de fotos;
+   nulo a la vista.
+
+3. Tokens (CA-RNF.1 b): las 27 declaraciones --ms-* de app/brand.css son textualmente
+   iguales a las que tenía landing.css en f7d256d. El login recibe además
+   --ms-shadow-card (antes solo en la landing), que login.css no usa (0 apariciones).
+
+4. Fuentes por pestaña Red, CDP (antes/fuentes-antes.json, despues/fuentes-despues.json):
+   landing y login, antes y después, descargan los mismos 3 archivos:
+   Bricolage Grotesque 2aa781f449db21e3-s.p.1pg2nifvadz06.woff2 77.398 B (UN archivo,
+   el mismo nombre con hash antes y después), Geist 29.817 B y Geist Mono 23.637 B.
+   El peso de la fuente no sube.
+
+5. Peso de /login (scripts/measure-login-weight.mjs, sin fuentes):
+   antes  {"files":14,"js_gzip_kb":252.6,"css_gzip_kb":17.4,"html_gzip_kb":6,"total_kb":276}
+   después {"files":14,"js_gzip_kb":252.6,"css_gzip_kb":17.6,"html_gzip_kb":6,"total_kb":276.2}
+   JS 252,6 KB <= 265,8 (CA-9.1). CSS +0,2 KB (bloque del Pomo estático y
+   --ms-shadow-card ahora en el CSS compartido). Con las 3 fuentes (127,8 KB):
+   antes 403,8 KB, después 404,0 KB. Ver riesgo: ya en f7d256d esta suma supera los
+   380 KB de CA-9.2.

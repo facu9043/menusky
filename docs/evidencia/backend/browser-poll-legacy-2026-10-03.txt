@@ -1,0 +1,9 @@
+browser-poll-check LEGACY=1 (mock con MOCK_LEGACY=1, base sin 0004): fallback de useOrderStatus a Realtime, 2026-10-03
+PASS  "Tu pedido" cargó con el paso 1 (Recibido) activo
+PASS  base vieja: una sola consulta del sondeo (1) y después Realtime, sin seguir sondeando
+PASS  base vieja: pasados 7 s más, no hubo nuevas consultas del sondeo
+PASS  base vieja: cambio a in_kitchen llega por Realtime en 24 ms
+PASS  base vieja: cambio a ready llega por Realtime en 70 ms
+PASS  base vieja: cambio a delivered llega por Realtime en 29 ms
+
+6/6 OK

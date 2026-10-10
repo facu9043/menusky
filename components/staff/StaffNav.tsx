@@ -6,10 +6,12 @@ import { cn } from "@/lib/utils";
 import { useStaffPendingCounts } from "@/lib/realtime/useStaffPendingCounts";
 import type { StaffRole } from "@/lib/types/database.types";
 
-const LINKS = [
-  { href: "/kitchen", label: "Cocina" },
-  { href: "/floor", label: "Salón" },
-  { href: "/admin", label: "Admin", adminOnly: true },
+// CA-3.9: cada rol ve solo los enlaces que no lo rebotan. waiter: Salón;
+// kitchen: Cocina; admin: todo.
+const LINKS: { href: string; label: string; roles: StaffRole[] }[] = [
+  { href: "/kitchen", label: "Cocina", roles: ["kitchen", "admin"] },
+  { href: "/floor", label: "Salón", roles: ["waiter", "admin"] },
+  { href: "/admin", label: "Admin", roles: ["admin"] },
 ];
 
 export function StaffNav({ role, restaurantId }: { role: StaffRole; restaurantId: string }) {
@@ -23,7 +25,7 @@ export function StaffNav({ role, restaurantId }: { role: StaffRole; restaurantId
 
   return (
     <nav className="flex gap-1 border-b px-4 py-2">
-      {LINKS.filter((link) => !link.adminOnly || role === "admin").map((link) => {
+      {LINKS.filter((link) => link.roles.includes(role)).map((link) => {
         const active = pathname.startsWith(link.href);
         const pending = pendingByHref[link.href] ?? 0;
         return (

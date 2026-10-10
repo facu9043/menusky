@@ -112,7 +112,8 @@ export function LoginForm({
           .select("role")
           .eq("auth_user_id", data.user.id)
           .maybeSingle();
-        destination = staff?.role === "admin" ? "/admin" : "/kitchen";
+        destination =
+          staff?.role === "admin" ? "/admin" : staff?.role === "waiter" ? "/floor" : "/kitchen";
       }
 
       // Éxito: la reacción de la mascota se fija en el mismo render que la

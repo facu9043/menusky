@@ -1,0 +1,2 @@
+netstat -ano 3420-3449 LISTENING tras parar (2026-10-10):
+(ninguno)

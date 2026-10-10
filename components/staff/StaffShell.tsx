@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { Fraunces } from "next/font/google";
-import { getRestaurantTheme } from "@/lib/admin/getRestaurantTheme";
+import { getRestaurantThemeOrDefault } from "@/lib/admin/getRestaurantTheme";
 import { getForegroundColor } from "@/lib/theme/contrast";
 
 const fraunces = Fraunces({
@@ -34,7 +34,7 @@ export async function StaffShell({
   className?: string;
   children: React.ReactNode;
 }) {
-  const theme = await getRestaurantTheme(restaurantId);
+  const theme = await getRestaurantThemeOrDefault(restaurantId);
 
   return (
     <div

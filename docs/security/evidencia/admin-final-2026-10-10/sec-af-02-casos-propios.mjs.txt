@@ -1,0 +1,85 @@
+// ===================== SEC-AF-02 re-auditoria, casos propios de Seguridad (2026-10-10) =====================
+// Se pega despues de las primeras 125 lineas de supabase/tests/rls/run.mjs @ d127783 (stubs, 0001..0003, seed, 2 restaurantes, 6 actores).
+const log = (id, ok, msg) => { console.log(`${ok ? "OK  " : "FAIL"} ${id.padEnd(22)} ${msg}`); if (!ok) failures++; };
+const polsOld = JSON.stringify(await su(`select tablename, policyname, cmd, qual from pg_policies where schemaname='public' order by 1,2`));
+await db.exec(sql("supabase/migrations/0004_role_policies.sql"));
+await su(`delete from order_items`); await su(`delete from orders`); await su(`delete from waiter_calls`);
+for (let i = 4; i <= 8; i++) await su(`insert into tables (restaurant_id, label, qr_token) values ($1, $2, $3)`, [A, `Mesa ${i}`, `mesa-${i}-sec`]);
+const all = await su(`select id, qr_token, restaurant_id from tables order by label`);
+const tokA = all.filter(r => r.restaurant_id === A).map(r => r.qr_token);
+console.log(`INFO setup        ${all.length} mesas (${tokA.length} de A, ${all.length - tokA.length} de B)`);
+for (const t of all) await su(`insert into orders (table_id, restaurant_id, total) values ($1,$2,1)`, [t.id, t.restaurant_id]);
+await su(`insert into waiter_calls (table_id, restaurant_id, reason) values ($1,$2,'cuenta')`, [all[0].id, all[0].restaurant_id]);
+const tokRe = /qr_token|mesa-\d|-sec|demo\d|b-token/;
+const leak = (r) => JSON.stringify(r.rows).match(tokRe);
+
+// 1) TOKENS: el ataque original (listar todos los qr_token)
+for (const actor of ["anon", "noStaff"]) {
+  const r = await as(actor, `select qr_token, restaurant_id from tables`);
+  log("TOKENS", !r.err && r.rows.length === 0, `${actor}: select qr_token from tables -> ${r.rows.length} filas`);
+}
+// 2) Otras vias como anonimo: agregados, exists (oraculo), joins, laterales (equivalente a embeds de PostgREST), insert...select
+const VIAS = [
+  ["count", `select count(*)::int n from tables`, (r) => r.rows[0]?.n === 0],
+  ["exists-oraculo", `select exists(select 1 from tables where qr_token like 'mesa-1%') e`, (r) => r.rows[0]?.e === false],
+  ["restaurants+lateral", `select r.id, (select json_agg(t) from tables t where t.restaurant_id=r.id) ts from restaurants r`, (r) => r.rows.every(x => x.ts === null)],
+  ["restaurants-join", `select r.id, t.qr_token from restaurants r join tables t on t.restaurant_id=r.id`, (r) => r.rows.length === 0],
+  ["orders-join", `select o.id, t.qr_token from orders o join tables t on t.id=o.table_id`, (r) => r.rows.length === 0],
+  ["order_items-join", `select oi.id, t.qr_token from order_items oi join orders o on o.id=oi.order_id join tables t on t.id=o.table_id`, (r) => r.rows.length === 0],
+  ["waiter_calls-join", `select w.id, t.qr_token from waiter_calls w join tables t on t.id=w.table_id`, (r) => r.rows.length === 0],
+  ["categories-cross", `select c.id, t.qr_token from categories c cross join tables t`, (r) => r.rows.length === 0],
+  ["insert-select", `insert into waiter_calls (table_id, restaurant_id, reason) select id, restaurant_id, 'otro' from tables returning id`, (r) => r.rows.length === 0],
+  ["error-oraculo", `select 1/(case when exists(select 1 from tables) then 0 else 1 end) x`, (r) => !r.err],
+];
+for (const [id, q, ok] of VIAS) {
+  const r = await as("anon", q);
+  log("VIA-" + id, ok(r) && !leak(r), `anon -> ${r.err ? "error: " + r.err.message : r.rows.length + " filas"}${leak(r) ? " | FUGA " + leak(r)[0] : ""}`);
+}
+// 3) La funcion nueva: comodines, regex, casi-iguales, largo extremo, enumeracion
+const GT = (actor, tok) => as(actor, `select get_table_by_token($1) as t`, [tok]);
+const t0 = tokA[0];
+const raros = [["%", "%"], ["_ x len", "_".repeat(t0.length)], ["ultimo char _", t0.slice(0, -1) + "_"], ["prefijo%", t0.slice(0, 6) + "%"], ["regex .*", ".*"], ["espacio final", t0 + " "], ["tab", t0 + "\t"], ["mayusculas", t0.toUpperCase()], ["unicode homoglifo", t0.replace("e", "е")], ["100k chars", "a".repeat(100000)], ["' or 1=1 --", "' or 1=1 --"], ["array json", JSON.stringify(tokA)]];
+for (const [n, tok] of raros) { const r = await GT("anon", tok); log("FN-raro", !r.err && r.rows[0].t === null, `get_table_by_token(${n}) -> ${r.err ? "error: " + r.err.message : JSON.stringify(r.rows[0].t)}`); }
+const exact = (await GT("anon", t0)).rows[0].t;
+log("FN-exacto", !!exact && Object.keys(exact).sort().join() === "id,label,restaurant_id" && !JSON.stringify(exact).includes(t0), `token exacto -> claves ${exact && Object.keys(exact).sort().join(",")}; incluye el token=${JSON.stringify(exact).includes(t0)}`);
+let hits = 0; const tEnum = Date.now();
+for (let k = 0; k < 2000; k++) { const g = `mesa-${1 + (k % 8)}-${Math.random().toString(36).slice(2, 8)}`; if ((await GT("anon", g)).rows[0].t) hits++; }
+log("FN-enum", hits === 0, `2000 tokens adivinados con el formato de generateQrToken (mesa-N-xxxxxx) -> ${hits} aciertos (${Date.now() - tEnum} ms en PGlite)`);
+const fn = (await su(`select prosecdef, proconfig, provolatile, proretset, proacl::text acl, pg_get_userbyid(proowner) owner, prosrc from pg_proc where proname='get_table_by_token'`))[0];
+console.log(`INFO FN            secdef=${fn.prosecdef} config=${JSON.stringify(fn.proconfig)} volatile=${fn.provolatile} retset=${fn.proretset} owner=${fn.owner} acl=${fn.acl}`);
+log("FN-meta", fn.prosecdef && JSON.stringify(fn.proconfig) === JSON.stringify(['search_path=""']) && !fn.proretset && /public\.tables/.test(fn.prosrc) && !/\blike\b|~|similar/i.test(fn.prosrc) && !/(^\{|,)=X/.test(fn.acl), "security definer, search_path vacio, un solo valor, tabla calificada, sin LIKE/regex, PUBLIC sin execute");
+await su(`delete from orders`);
+const o = await as("anon", `select create_order($1, $2::jsonb) id`, [t0, JSON.stringify([{ menu_item_id: ITEM.agua, quantity: 1 }])]);
+const po = await as("anon", `select get_public_order($1,$2) o`, [t0, o.rows[0]?.id]);
+log("FN-otras", !o.err && !!po.rows[0]?.o && !JSON.stringify(po.rows[0].o).includes(t0), `get_public_order no incluye qr_token (claves: ${po.rows[0]?.o ? Object.keys(po.rows[0].o).join(",") : "null"})`);
+// 4) Ataque SEC-AF-02: sin tokens no se agota el cupo de otras mesas; con UN token (el propio) el staff desbloquea cancelando
+const stolen = (await as("anon", `select qr_token from tables`)).rows.map(r => r.qr_token);
+log("XTABLE", stolen.length === 0, `tokens obtenibles por el anonimo para atacar: ${stolen.length} (con la 0004 anterior: ${all.length})`);
+await su(`delete from orders`);
+let ok = 0, rl = 0; for (let k = 0; k < 11; k++) { const r = await as("anon", `select create_order($1, $2::jsonb) id`, [t0, JSON.stringify([{ menu_item_id: ITEM.agua, quantity: 1 }])]); if (!r.err) ok++; else if (/rate_limited/.test(r.err.message)) rl++; }
+const legit = await as("anon", `select create_order($1, $2::jsonb) id`, [t0, JSON.stringify([{ menu_item_id: ITEM.agua, quantity: 1 }])]);
+log("DOS-1MESA", ok === 10 && rl === 1 && !!legit.err, `con el token de SU mesa: ${ok} creados, ${rl} rate_limited; pedido legitimo siguiente -> ${legit.err ? legit.err.message : "creado"}`);
+const canc = await as("waiterA", `update orders set status='cancelled' where table_id=(select id from tables where qr_token=$1) and status='received' returning id`, [t0]);
+const legit2 = await as("anon", `select create_order($1, $2::jsonb) id`, [t0, JSON.stringify([{ menu_item_id: ITEM.agua, quantity: 1 }])]);
+log("DOS-CANCEL", canc.count === 10 && !legit2.err, `el mozo cancela ${canc.count} pedidos -> pedido legitimo ${legit2.err ? "BLOQUEADO: " + legit2.err.message : "creado (los cancelados no cuentan)"}`);
+const anonCancel = await as("anon", `update orders set status='cancelled' returning id`);
+log("CANCEL-ANON", denied(anonCancel), `el anonimo no puede cancelar pedidos para saltar el limite -> ${anonCancel.err ? "rechazado" : anonCancel.count + " filas"}`);
+const rb = await as("anon", `select create_order('mesa-b-token', $1::jsonb) id`, [JSON.stringify([{ menu_item_id: T.itemB, quantity: 1 }])]);
+log("ISOLATION", !rb.err, `mesa de B no afectada -> ${rb.err ? rb.err.message : "creado"}`);
+// 5) Staff: solo su restaurante (con qr_token: por diseno)
+for (const actor of ["waiterA", "kitchenA", "adminA", "adminB"]) {
+  const r = await as(actor, `select restaurant_id from tables`);
+  const own = actor === "adminB" ? B : A;
+  log("STAFF", r.rows.length > 0 && r.rows.every(x => x.restaurant_id === own), `${actor} lee ${r.rows.length} mesas, todas de su restaurante`);
+}
+// 6) Reversa: vuelve a 0001 y reaplicar 0004 vuelve a cerrar
+await db.exec(sql("supabase/rollback/0004_role_policies_down.sql"));
+const polsDown = JSON.stringify(await su(`select tablename, policyname, cmd, qual from pg_policies where schemaname='public' order by 1,2`));
+const anonDown = await as("anon", `select qr_token from tables`);
+const fnDown = await su(`select count(*)::int n from pg_proc where proname='get_table_by_token'`);
+log("REVERSA", polsDown === polsOld && anonDown.rows.length === all.length && fnDown[0].n === 0, `politicas (con su condicion) identicas a 0001..0003=${polsDown === polsOld}; anon vuelve a listar ${anonDown.rows.length} mesas; get_table_by_token existe=${fnDown[0].n}`);
+await db.exec(sql("supabase/migrations/0004_role_policies.sql"));
+const anonUp = await as("anon", `select qr_token from tables`);
+log("REAPLICAR", anonUp.rows.length === 0 && !!(await GT("anon", t0)).rows[0].t, `reaplicar 0004: anon lista ${anonUp.rows.length} mesas; la funcion resuelve el token`);
+console.log(`\nTOTAL casos propios: ${failures} FAIL`);
+process.exit(failures ? 1 : 0);

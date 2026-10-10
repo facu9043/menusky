@@ -1,0 +1,30 @@
+=== SEC-AD: casos propios de Seguridad (PGlite 0.5.8, datos ficticios) ===
+OK   TOKENS     anon lee 4 mesas con qr_token de 2 restaurantes (ej. B: mesa-b-token)
+OK   FLOOD      100 llamadas seguidas a create_order (anon, token de B leído de tables): 100 pedidos creados en 1281 ms; B tiene 100 pedidos por 9900000.00. Sin límite en la base.
+OK   QTY        quantity=1e2: rechazado (invalid_items)
+OK   QTY        quantity=99.0: rechazado (invalid_items)
+OK   QTY        quantity="5": rechazado (invalid_items)
+OK   QTY        quantity=true: rechazado (invalid_items)
+OK   QTY        quantity=1E1: aceptado, total=10000.00
+OK   QTY        quantity=0.5e1: aceptado, total=5000.00
+OK   DUPCHOICE  mismo choice x3 (incluye mayúsculas): total 12500.00, opciones registradas 2
+OK   NOTE       notas guardadas: [null,"<img src=x onerror=alert(1)>"]
+OK   EXTRAKEYS  claves extra (subtotal, total, order_id, status, price) ignoradas: total 1000.00, status received, subtotal 1000.00
+OK   OVERFLOW   precio 99999999.99 x 99: error 22003 (numeric field overflow), sin filas
+OK   XREST      token de B + pedido de A: order=null status=null
+OK   NULLS      token null / id null: null / null
+OK   TOKEN+ID   token de A (público) + id del pedido: lo lee (el id uuid v4 es el único secreto real)
+OK   SQLI       create_order token "x' or '1'='1": table_not_found
+OK   SQLI       get_public_order token "' or 1=1 --": null
+OK   SQLI       menu_item_id con SQL: invalid_items
+OK   SCHEMA     anon CREATE en public (stub PGlite, PG 18.3): denegado: permission denied for schema public
+OK   DEFINER    [{"proname":"create_order","prosecdef":true,"proconfig":["search_path=public"],"provolatile":"v"},{"proname":"get_public_order","prosecdef":true,"proconfig":["search_path=public"],"provolatile":"s"},{"proname":"get_public_order_status","prosecdef":true,"proconfig":["search_path=public"],"provolatile":"s"}]
+OK   GRANTS     [{"proname":"create_order","acl":"{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres}"},{"proname":"get_public_order","acl":"{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres}"},{"proname":"get_public_order_status","acl":"{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres}"}]
+OK   PRE-TOTAL  waiter A cambia total de un pedido de A: 1 fila(s), total=1.00
+OK   PRE-TABLE  waiter A mueve pedido de A a una mesa de B: 1 fila(s)
+OK   REALTIME   publicación supabase_realtime: ["orders","waiter_calls"]
+OK   DELETE     kitchen A borra pedido: 0 filas
+OK   OI-INS     admin A agrega renglón a un pedido: rechazado (new row violates row-level security policy for table "order_items")
+OK   OI-UPD     admin A cambia subtotal de un renglón: 0 filas
+OK   PRE-STOR   admin B borra la foto de un plato de A (stub de Storage, política 0003): 1 fila(s)
+OK   ROLLBACK   reversa + reaplicación conserva los 106 pedidos

@@ -1,0 +1,41 @@
+API-null     500 
+API-array    400 {"error":"Faltan datos del pedido"}
+API-items0   400 {"error":"Faltan datos del pedido"}
+API-choiceObj 500 
+API-choiceStr 200 {"orderId":"44684fb0-cbff-4cfb-8c38-3aff1251ec34"}
+API-idNum    409 {"error":"Uno de los platos ya no está disponible"}
+API-qrObj    404 {"error":"Mesa no encontrada"}
+API-qrSQL    404 {"error":"Mesa no encontrada"}
+API-bigNote  200 {"orderId":"05471a33-9dea-4476-92c3-bdfaece1bfd0"}
+API-bigNote  nota guardada: n/d (state sin order_items)
+API-overTotal 200 {"orderId":"4dfdaae7-7aae-4542-8bf6-23fee1f817a4"}
+RPC-direct   30 llamadas a /rest/v1/rpc/create_order con la anon key: 30 con 200 (la ruta /api/orders no interviene)
+TABLES-anon  anon lee 4 mesas con qr_token: mesa-1-demo0001, mesa-2-demo0002, mesa-3-demo0003, mesa-b1-demo0001
+PEDIDO-xss   200; nota escapada: true; cruda: false
+PEDIDO-hdrs  content-security-policy=si x-frame-options=si x-content-type-options=si referrer-policy=si strict-transport-security=NO
+PEDIDO-sqli  token inyectado -> 404
+R2           mozo /kitchen -> 307 /floor | len=12230 | datos A (Mesa 2/Provoleta) en cuerpo: false | CSP=true
+R2           cocina /floor -> 307 /kitchen | len=12228 | datos A (Mesa 2/Provoleta) en cuerpo: false | CSP=true
+R2           sinstaff /floor -> 200  | len=15542 | datos A (Mesa 2/Provoleta) en cuerpo: false | CSP=true
+R2           sinstaff /kitchen -> 200  | len=15546 | datos A (Mesa 2/Provoleta) en cuerpo: false | CSP=true
+R2           mozo /kitchen?x=1 -> 307 /floor | len=12260 | datos A (Mesa 2/Provoleta) en cuerpo: false | CSP=true
+R2           mozo /kitchen/ -> 308 /kitchen | len=8 | datos A (Mesa 2/Provoleta) en cuerpo: false | CSP=false
+R2           cocina /admin -> 200  | len=15147 | datos A (Mesa 2/Provoleta) en cuerpo: false | CSP=true
+R2           adminB /kitchen -> 200  | len=115716 | datos A (Mesa 2/Provoleta) en cuerpo: false | CSP=true
+R2-RSC       mozo /kitchen (RSC) -> 307 | datos de pedidos: false | 
+MOCK-CORS    Origin evil -> ACAO=https://evil.example ACAC=null
+
+--- Modo legado (MOCK_LEGACY=1, base sin 0004) en 127.0.0.1:3451, misma app en 3452 ---
+$ POST /rest/v1/rpc/get_public_order_status (anon)
+{"code":"PGRST202","details":null,"hint":null,"message":"Could not find the function public.get_public_order_status in the schema cache"}
+$ POST /api/orders (Provoleta x1) -> {"orderId":"f4210e8f-..."}   (camino TEMP-COMPAT-0004 funciona)
+=> useOrderStatus no tiene fallback: en la ventana "código nuevo, base vieja" el sondeo falla siempre y "Tu pedido" no se actualiza solo.
+
+--- Puertos en escucha durante la prueba (netstat -ano) ---
+  TCP    127.0.0.1:3451         0.0.0.0:0              LISTENING       4492   (mock-supabase)
+  TCP    127.0.0.1:3452         0.0.0.0:0              LISTENING       15144  (next start)
+
+--- Bundle (.next tras build contra el mock) ---
+service_role: .next/static 0 archivos (5 en .next/server, solo .js.map con la documentación de supabase-js)
+SERVICE_ROLE / demo-1234 / mock-jwt-secret / __mock / MOCK_LEGACY / pglite / run.mjs: 0 en .next/static y .next/server
+sb_secret: 1 archivo en .next/static = código de supabase-js que detecta el prefijo de clave (eK=e=>e.startsWith("sb_publishable_")||e.startsWith("sb_secret_")), no una clave

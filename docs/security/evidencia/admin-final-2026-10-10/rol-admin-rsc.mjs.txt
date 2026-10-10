@@ -1,0 +1,45 @@
+// Seguridad (TEMPORAL): captura la petición RSC real de una navegación de cliente del admin (/admin -> /admin/menu)
+// y la repite con la cookie del mozo y de cocina. Datos ficticios (mock).
+import { createRequire } from "node:module";
+const req = createRequire("C:/Users/facundo/Desktop/menusky/package.json");
+const pw = createRequire("C:/Users/facundo/AppData/Local/Temp/pwe2e/package.json")("playwright");
+const { createServerClient } = req("@supabase/ssr");
+const MOCK = "http://127.0.0.1:3451", APP = "http://127.0.0.1:3452", ANON = "mock-anon-key";
+await fetch(MOCK + "/__mock/reset", { method: "POST" });
+async function login(email) {
+  const jar = new Map();
+  const s = createServerClient(MOCK, ANON, { cookies: { getAll: () => [...jar].map(([name, value]) => ({ name, value })), setAll: (l) => l.forEach(({ name, value }) => jar.set(name, value)) } });
+  const { error } = await s.auth.signInWithPassword({ email, password: "demo-1234" });
+  if (error) throw error;
+  return [...jar];
+}
+const adminJar = await login("admin@demo.test");
+const browser = await pw.chromium.launch();
+const ctx = await browser.newContext();
+await ctx.addCookies(adminJar.map(([name, value]) => ({ name, value, domain: "127.0.0.1", path: "/" })));
+const page = await ctx.newPage();
+const captured = [];
+page.on("request", (r) => { const h = r.headers(); if (h["rsc"] && /\/admin\/(menu|mesas|apariencia)/.test(r.url()) && !h["next-router-prefetch"]) captured.push({ url: r.url(), headers: h }); });
+await page.goto(APP + "/admin", { waitUntil: "networkidle" });
+for (const target of ["/admin/menu", "/admin/mesas", "/admin/apariencia"]) {
+  await page.goto(APP + "/admin", { waitUntil: "networkidle" });
+  await page.evaluate((t) => { const a = [...document.querySelectorAll(`a[href="${t}"]`)][0]; a.click(); }, target);
+  await page.waitForURL("**" + target, { timeout: 15000 }).catch(() => {});
+  await page.waitForTimeout(800);
+}
+await browser.close();
+console.log(`peticiones RSC de navegación capturadas (admin): ${captured.length}`);
+const seen = new Set();
+for (const who of ["mozo@demo.test", "cocina@demo.test", "admin@demo.test"]) {
+  const cookie = (await login(who)).map(([k, v]) => `${k}=${v}`).join("; ");
+  for (const c of captured) {
+    const path = new URL(c.url).pathname; if (seen.has(who + path)) continue; seen.add(who + path);
+    const h = { rsc: c.headers["rsc"], "next-router-state-tree": c.headers["next-router-state-tree"], "next-url": c.headers["next-url"] ?? "", cookie };
+    if (!h["next-url"]) delete h["next-url"];
+    const r = await fetch(c.url, { redirect: "manual", headers: h });
+    const body = await r.text();
+    const data = body.match(/Provoleta|mesa-1-demo0001|accentPrimary|isAvailable|qrToken/);
+    console.log(`RSC-nav  ${who.padEnd(17)} ${path.padEnd(18)} -> ${r.status} | NotAdminAccess en la respuesta=${/solo para administradores/.test(body)} | datos de la página: ${data ? data[0] : "no"} | ${body.length} bytes`);
+    if (who === "mozo@demo.test" && path === "/admin/menu") console.log("   router-state-tree enviado: " + decodeURIComponent(h["next-router-state-tree"]).slice(0, 300) + "\n   fragmento: " + body.slice(Math.max(0, body.indexOf("Provoleta") - 150), body.indexOf("Provoleta") + 120));
+  }
+}

@@ -11,8 +11,33 @@ export interface ThemePreset {
 // esta lista dinámicamente.
 export const THEME_PRESETS: ThemePreset[] = [
   {
+    // Paleta de la marca (landing y login), primera y predeterminada
+    // (docs/specs/admin.md HU-4). Cada HEX es un token de
+    // docs/design/direccion-de-arte.md, sección 2: bun, paper, patty,
+    // patty-soft, tomato, cheddar, patty. 0 avisos de contraste en el editor
+    // (evidencia: docs/design/admin/evidencia/contraste-menusky.txt).
+    // style "brutal": de los estilos que existen, el único con el "sello"
+    // de la marca (borde y sombra dura sin difuminar del color del texto,
+    // acá marrón patty).
+    key: "menusky",
+    label: "MenuSky",
+    theme: {
+      background: "#FFF5E1",
+      cardBackground: "#FFFDF8",
+      textPrimary: "#2B1710",
+      textSecondary: "#6A4A3C",
+      accentPrimary: "#D7261E",
+      accentSecondary: "#FFC21A",
+      waiterButton: "#2B1710",
+      style: "brutal",
+    },
+  },
+  {
+    // Era el predeterminado hasta la fase Admin: conserva la clave "default"
+    // (los restaurantes que lo guardaron lo siguen viendo activo) con la
+    // etiqueta "Clásico" (D-9).
     key: "default",
-    label: "Default",
+    label: "Clásico",
     theme: {
       background: "#F5EDE0",
       cardBackground: "#F5CDA0",
@@ -110,6 +135,7 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
 ];
 
+// Tema de un restaurante sin theme guardado (null): MenuSky (D-9).
 export const DEFAULT_THEME: RestaurantTheme = THEME_PRESETS[0].theme;
 
 export function findPresetByTheme(theme: RestaurantTheme): ThemePreset | null {

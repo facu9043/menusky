@@ -1,0 +1,2 @@
+$ npx eslint components/admin/mesas app/admin/mesas components/admin/carta/ConfirmDialog.tsx components/admin/carta/OptionGroupsPanel.tsx docs/design/admin/evidencia/mesas-4a docs/design/admin/evidencia/carta-4a   (2026-10-03 17:09, rama feat/admin-mesas; lo tocado en el paso 4a. app/admin/admin.css no lo analiza eslint: sin configuración para CSS)
+exit code: 0
