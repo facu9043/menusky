@@ -1,0 +1,24 @@
+# modo del mock: LEGADO (sin 0004: fallback TEMP-COMPAT-0004)
+PASS  LEGADO: el anonimo todavia lista mesas (base sin 0004, estado actual)
+PASS  LEGADO: la RPC no existe (PGRST202) -> la app usa el fallback
+PASS  /m/{token}: 200 y la carta se abre (restaurante, mesa y platos)
+PASS  /m/{token}: no muestra platos de otro restaurante
+PASS  /m/{token inexistente} -> 404
+PASS  /m/{token de otro restaurante} abre la carta de ESE restaurante (el token es la credencial)
+PASS  pedir: POST /api/orders (sin sesion) -> 200 { orderId }
+PASS  "Tu pedido": se ve el pedido (Provoleta) con el token de su mesa
+PASS  "Tu pedido": el estado se actualiza solo por sondeo (en preparacion) <= 6 s
+PASS  "Tu pedido" con el token de OTRA mesa -> 404
+PASS  llamar al mozo (sin sesion) -> 200 { ok } y se crea el llamado
+PASS  llamar al mozo con token inexistente -> 404 Mesa no encontrada
+PASS  llamar al mozo con motivo invalido -> 400
+PASS  LEGADO: sin 0004 no hay limite (el 11 -> 200; el limite vive en create_order de 0004, igual que antes de este cambio)
+PASS  /api/qr/{token}: 200 image/png (PNG real) sin sesion, igual que hoy
+PASS  /api/qr/{token inexistente} -> 404
+PASS  admin: /admin/mesas lista sus mesas (Mesa 1, 2, 3) y no las de B
+PASS  admin: /admin -> 200
+PASS  mozo: /floor ve las mesas de su restaurante (Mesa 1, 2, 3)
+PASS  cocina: /kitchen ve los pedidos con la etiqueta de su mesa (join orders -> tables)
+PASS  admin B: /admin/mesas ve Mesa B1 y ninguna de A
+
+21/21 OK
