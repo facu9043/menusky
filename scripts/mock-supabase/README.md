@@ -51,9 +51,9 @@ npx next start -H 127.0.0.1 -p 3402
   `offset`, `Prefer: return=representation` y `count=exact`, `Accept: application/vnd.pgrst.object+json` (single).
   Restricciones: not null, únicos, claves foráneas (cascade; `order_items.menu_item_id` restringe, como la base real:
   borrar un plato con pedidos da 409 `23503`).
-- **RPC** `create_order`, `get_public_order`, `get_public_order_status` con la lógica de la migración 0004
+- **RPC** `create_order`, `get_table_by_token`, `get_public_order`, `get_public_order_status` con la lógica de la migración 0004
   (mismos errores `item_unavailable`, `table_not_found`, `invalid_items`, ...). Cualquier otra función da `PGRST202`.
-- **Permisos por rol** como la 0004: carta, mesas y restaurante solo los escribe el admin de su restaurante;
+- **Permisos por rol** como la 0004: carta, mesas y restaurante solo los escribe el admin de su restaurante; **`tables` solo la lee el staff de su restaurante** (el anónimo recibe 0 filas; resuelve su mesa con `get_table_by_token`, SEC-AF-02/D-21); el límite de 10 pedidos/10 min por mesa no cuenta los `cancelled`;
   `orders`/`order_items`/`waiter_calls` los lee el staff de su restaurante; el anónimo no lee ni inserta pedidos
   (inserta llamados); `staff_users`: cada uno ve su fila, el admin la de su restaurante. Un mozo que intenta editar
   la carta recibe 403 `42501`. **No reemplaza** la prueba de RLS real: `supabase/tests/rls/`.

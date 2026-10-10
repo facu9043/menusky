@@ -3,7 +3,7 @@
 Usa un Postgres embebido (`@electric-sql/pglite`, solo en este directorio; la app no lo usa).
 Aplica `0001..0003`, el seed, datos de 2 restaurantes y los 6 actores (anonimo, waiter, kitchen,
 admin A, admin B, autenticado sin staff), aplica `0004` y corre la matriz de HU-1 y HU-2.
-Tambien prueba la reversa y que reaplicar 0004 deja el mismo estado.
+Incluye SEC-AF-02 (mesas no legibles por el publico, `get_table_by_token`) y D-21 (cancelados no cuentan en el limite). Tambien prueba la reversa y que reaplicar 0004 deja el mismo estado.
 
 ```
 cd supabase/tests/rls

@@ -8,8 +8,14 @@
 
 -- Funciones nuevas
 drop function if exists create_order(text, jsonb);
+drop function if exists get_table_by_token(text);
 drop function if exists get_public_order(text, uuid);
 drop function if exists get_public_order_status(text, uuid);
+
+-- Mesas: vuelve la lectura publica (SEC-AF-02 reaparece; es la politica de 0001_init.sql)
+drop policy if exists "staff read tables" on tables;
+drop policy if exists "public read tables" on tables;
+create policy "public read tables" on tables for select using (true);
 
 -- Pedidos: politicas nuevas fuera, viejas de vuelta
 drop policy if exists "staff read orders" on orders;

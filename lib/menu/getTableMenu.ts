@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { getTableByToken } from "@/lib/tables/getTableByToken";
 import type { TableMenuData, CategoryData, MenuItemData } from "@/lib/types/menu";
 import type { RestaurantTheme } from "@/lib/theme/types";
 
@@ -33,17 +34,11 @@ type CategoryRow = {
   menu_items: MenuItemRow[];
 };
 
-type TableRow = {
+type RestaurantRow = {
   id: string;
-  label: string;
-  qr_token: string;
-  restaurant_id: string;
-  restaurants: {
-    id: string;
-    name: string;
-    logo_url: string | null;
-    theme: RestaurantTheme | null;
-  } | null;
+  name: string;
+  logo_url: string | null;
+  theme: RestaurantTheme | null;
 };
 
 const sortBy = <T extends { sort_order: number }>(rows: T[]) =>
@@ -55,14 +50,17 @@ export const getTableMenu = cache(
   async (qrToken: string): Promise<TableMenuData | null> => {
     const supabase = await createClient();
 
-    const { data: table } = await supabase
-      .from("tables")
-      .select("id, label, qr_token, restaurant_id, restaurants(id, name, logo_url, theme)")
-      .eq("qr_token", qrToken)
-      .returns<TableRow[]>()
-      .maybeSingle();
+    // SEC-AF-02: la mesa se resuelve por token con get_table_by_token (no se lee `tables`).
+    const table = await getTableByToken(supabase, qrToken);
+    if (!table) return null;
 
-    if (!table || !table.restaurants) return null;
+    const { data: restaurant } = await supabase
+      .from("restaurants")
+      .select("id, name, logo_url, theme")
+      .eq("id", table.restaurant_id)
+      .returns<RestaurantRow[]>()
+      .maybeSingle();
+    if (!restaurant) return null;
 
     const { data: categoryRows } = await supabase
       .from("categories")
@@ -108,12 +106,12 @@ export const getTableMenu = cache(
 
     return {
       restaurant: {
-        id: table.restaurants.id,
-        name: table.restaurants.name,
-        logoUrl: table.restaurants.logo_url,
-        theme: table.restaurants.theme,
+        id: restaurant.id,
+        name: restaurant.name,
+        logoUrl: restaurant.logo_url,
+        theme: restaurant.theme,
       },
-      table: { id: table.id, label: table.label, qrToken: table.qr_token },
+      table: { id: table.id, label: table.label, qrToken },
       categories,
     };
   }

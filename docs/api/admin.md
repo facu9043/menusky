@@ -28,7 +28,11 @@ No modifica ni borra filas (CA-1.10). Reversa en `supabase/rollback/0004_role_po
   `"public read order_items"`.
 - Se crean: `"staff read orders"` (`for select using (is_staff_of(restaurant_id))`) y
   `"staff read order_items"` (`for select using (exists (select 1 from orders o where o.id = order_items.order_id and is_staff_of(o.restaurant_id)))`).
-- NO cambian: `"staff update orders"`, `waiter_calls` (todas), `tables`, `restaurants`, `staff_users`, Storage (RNF-S9).
+- NO cambian: `"staff update orders"`, `waiter_calls` (todas), `restaurants`, `staff_users`, las políticas de escritura de `tables`, Storage (RNF-S9).
+- Mesas (SEC-AF-02, D-21): se borra `"public read tables"` (listaba todas las mesas y sus `qr_token`) y se crea
+  `"staff read tables"` (`for select using (is_staff_of(restaurant_id))`: admin, waiter y kitchen de SU restaurante). Los joins
+  del staff (`orders -> tables(label)`) siguen andando. El público solo resuelve la mesa del token que ya tiene (ver abajo).
+  Ninguna otra política consulta `tables` como anónimo (la de insert de `waiter_calls` es `with check (true)`).
 - Funciones `security definer`, `set search_path = public`, `language plpgsql`, `grant execute ... to anon, authenticated`
   (y `revoke ... from public` antes del grant):
 
@@ -50,12 +54,19 @@ create or replace function create_order(p_qr_token text, p_items jsonb) returns 
 --     [{ "groupId", "groupName", "choiceId", "choiceName", "extraPrice" }];
 --   status nace 'received' (default de la tabla);
 --   LIMITE DE TASA (D-14, SEC-AD-01): como maximo 10 pedidos por mesa en los ultimos 10 minutos
---     (constantes c_rate_max / c_rate_window; cuentan todos los estados, cancelados incluidos), con
+--     (constantes c_rate_max / c_rate_window; cuentan todos los estados MENOS `cancelled`, D-21), con
 --     pg_advisory_xact_lock por mesa; el excedente lanza 'rate_limited' con errcode 'P0429' (se evalua
 --     antes que la validacion de items). /api/orders lo traduce a 429 "Recibimos muchos pedidos de esta
 --     mesa. Esperá unos minutos o llamá al mozo.".
---   Las 3 funciones usan set search_path = '' y nombres calificados (public.tabla).
+--   Las 4 funciones usan set search_path = '' y nombres calificados (public.tabla).
 -- Devuelve el id del pedido.
+
+-- Resuelve la mesa del token que el cliente YA tiene (SEC-AF-02, D-21). Token EXACTO (sin LIKE): no lista ni enumera.
+-- security definer, search_path = '', grant execute a anon y authenticated (revoke from public).
+create or replace function get_table_by_token(p_qr_token text) returns jsonb
+-- Devuelve { "id", "label", "restaurant_id" } (sin qr_token) o null si el token no existe / es vacío / null.
+-- Ejemplo: supabase.rpc("get_table_by_token", { p_qr_token: "mesa-1-demo0001" })
+--   -> { "id": "…", "label": "Mesa 1", "restaurant_id": "…" }
 
 -- Lectura del pedido propio: exige el qr_token de la mesa Y el id del pedido.
 create or replace function get_public_order(p_qr_token text, p_order_id uuid) returns jsonb
@@ -87,6 +98,14 @@ sigue recibiendo los eventos de su restaurante y el anónimo deja de recibirlos.
   funciona con la base vieja y se puede desplegar ANTES de aplicar la migración. Con la base nueva el
   camino viejo está bloqueado por RLS, así que no abre nada. Comentario `// TEMP-COMPAT-0004` para quitarlo
   cuando la migración esté aplicada en producción.
+
+### 2.1b Lectores de `tables` por token sin sesión (SEC-AF-02, D-21)
+- Helper `lib/tables/getTableByToken.ts` (`getTableByToken(supabase, qrToken) -> { id, label, restaurant_id } | null`): llama a
+  `get_table_by_token`; si la función no existe (`PGRST202` / `42883`) usa la lectura directa vieja (`TEMP-COMPAT-0004`).
+- Lo usan: `lib/menu/getTableMenu.ts` (la carta; el restaurante se lee aparte de `restaurants`, que sigue siendo público),
+  `app/api/orders/route.ts`, `app/api/waiter-calls/route.ts`, `app/api/qr/[qrToken]/route.ts` (sigue sirviendo el PNG a cualquiera
+  que tenga el token, igual que antes) y el camino legado de `lib/orders/getOrder.ts`. Contratos HTTP idénticos.
+- Orden de despliegue intacto: primero el código (funciona con la base vieja), después la migración.
 
 ### 2.2 "Tu pedido" (`lib/orders/getOrder.ts`, `app/m/[tableId]/pedido/[orderId]/page.tsx`)
 - `getOrder(qrToken, orderId)` (nueva firma) llama a `get_public_order`. Misma forma de retorno que hoy

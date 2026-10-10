@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { getTableByToken } from "@/lib/tables/getTableByToken";
 import type { CartSelectedOption } from "@/lib/types/cart";
 
 interface OrderItemInput {
@@ -57,11 +58,7 @@ export async function POST(request: Request) {
 
   const supabase = await createClient();
 
-  const { data: table } = await supabase
-    .from("tables")
-    .select("id, restaurant_id")
-    .eq("qr_token", qrToken)
-    .maybeSingle();
+  const table = await getTableByToken(supabase, qrToken);
 
   if (!table) {
     return NextResponse.json({ error: "Mesa no encontrada" }, { status: 404 });

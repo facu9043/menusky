@@ -1,0 +1,170 @@
+
+##### TZ del proceso = UTC
+process.env.TZ = UTC; offset local de new Date(): 0 min
+PASS  23:59:59 AR del 2/10 (02:59:59Z del 3/10) pertenece al día 2/10
+PASS  00:00:00 AR del 3/10 (03:00:00Z) abre el día 3/10
+PASS  mediodía AR
+PASS  fin de año (31/12 17:00 AR)
+PASS  fin de mes (28/02/2027 AR)
+PASS  año bisiesto (29/02/2028 AR)
+PASS  isTodayAR 23:59:59 AR de ayer = false
+PASS  isTodayAR 00:00:00 AR de hoy = true
+PASS  isTodayAR 23:59:59 AR de hoy = true
+PASS  isTodayAR 00:00:00 AR de mañana = false
+PASS  isTodayAR con offset en el ISO (-03:00)
+PASS  isTodayAR fecha inválida = false
+PASS  19:00 AR visto a las 22:00 AR sigue siendo hoy (UTC ya cambió de día)
+PASS  CA-9.3: el dato 'pedidos de hoy' da 4
+PASS  deriveTableStatus == regla original de FloorBoard en las 8 combinaciones
+PASS  CA-8.5 Llamando (aunque tenga pedido listo): A = calling
+PASS  CA-8.5 Listo = occupied: B
+PASS  CA-8.5 Con pedido = occupied: C y D
+PASS  CA-8.5 Libre: E (sin nada) y F (solo entregado/cancelado)
+PASS  conteos: ocupadas (A,B,C,D) = 4, llamados = 2
+PASS  llamado más antiguo de A = 'consulta'; pendientes de A = 2
+PASS  pedidos activos por mesa: D = 2, B = 1, E = 0, F = 0
+PASS  totales de hoy por mesa sin cancelados: D = 1000, F = 400
+PASS  ordersToday = 6 (sin el cancelado) y salesToday = 4900
+PASS  sin datos: todo en cero
+PASS  pendientes: sin nada = [0,0]
+PASS  pendientes: 1 received = cocina 1, salón 0
+PASS  pendientes: in_kitchen no cuenta en cocina ni en salón
+PASS  pendientes: 1 ready = cocina 0, salón 1
+PASS  pendientes: 1 llamado = cocina 0, salón 1
+PASS  pendientes: ready + 2 llamados = salón 3
+PASS  pendientes: received/in_kitchen/ready en la misma mesa = [1,1]
+PASS  pendientes: received/ready de días anteriores cuentan = [2,1] (hoy: solo 1 pedido)
+PASS  pendientes: cancelados y entregados no cuentan
+PASS  pendientes: cancelado de hoy no suma aunque esté en todayOrders
+PASS  pendientes: mesa sin pedidos no aporta (A con received; B y C libres) = [1,0]
+PASS  pendientes: llamado de mesa inexistente en tables igual cuenta (criterio por conteo de filas)
+
+37/37 OK
+
+##### TZ del proceso = America/Argentina/Buenos_Aires
+process.env.TZ = America/Argentina/Buenos_Aires; offset local de new Date(): 180 min
+PASS  23:59:59 AR del 2/10 (02:59:59Z del 3/10) pertenece al día 2/10
+PASS  00:00:00 AR del 3/10 (03:00:00Z) abre el día 3/10
+PASS  mediodía AR
+PASS  fin de año (31/12 17:00 AR)
+PASS  fin de mes (28/02/2027 AR)
+PASS  año bisiesto (29/02/2028 AR)
+PASS  isTodayAR 23:59:59 AR de ayer = false
+PASS  isTodayAR 00:00:00 AR de hoy = true
+PASS  isTodayAR 23:59:59 AR de hoy = true
+PASS  isTodayAR 00:00:00 AR de mañana = false
+PASS  isTodayAR con offset en el ISO (-03:00)
+PASS  isTodayAR fecha inválida = false
+PASS  19:00 AR visto a las 22:00 AR sigue siendo hoy (UTC ya cambió de día)
+PASS  CA-9.3: el dato 'pedidos de hoy' da 4
+PASS  deriveTableStatus == regla original de FloorBoard en las 8 combinaciones
+PASS  CA-8.5 Llamando (aunque tenga pedido listo): A = calling
+PASS  CA-8.5 Listo = occupied: B
+PASS  CA-8.5 Con pedido = occupied: C y D
+PASS  CA-8.5 Libre: E (sin nada) y F (solo entregado/cancelado)
+PASS  conteos: ocupadas (A,B,C,D) = 4, llamados = 2
+PASS  llamado más antiguo de A = 'consulta'; pendientes de A = 2
+PASS  pedidos activos por mesa: D = 2, B = 1, E = 0, F = 0
+PASS  totales de hoy por mesa sin cancelados: D = 1000, F = 400
+PASS  ordersToday = 6 (sin el cancelado) y salesToday = 4900
+PASS  sin datos: todo en cero
+PASS  pendientes: sin nada = [0,0]
+PASS  pendientes: 1 received = cocina 1, salón 0
+PASS  pendientes: in_kitchen no cuenta en cocina ni en salón
+PASS  pendientes: 1 ready = cocina 0, salón 1
+PASS  pendientes: 1 llamado = cocina 0, salón 1
+PASS  pendientes: ready + 2 llamados = salón 3
+PASS  pendientes: received/in_kitchen/ready en la misma mesa = [1,1]
+PASS  pendientes: received/ready de días anteriores cuentan = [2,1] (hoy: solo 1 pedido)
+PASS  pendientes: cancelados y entregados no cuentan
+PASS  pendientes: cancelado de hoy no suma aunque esté en todayOrders
+PASS  pendientes: mesa sin pedidos no aporta (A con received; B y C libres) = [1,0]
+PASS  pendientes: llamado de mesa inexistente en tables igual cuenta (criterio por conteo de filas)
+
+37/37 OK
+
+##### TZ del proceso = Asia/Tokyo
+process.env.TZ = Asia/Tokyo; offset local de new Date(): -540 min
+PASS  23:59:59 AR del 2/10 (02:59:59Z del 3/10) pertenece al día 2/10
+PASS  00:00:00 AR del 3/10 (03:00:00Z) abre el día 3/10
+PASS  mediodía AR
+PASS  fin de año (31/12 17:00 AR)
+PASS  fin de mes (28/02/2027 AR)
+PASS  año bisiesto (29/02/2028 AR)
+PASS  isTodayAR 23:59:59 AR de ayer = false
+PASS  isTodayAR 00:00:00 AR de hoy = true
+PASS  isTodayAR 23:59:59 AR de hoy = true
+PASS  isTodayAR 00:00:00 AR de mañana = false
+PASS  isTodayAR con offset en el ISO (-03:00)
+PASS  isTodayAR fecha inválida = false
+PASS  19:00 AR visto a las 22:00 AR sigue siendo hoy (UTC ya cambió de día)
+PASS  CA-9.3: el dato 'pedidos de hoy' da 4
+PASS  deriveTableStatus == regla original de FloorBoard en las 8 combinaciones
+PASS  CA-8.5 Llamando (aunque tenga pedido listo): A = calling
+PASS  CA-8.5 Listo = occupied: B
+PASS  CA-8.5 Con pedido = occupied: C y D
+PASS  CA-8.5 Libre: E (sin nada) y F (solo entregado/cancelado)
+PASS  conteos: ocupadas (A,B,C,D) = 4, llamados = 2
+PASS  llamado más antiguo de A = 'consulta'; pendientes de A = 2
+PASS  pedidos activos por mesa: D = 2, B = 1, E = 0, F = 0
+PASS  totales de hoy por mesa sin cancelados: D = 1000, F = 400
+PASS  ordersToday = 6 (sin el cancelado) y salesToday = 4900
+PASS  sin datos: todo en cero
+PASS  pendientes: sin nada = [0,0]
+PASS  pendientes: 1 received = cocina 1, salón 0
+PASS  pendientes: in_kitchen no cuenta en cocina ni en salón
+PASS  pendientes: 1 ready = cocina 0, salón 1
+PASS  pendientes: 1 llamado = cocina 0, salón 1
+PASS  pendientes: ready + 2 llamados = salón 3
+PASS  pendientes: received/in_kitchen/ready en la misma mesa = [1,1]
+PASS  pendientes: received/ready de días anteriores cuentan = [2,1] (hoy: solo 1 pedido)
+PASS  pendientes: cancelados y entregados no cuentan
+PASS  pendientes: cancelado de hoy no suma aunque esté en todayOrders
+PASS  pendientes: mesa sin pedidos no aporta (A con received; B y C libres) = [1,0]
+PASS  pendientes: llamado de mesa inexistente en tables igual cuenta (criterio por conteo de filas)
+
+37/37 OK
+
+##### TZ del proceso = America/Los_Angeles
+process.env.TZ = America/Los_Angeles; offset local de new Date(): 420 min
+PASS  23:59:59 AR del 2/10 (02:59:59Z del 3/10) pertenece al día 2/10
+PASS  00:00:00 AR del 3/10 (03:00:00Z) abre el día 3/10
+PASS  mediodía AR
+PASS  fin de año (31/12 17:00 AR)
+PASS  fin de mes (28/02/2027 AR)
+PASS  año bisiesto (29/02/2028 AR)
+PASS  isTodayAR 23:59:59 AR de ayer = false
+PASS  isTodayAR 00:00:00 AR de hoy = true
+PASS  isTodayAR 23:59:59 AR de hoy = true
+PASS  isTodayAR 00:00:00 AR de mañana = false
+PASS  isTodayAR con offset en el ISO (-03:00)
+PASS  isTodayAR fecha inválida = false
+PASS  19:00 AR visto a las 22:00 AR sigue siendo hoy (UTC ya cambió de día)
+PASS  CA-9.3: el dato 'pedidos de hoy' da 4
+PASS  deriveTableStatus == regla original de FloorBoard en las 8 combinaciones
+PASS  CA-8.5 Llamando (aunque tenga pedido listo): A = calling
+PASS  CA-8.5 Listo = occupied: B
+PASS  CA-8.5 Con pedido = occupied: C y D
+PASS  CA-8.5 Libre: E (sin nada) y F (solo entregado/cancelado)
+PASS  conteos: ocupadas (A,B,C,D) = 4, llamados = 2
+PASS  llamado más antiguo de A = 'consulta'; pendientes de A = 2
+PASS  pedidos activos por mesa: D = 2, B = 1, E = 0, F = 0
+PASS  totales de hoy por mesa sin cancelados: D = 1000, F = 400
+PASS  ordersToday = 6 (sin el cancelado) y salesToday = 4900
+PASS  sin datos: todo en cero
+PASS  pendientes: sin nada = [0,0]
+PASS  pendientes: 1 received = cocina 1, salón 0
+PASS  pendientes: in_kitchen no cuenta en cocina ni en salón
+PASS  pendientes: 1 ready = cocina 0, salón 1
+PASS  pendientes: 1 llamado = cocina 0, salón 1
+PASS  pendientes: ready + 2 llamados = salón 3
+PASS  pendientes: received/in_kitchen/ready en la misma mesa = [1,1]
+PASS  pendientes: received/ready de días anteriores cuentan = [2,1] (hoy: solo 1 pedido)
+PASS  pendientes: cancelados y entregados no cuentan
+PASS  pendientes: cancelado de hoy no suma aunque esté en todayOrders
+PASS  pendientes: mesa sin pedidos no aporta (A con received; B y C libres) = [1,0]
+PASS  pendientes: llamado de mesa inexistente en tables igual cuenta (criterio por conteo de filas)
+
+37/37 OK
+
+RESULTADO: todo OK en 4 zonas

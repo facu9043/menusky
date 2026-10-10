@@ -239,7 +239,9 @@ Estado: `docs/ESTADO-ADMIN.md`. Decisiones técnicas: `docs/DECISIONES.md`. Boce
 - Migración `supabase/migrations/0004_role_policies.sql` + reversa `supabase/rollback/0004_role_policies_down.sql`.
   Carta: escrituras solo `is_admin_of`. Pedidos: sin insert/select públicos; lectura para staff; creación por la
   RPC `create_order` (security definer, recalcula el total); lectura del pedido propio por `get_public_order` /
-  `get_public_order_status` (exigen qr_token + id). Sin clave de servicio (D-3).
+  `get_public_order_status` (exigen qr_token + id). Mesas (SEC-AF-02, D-21): `tables` ya no tiene lectura pública (solo el
+  staff de su restaurante); el público resuelve su mesa con `get_table_by_token(qr_token)` (`lib/tables/getTableByToken.ts`,
+  fallback `TEMP-COMPAT-0004`). Límite de pedidos por mesa: no cuenta los cancelados. Sin clave de servicio (D-3).
 - El cliente sigue su pedido por sondeo de 3 s (D-4). Roles: `/kitchen` y `/floor` redirigen por rol; el login manda al mozo a `/floor`.
 - Verificación sin base real: `supabase/tests/rls/` (Postgres embebido) y `scripts/mock-supabase/` (Supabase
   simulado para UI y E2E). Ambos con `package.json` propio: la app no suma dependencias (D-5).
