@@ -81,6 +81,7 @@ el Celeron se usa como meta.
 
 ## Procesos levantados (puerto, PID, dueño)
 - Ninguno: en la pausa se pararon el 3500 (`next dev`), el 3501 (mock) y el 4317 (oficina), todos de la sesión principal.
+- Seguridad paso 5a (2026-10-10): mock 3451 (PIDs 2924 y 11100, modo legado) y `next start` 3452 (PID 7920) DETENIDOS con taskkill; netstat 3450-3469 sin LISTENING (docs/security/evidencia/admin-final-2026-10-10/netstat-final.txt).
 - Equipo: (ninguno). Frontend paso 4b paró sus procesos (3420 next start, 3421 fault-proxy, 3422 mock) el 2026-10-05; netstat 3420-3449 sin LISTENING (solo TIME_WAIT de cierre).
 
 ## Reglas operativas

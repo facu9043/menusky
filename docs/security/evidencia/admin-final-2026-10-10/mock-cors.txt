@@ -1,0 +1,6 @@
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: https://evil.example
+Access-Control-Allow-Headers: *
+Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS
+Access-Control-Expose-Headers: Content-Range, Content-Type
+Access-Control-Max-Age: 600

@@ -1,0 +1,97 @@
+# Salida de dinamico-app-mock.mjs.txt (2026-10-10, app compilada en 127.0.0.1:3452 + mock en 3451, datos ficticios).
+# Nota: las líneas ROLE-RSC y ROLE-RSC-parcial de este archivo quedaron en 307 (?_rsc) o con un árbol de router inválido: son inconcluyentes.
+# La prueba RSC válida (petición real capturada del navegador) está en rol-admin-rsc.txt.
+TOKENS-ANON    anon lee 4 mesas con qr_token: mesa-1-demo0001, mesa-2-demo0002, mesa-3-demo0003, mesa-b1-demo0001
+RATE-API       11 POST /api/orders en mesa-2: códigos 200,200,200,200,200,200,200,200,200,200,429 | último cuerpo: {"error":"Recibimos muchos pedidos de esta mesa. Esperá unos minutos o llamá al mozo."}
+RATE-RPC       11 RPC directas (anon key) en mesa-3: códigos 200,200,200,200,200,200,200,200,200,200,400 | último: {"code":"P0429","details":null,"hint":null,"message":"rate_limited"}
+RATE-DOS       cliente legítimo en mesa-3 tras las 10 RPC del atacante -> 429 {"error":"Recibimos muchos pedidos de esta mesa. Esperá unos minutos o llamá al mozo."}
+ROLE-HTML      anon     /admin             -> 307 /login?redirect=%2Fadmin | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 24 bytes
+ROLE-RSC       anon     /admin             -> 307 /login?redirect=%2Fadmin | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 24 bytes
+ROLE-RSC-parcial anon     /admin             -> 307 /login?redirect=%2Fadmin | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 24 bytes
+ROLE-HTML      anon     /admin/mesas       -> 307 /login?redirect=%2Fadmin%2Fmesas | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 32 bytes
+ROLE-RSC       anon     /admin/mesas       -> 307 /login?redirect=%2Fadmin%2Fmesas | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 32 bytes
+ROLE-RSC-parcial anon     /admin/mesas       -> 307 /login?redirect=%2Fadmin%2Fmesas | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 32 bytes
+ROLE-HTML      anon     /admin/menu        -> 307 /login?redirect=%2Fadmin%2Fmenu | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 31 bytes
+ROLE-RSC       anon     /admin/menu        -> 307 /login?redirect=%2Fadmin%2Fmenu | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 31 bytes
+ROLE-RSC-parcial anon     /admin/menu        -> 307 /login?redirect=%2Fadmin%2Fmenu | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 31 bytes
+ROLE-HTML      anon     /admin/apariencia  -> 307 /login?redirect=%2Fadmin%2Fapariencia | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 37 bytes
+ROLE-RSC       anon     /admin/apariencia  -> 307 /login?redirect=%2Fadmin%2Fapariencia | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 37 bytes
+ROLE-RSC-parcial anon     /admin/apariencia  -> 307 /login?redirect=%2Fadmin%2Fapariencia | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 37 bytes
+ROLE-HTML      sinstaff /admin             -> 200  | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 19054 bytes
+ROLE-RSC       sinstaff /admin             -> 307 /admin?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial sinstaff /admin             -> 307 /admin?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      sinstaff /admin/mesas       -> 200  | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 19462 bytes
+ROLE-RSC       sinstaff /admin/mesas       -> 307 /admin/mesas?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial sinstaff /admin/mesas       -> 307 /admin/mesas?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      sinstaff /admin/menu        -> 200  | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 20809 bytes
+ROLE-RSC       sinstaff /admin/menu        -> 307 /admin/menu?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial sinstaff /admin/menu        -> 307 /admin/menu?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      sinstaff /admin/apariencia  -> 200  | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 18847 bytes
+ROLE-RSC       sinstaff /admin/apariencia  -> 307 /admin/apariencia?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial sinstaff /admin/apariencia  -> 307 /admin/apariencia?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      mozo     /admin             -> 200  | NotAdminAccess=true NoStaff=false | dato admin en la respuesta: outOfStock | 19497 bytes
+ROLE-RSC       mozo     /admin             -> 307 /admin?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial mozo     /admin             -> 307 /admin?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      mozo     /admin/mesas       -> 200  | NotAdminAccess=true NoStaff=false | dato admin en la respuesta: qrToken | 20220 bytes
+ROLE-RSC       mozo     /admin/mesas       -> 307 /admin/mesas?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial mozo     /admin/mesas       -> 307 /admin/mesas?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      mozo     /admin/menu        -> 200  | NotAdminAccess=true NoStaff=false | dato admin en la respuesta: Provoleta | 25287 bytes
+ROLE-RSC       mozo     /admin/menu        -> 307 /admin/menu?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial mozo     /admin/menu        -> 307 /admin/menu?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      mozo     /admin/apariencia  -> 200  | NotAdminAccess=true NoStaff=false | dato admin en la respuesta: accentPrimary | 19598 bytes
+ROLE-RSC       mozo     /admin/apariencia  -> 307 /admin/apariencia?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial mozo     /admin/apariencia  -> 307 /admin/apariencia?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      cocina   /admin             -> 200  | NotAdminAccess=true NoStaff=false | dato admin en la respuesta: outOfStock | 19497 bytes
+ROLE-RSC       cocina   /admin             -> 307 /admin?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial cocina   /admin             -> 307 /admin?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      cocina   /admin/mesas       -> 200  | NotAdminAccess=true NoStaff=false | dato admin en la respuesta: qrToken | 20220 bytes
+ROLE-RSC       cocina   /admin/mesas       -> 307 /admin/mesas?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial cocina   /admin/mesas       -> 307 /admin/mesas?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      cocina   /admin/menu        -> 200  | NotAdminAccess=true NoStaff=false | dato admin en la respuesta: Provoleta | 25287 bytes
+ROLE-RSC       cocina   /admin/menu        -> 307 /admin/menu?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial cocina   /admin/menu        -> 307 /admin/menu?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      cocina   /admin/apariencia  -> 200  | NotAdminAccess=true NoStaff=false | dato admin en la respuesta: accentPrimary | 19598 bytes
+ROLE-RSC       cocina   /admin/apariencia  -> 307 /admin/apariencia?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial cocina   /admin/apariencia  -> 307 /admin/apariencia?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      admin    /admin             -> 200  | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: qrToken | 35722 bytes
+ROLE-RSC       admin    /admin             -> 307 /admin?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial admin    /admin             -> 307 /admin?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      admin    /admin/mesas       -> 200  | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: mesa-1-demo0001 | 44519 bytes
+ROLE-RSC       admin    /admin/mesas       -> 307 /admin/mesas?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial admin    /admin/mesas       -> 307 /admin/mesas?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      admin    /admin/menu        -> 200  | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: Provoleta | 58193 bytes
+ROLE-RSC       admin    /admin/menu        -> 307 /admin/menu?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial admin    /admin/menu        -> 307 /admin/menu?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-HTML      admin    /admin/apariencia  -> 200  | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: accentPrimary | 55402 bytes
+ROLE-RSC       admin    /admin/apariencia  -> 307 /admin/apariencia?_rsc | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ROLE-RSC-parcial admin    /admin/apariencia  -> 307 /admin/apariencia?_rsc=4fTdbEqnO_29T0Nz | NotAdminAccess=false NoStaff=false | dato admin en la respuesta: no | 0 bytes
+ITEM-PARAM     admin A /admin/menu/c2ea37b3-ba95-430b-abdf-db3c048bb8dd -> 307 /admin/menu?plato=c2ea37b3-ba95-430b-abdf-db3c048bb8dd
+ITEM-PARAM     admin A /admin/menu/4dc11653-2128-4076-a1f2-c6a9c436f570 -> 404 
+ITEM-PARAM     admin A /admin/menu/../../api/orders -> 404 
+ITEM-PARAM     admin A /admin/menu/%2e%2e%2fapi -> 404 
+ITEM-PARAM     admin A /admin/menu/x"><script>alert(1)</script> -> 404 
+ITEM-PARAM     admin A /admin/menu/javascript:alert(1) -> 404 
+PARAM-REFLECT  /admin/menu?nuevo=%22%3E%3Cimg%20src%3Dx%20onerror%3Dalert(1 -> 200 | payload sin escapar en HTML: false | aparece escapado/codificado: true
+PARAM-REFLECT  /admin/menu?plato=%22%3E%3Cimg%20src%3Dx%20onerror%3Dalert(1 -> 200 | payload sin escapar en HTML: false | aparece escapado/codificado: true
+PARAM-REFLECT  /admin/mesas?filtro=%22%3E%3Cimg%20src%3Dx%20onerror%3Dalert -> 200 | payload sin escapar en HTML: false | aparece escapado/codificado: true
+PARAM-REFLECT  /admin/mesas?imprimir=%22%3E%3Cimg%20src%3Dx%20onerror%3Dale -> 200 | payload sin escapar en HTML: false | aparece escapado/codificado: true
+PARAM-REFLECT  /admin?x=%22%3E%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E -> 200 | payload sin escapar en HTML: false | aparece escapado/codificado: true
+HEADERS        /admin                   200 XCTO=nosniff XFO=DENY CSP=frame-ancestors 'none' RP=strict-origin-when-cross-origin HSTS=- Cache-Control=private, no-cache, no-store, max-age=0, must-revalidate
+HEADERS        /admin/mesas             200 XCTO=nosniff XFO=DENY CSP=frame-ancestors 'none' RP=strict-origin-when-cross-origin HSTS=- Cache-Control=private, no-cache, no-store, max-age=0, must-revalidate
+HEADERS        /admin/menu              200 XCTO=nosniff XFO=DENY CSP=frame-ancestors 'none' RP=strict-origin-when-cross-origin HSTS=- Cache-Control=private, no-cache, no-store, max-age=0, must-revalidate
+HEADERS        /admin/apariencia        200 XCTO=nosniff XFO=DENY CSP=frame-ancestors 'none' RP=strict-origin-when-cross-origin HSTS=- Cache-Control=private, no-cache, no-store, max-age=0, must-revalidate
+HEADERS        /admin/                  308 XCTO=- XFO=- CSP=- RP=- HSTS=- Cache-Control=-
+HEADERS        /api/qr/mesa-1-demo0001  200 XCTO=nosniff XFO=DENY CSP=frame-ancestors 'none' RP=strict-origin-when-cross-origin HSTS=- Cache-Control=-
+THEME-WRITE    admin A guarda tema con valores no hex directo por PostgREST -> 200
+THEME-WRITE    mozo A intenta cambiar el tema -> 200 []
+THEME-SINK     carta del cliente /m/mesa-1-demo0001: atributo renderizado: data-theme-style="&quot;&gt;&lt;script&gt;alert(2)&lt;/script&gt;" class="fraunces_26ebacbe-module__9CEJfa__variable plus_jakarta_sans_ba362106-module__NXJPTG__variable flex min-h-screen flex-col bg-background text-foreground" style="--background:red;background-image:url(http://127.0.0.1:3459/rastreo);--card:#ffffff;--card-foreground:#111111;--popover:#ffffff;--popover-foreground:#111111;--foregro
+THEME-SINK     <script>alert inyectado sin escapar: false | declaración extra background-image dentro del style: true
+THEME-SINK     /kitchen con el tema malicioso: sin script sin escapar; status OK
+THEME-SINK     /admin/apariencia con el tema malicioso -> 200; script sin escapar: false
+QR-LABEL       mesa 'Mesa "x"' (alta 201) -> /api/qr 200 content-disposition=attachment; filename="qr-mesa-"x".png"
+QR-LABEL       mesa 'Mesa 🍕' (alta 201) -> /api/qr 500 content-disposition=null
+QR-LABEL       mesa 'Mesa ñ' (alta 201) -> /api/qr 200 content-disposition=attachment; filename="qr-mesa-Ã±.png"
+QR-LABEL       /api/qr/no-existe -> 404 {"error":"Mesa no encontrada"}
+TABLES-AUTHZ   mozo crea mesa -> 403
+TABLES-AUTHZ   admin B borra mesas de A -> 200 []
+FIN            mock reseteado a los datos de partida

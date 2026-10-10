@@ -1,0 +1,8 @@
+R2 mozo@demo.test      /kitchen  -> 307 /floor | datos de pedidos/mesas en la respuesta: false
+R2 mozo@demo.test      /floor    -> 200  | datos de pedidos/mesas en la respuesta: true
+R2 cocina@demo.test    /kitchen  -> 200  | datos de pedidos/mesas en la respuesta: true
+R2 cocina@demo.test    /floor    -> 307 /kitchen | datos de pedidos/mesas en la respuesta: false
+R2 admin@demo.test     /kitchen  -> 200  | datos de pedidos/mesas en la respuesta: true
+R2 admin@demo.test     /floor    -> 200  | datos de pedidos/mesas en la respuesta: true
+R2 sinstaff@demo.test  /kitchen  -> 200  | datos de pedidos/mesas en la respuesta: false
+R2 sinstaff@demo.test  /floor    -> 200  | datos de pedidos/mesas en la respuesta: false

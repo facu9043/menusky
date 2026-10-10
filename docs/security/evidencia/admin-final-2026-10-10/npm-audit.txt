@@ -1,0 +1,60 @@
+== npm audit (app, rama feat/admin-ui @ f97b193) 2026-10-10
+      node_modules/@next/eslint-plugin-next
+        eslint-config-next  >=14.3.0-canary.0
+        Depends on vulnerable versions of @next/eslint-plugin-next
+        node_modules/eslint-config-next
+      @ts-morph/common  0.2.0 - 0.24.0 || 0.26.0 - 0.27.0
+      Depends on vulnerable versions of fast-glob
+      node_modules/@ts-morph/common
+        ts-morph  6.0.1 - 23.0.0 || 25.0.0 - 26.0.0
+        Depends on vulnerable versions of @ts-morph/common
+        node_modules/ts-morph
+      shadcn  <=0.0.0-rc-20261007105214 || >=2.0.0
+      Depends on vulnerable versions of fast-glob
+      Depends on vulnerable versions of ts-morph
+      node_modules/shadcn
+
+postcss-selector-parser  <7.1.6
+Severity: moderate
+PostCSS: Quadratic complexity in flat selector parsing allows CPU exhaustion - https://github.com/advisories/GHSA-rj75-hqrm-r3gf
+fix available via `npm audit fix`
+node_modules/postcss-selector-parser
+
+proxy-addr  1.1.0 - 2.0.7
+Severity: critical
+proxy-addr vulnerable to IP spoofing via IPv4-mapped IPv6 trust subnet - https://github.com/advisories/GHSA-jqcg-44mw-7w3h
+fix available via `npm audit fix`
+node_modules/proxy-addr
+
+source-map-js  1.0.0 - 1.2.1
+Severity: high
+source-map-js allows event-loop denial of service through indexed source-map section offsets - https://github.com/advisories/GHSA-68fv-2mgg-jv7q
+fix available via `npm audit fix`
+node_modules/source-map-js
+
+12 vulnerabilities (1 moderate, 10 high, 1 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+== package.json / package-lock.json cambiados desde la base de la fase (f7d256d..HEAD):
+(vacío = sin cambios)
+dependencies: @base-ui/react, @supabase/ssr, @supabase/supabase-js, class-variance-authority, clsx, lucide-react, next, next-themes, qrcode, react, react-dom, shadcn, sonner, tailwind-merge, three, tw-animate-css
+devDependencies: @tailwindcss/postcss, @types/node, @types/qrcode, @types/react, @types/react-dom, @types/three, eslint, eslint-config-next, tailwindcss, typescript
+
+== resumen por paquete
+@modelcontextprotocol/sdk  high      direct=false
+@next/eslint-plugin-next   high      direct=false
+@ts-morph/common           high      direct=false
+braces                     high      direct=false
+eslint-config-next         high      direct=true
+fast-glob                  high      direct=false
+micromatch                 high      direct=false
+postcss-selector-parser    moderate  direct=false
+proxy-addr                 critical  direct=false
+shadcn                     high      direct=true
+source-map-js              high      direct=false
+ts-morph                   high      direct=false

@@ -1,0 +1,129 @@
+// Seguridad (TEMPORAL, 2026-10-10): pruebas dinámicas locales contra el mock (3451) y la app compilada (3452). Datos ficticios.
+import { createRequire } from "node:module";
+const req = createRequire("C:/Users/facundo/Desktop/menusky/package.json");
+const { createServerClient } = req("@supabase/ssr");
+const MOCK = "http://127.0.0.1:3451", APP = "http://127.0.0.1:3452", ANON = "mock-anon-key";
+const log = (id, msg) => console.log(`${id.padEnd(14)} ${msg}`);
+const mock = (p, o = {}) => fetch(MOCK + p, { ...o, headers: { apikey: ANON, "content-type": "application/json", ...(o.headers || {}) } });
+await fetch(MOCK + "/__mock/reset", { method: "POST" });
+
+async function login(email) {
+  const jar = new Map();
+  const s = createServerClient(MOCK, ANON, { cookies: { getAll: () => [...jar].map(([name, value]) => ({ name, value })), setAll: (l) => l.forEach(({ name, value }) => jar.set(name, value)) } });
+  const { data, error } = await s.auth.signInWithPassword({ email, password: "demo-1234" });
+  if (error) throw error;
+  return { cookie: [...jar].map(([k, v]) => `${k}=${v}`).join("; "), token: data.session.access_token };
+}
+const U = {
+  admin: await login("admin@demo.test"), mozo: await login("mozo@demo.test"), cocina: await login("cocina@demo.test"),
+  sinstaff: await login("sinstaff@demo.test"), adminB: await login("admin-b@demo.test"), anon: { cookie: "" },
+};
+const authz = (u) => ({ Authorization: `Bearer ${u.token}` });
+
+// ---------- A. SEC-AD-01: límite por mesa vía /api/orders y RPC directa ----------
+const tables = await (await mock("/rest/v1/tables?select=id,qr_token,label,restaurant_id")).json();
+log("TOKENS-ANON", `anon lee ${tables.length} mesas con qr_token: ${tables.map((t) => t.qr_token).join(", ")}`);
+const items = await (await mock("/rest/v1/menu_items?select=id,name,is_available,item_option_groups(id)&is_available=eq.true")).json();
+const simple = items.find((i) => i.item_option_groups.length === 0);
+const t2 = tables.find((t) => t.qr_token === "mesa-2-demo0002");
+const codes = [];
+let last = "";
+for (let k = 0; k < 11; k++) {
+  const r = await fetch(APP + "/api/orders", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ qrToken: t2.qr_token, items: [{ menuItemId: simple.id, quantity: 1, choiceIds: [] }] }) });
+  codes.push(r.status); last = await r.text();
+}
+log("RATE-API", `11 POST /api/orders en mesa-2: códigos ${codes.join(",")} | último cuerpo: ${last}`);
+const t3 = tables.find((t) => t.qr_token === "mesa-3-demo0003");
+const rc = [];
+let lastRpc = "";
+for (let k = 0; k < 11; k++) {
+  const r = await mock("/rest/v1/rpc/create_order", { method: "POST", body: JSON.stringify({ p_qr_token: t3.qr_token, p_items: [{ menu_item_id: simple.id, quantity: 99 }] }) });
+  rc.push(r.status); lastRpc = await r.text();
+}
+log("RATE-RPC", `11 RPC directas (anon key) en mesa-3: códigos ${rc.join(",")} | último: ${lastRpc.slice(0, 160)}`);
+const legit = await fetch(APP + "/api/orders", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ qrToken: t3.qr_token, items: [{ menuItemId: simple.id, quantity: 1, choiceIds: [] }] }) });
+log("RATE-DOS", `cliente legítimo en mesa-3 tras las 10 RPC del atacante -> ${legit.status} ${await legit.text()}`);
+
+// ---------- B. Control de rol en /admin (HTML, RSC y RSC de navegación parcial) ----------
+const SENSITIVE = /mesa-1-demo0001|Provoleta|ordersToday|outOfStock|"theme"|accentPrimary|qrToken/;
+const ADMIN_PAGES = ["/admin", "/admin/mesas", "/admin/menu", "/admin/apariencia"];
+// Árbol de estado del router "ya estoy en /admin (Inicio)": pide solo el segmento que cambia.
+const tree = (seg) => encodeURIComponent(JSON.stringify(["", { children: ["admin", { children: seg }] }, null, null, true]));
+const fromInicio = tree(["(inicio)", { children: ["__PAGE__", {}] }]);
+for (const who of ["anon", "sinstaff", "mozo", "cocina", "admin"]) {
+  for (const p of ADMIN_PAGES) {
+    const variants = [
+      ["HTML", {}],
+      ["RSC", { RSC: "1" }],
+      ["RSC-parcial", { RSC: "1", "Next-Router-State-Tree": fromInicio }],
+    ];
+    for (const [kind, h] of variants) {
+      const r = await fetch(APP + p, { redirect: "manual", headers: { cookie: U[who].cookie, ...h } });
+      const body = await r.text();
+      const m = body.match(SENSITIVE);
+      const notAdmin = /solo para administradores/.test(body);
+      const noAccess = /no ten[eé]s acceso|NoStaffAccess|sin acceso/i.test(body);
+      log(`ROLE-${kind}`, `${who.padEnd(8)} ${p.padEnd(18)} -> ${r.status} ${r.headers.get("location") ?? ""} | NotAdminAccess=${notAdmin} NoStaff=${noAccess} | dato admin en la respuesta: ${m ? m[0] : "no"} | ${body.length} bytes`);
+    }
+  }
+}
+
+// ---------- B. /admin/menu/[itemId]: plato de otro restaurante y valores raros ----------
+const itemsB = await (await mock("/rest/v1/menu_items?select=id,name,categories!inner(restaurant_id)", { headers: authz(U.adminB) })).json();
+const restA = tables.find((t) => t.qr_token === "mesa-1-demo0001").restaurant_id;
+const itemB = itemsB.find((i) => i.categories.restaurant_id !== restA);
+for (const id of [simple.id, itemB?.id, "../../api/orders", "%2e%2e%2fapi", "x\"><script>alert(1)</script>", "javascript:alert(1)"]) {
+  const r = await fetch(APP + "/admin/menu/" + encodeURIComponent(id ?? "none"), { redirect: "manual", headers: { cookie: U.admin.cookie } });
+  log("ITEM-PARAM", `admin A /admin/menu/${String(id).slice(0, 40)} -> ${r.status} ${r.headers.get("location") ?? ""}`);
+}
+
+// ---------- B. Parámetros de entrada reflejados (nuevo, filtro, imprimir, nueva, plato, mesa) ----------
+const payload = encodeURIComponent('"><img src=x onerror=alert(1)>');
+for (const q of [`/admin/menu?nuevo=${payload}`, `/admin/menu?plato=${payload}`, `/admin/mesas?filtro=${payload}`, `/admin/mesas?imprimir=${payload}&nueva=${payload}&mesa=${payload}`, `/admin?x=${payload}`]) {
+  const r = await fetch(APP + q, { headers: { cookie: U.admin.cookie } });
+  const body = await r.text();
+  log("PARAM-REFLECT", `${q.slice(0, 60)} -> ${r.status} | payload sin escapar en HTML: ${body.includes('<img src=x onerror=alert(1)>')} | aparece escapado/codificado: ${/onerror/.test(body)}`);
+}
+
+// ---------- B. Cabeceras de seguridad en las pantallas del admin ----------
+for (const p of [...ADMIN_PAGES, "/admin/", "/api/qr/mesa-1-demo0001"]) {
+  const r = await fetch(APP + p, { redirect: "manual", headers: { cookie: U.admin.cookie } });
+  const h = (k) => r.headers.get(k) ?? "-";
+  log("HEADERS", `${p.padEnd(24)} ${r.status} XCTO=${h("x-content-type-options")} XFO=${h("x-frame-options")} CSP=${h("content-security-policy")} RP=${h("referrer-policy")} HSTS=${h("strict-transport-security")} Cache-Control=${h("cache-control")}`);
+}
+
+// ---------- B. Apariencia: lo que guarda el admin termina en CSS inline de la carta del cliente ----------
+const evil = { background: "red;background-image:url(http://127.0.0.1:3459/rastreo)", cardBackground: "#ffffff", textPrimary: "#111111", textSecondary: "#555555", accentPrimary: "#ff0000", accentSecondary: "#00ff00", waiterButton: "</style><script>alert(1)</script>", style: '"><script>alert(2)</script>' };
+const pr = await mock(`/rest/v1/restaurants?id=eq.${restA}`, { method: "PATCH", headers: { ...authz(U.admin), Prefer: "return=representation" }, body: JSON.stringify({ theme: evil }) });
+log("THEME-WRITE", `admin A guarda tema con valores no hex directo por PostgREST -> ${pr.status}`);
+const prW = await mock(`/rest/v1/restaurants?id=eq.${restA}`, { method: "PATCH", headers: { ...authz(U.mozo), Prefer: "return=representation" }, body: JSON.stringify({ theme: {} }) });
+log("THEME-WRITE", `mozo A intenta cambiar el tema -> ${prW.status} ${(await prW.text()).slice(0, 80)}`);
+const m = await (await fetch(APP + "/m/mesa-1-demo0001")).text();
+const styleAttr = (m.match(/data-theme-style="[^"]*"[^>]*style="[^"]*"/) || m.match(/style="--background[^"]*"/) || [""])[0];
+log("THEME-SINK", `carta del cliente /m/mesa-1-demo0001: atributo renderizado: ${styleAttr.slice(0, 400)}`);
+log("THEME-SINK", `<script>alert inyectado sin escapar: ${/<script>alert\(\d\)<\/script>/.test(m)} | declaración extra background-image dentro del style: ${/--background:red;background-image:url\(/.test(m)}`);
+const k = await (await fetch(APP + "/kitchen", { headers: { cookie: U.cocina.cookie } })).text();
+log("THEME-SINK", `/kitchen con el tema malicioso: ${/<script>alert/.test(k) ? "script sin escapar" : "sin script sin escapar"}; status OK`);
+const adm = await fetch(APP + "/admin/apariencia", { headers: { cookie: U.admin.cookie } });
+const admBody = await adm.text();
+log("THEME-SINK", `/admin/apariencia con el tema malicioso -> ${adm.status}; script sin escapar: ${/<script>alert/.test(admBody)}`);
+
+// ---------- B. QR: etiqueta de mesa con comillas y emoji (Content-Disposition) ----------
+const lbls = ['Mesa "x"', "Mesa \u{1F355}", "Mesa ñ"];
+for (const [i, label] of lbls.entries()) {
+  const tok = `sec-label-${i}`;
+  const ins = await mock("/rest/v1/tables", { method: "POST", headers: { ...authz(U.admin), Prefer: "return=representation" }, body: JSON.stringify({ restaurant_id: restA, label, qr_token: tok }) });
+  const r = await fetch(APP + "/api/qr/" + tok);
+  log("QR-LABEL", `mesa '${label}' (alta ${ins.status}) -> /api/qr ${r.status} content-disposition=${r.headers.get("content-disposition")}`);
+}
+const qrX = await fetch(APP + "/api/qr/" + encodeURIComponent("no-existe"));
+log("QR-LABEL", `/api/qr/no-existe -> ${qrX.status} ${await qrX.text()}`);
+
+// ---------- B. Mesas: escrituras por rol ----------
+const mozoT = await mock("/rest/v1/tables", { method: "POST", headers: { ...authz(U.mozo), Prefer: "return=representation" }, body: JSON.stringify({ restaurant_id: restA, label: "intrusa", qr_token: "intrusa" }) });
+log("TABLES-AUTHZ", `mozo crea mesa -> ${mozoT.status}`);
+const bDel = await mock(`/rest/v1/tables?restaurant_id=eq.${restA}`, { method: "DELETE", headers: { ...authz(U.adminB), Prefer: "return=representation" } });
+log("TABLES-AUTHZ", `admin B borra mesas de A -> ${bDel.status} ${(await bDel.text()).slice(0, 60)}`);
+
+await fetch(MOCK + "/__mock/reset", { method: "POST" });
+log("FIN", "mock reseteado a los datos de partida");
