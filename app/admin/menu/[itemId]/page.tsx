@@ -10,7 +10,9 @@ export default async function AdminMenuItemPage({
 }: PageProps<"/admin/menu/[itemId]">) {
   const { itemId } = await params;
   const staff = await getStaffUser();
-  if (!staff) return null;
+  // Rol antes de cualquier lectura (CA-NR.01, SEC-AF-01): el layout muestra
+  // NotAdminAccess, pero la página se renderiza igual (y viaja en el RSC).
+  if (!staff || staff.role !== "admin") return null;
 
   const categories = await getAdminMenu(staff.restaurantId);
   const exists = categories.some((c) => c.items.some((i) => i.id === itemId));

@@ -12,7 +12,9 @@ export const metadata: Metadata = {
 // guardado.
 export default async function AdminAppearancePage() {
   const staff = await getStaffUser();
-  if (!staff) return null;
+  // Rol antes de cualquier lectura (CA-NR.01, SEC-AF-01): el layout muestra
+  // NotAdminAccess, pero la página se renderiza igual (y viaja en el RSC).
+  if (!staff || staff.role !== "admin") return null;
 
   // Lanza AdminDataError si la lectura falla.
   const theme = await getRestaurantTheme(staff.restaurantId);
