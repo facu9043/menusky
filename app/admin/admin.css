@@ -46,6 +46,9 @@
   --adm-off: #7d716b;
   --adm-skeleton: #f1e3c6;
   --adm-safe-b: env(safe-area-inset-bottom, 0px);
+  /* Entrada de Pomo en los estados vacíos: <= 400 ms (CA-12.1, QA-AD-03).
+     Propio del admin: --ms-dur-reveal (560 ms) sigue igual en landing y login. */
+  --adm-dur-enter: 400ms;
 
   color: var(--ms-patty);
   font-family: var(--ms-font-body);
@@ -2218,7 +2221,7 @@ textarea.adm-input {
 
   /* Pomo entra una vez (CA-11.2). */
   .adm-empty .adm-pomo {
-    animation: adm-rise var(--ms-dur-reveal) var(--ms-ease-pop) both;
+    animation: adm-rise var(--adm-dur-enter) var(--ms-ease-pop) both;
   }
 
   /* Esqueletos: único bucle permitido, un pulso de opacidad lento (CA-12.5). */
@@ -2277,6 +2280,11 @@ textarea.adm-input {
 }
 a.adm-kpi:hover {
   background: #fff8ea;
+}
+/* "Pedidos de hoy" en papel sobre tomate, igual que la Carta (CA-13.1,
+   QA-AD-04): el color: inherit de .adm-kpi lo dejaba marrón (3,40:1). */
+.adm-kpi.adm-stat--hot {
+  color: var(--ms-paper);
 }
 .adm-kpi .adm-stat__value small {
   font-size: 0.5em;
