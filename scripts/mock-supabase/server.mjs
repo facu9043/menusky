@@ -244,6 +244,7 @@ function allowed(ctx, table, op, row) {
   const isAdmin = isStaff && ctx.staff.role === "admin";
   if (LEGACY) {
     if (CARTA.has(table)) return op === "select" ? true : isStaff;
+    if (table === "tables" && op === "select") return true; // 0001: "public read tables"
     if (table === "orders") return op === "select" || op === "insert" ? true : op === "update" ? isStaff : false;
     if (table === "order_items") return op === "select" || op === "insert";
   }

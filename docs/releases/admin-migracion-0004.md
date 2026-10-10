@@ -16,16 +16,21 @@ Hoy hay dos agujeros que Seguridad encontró (SEC-LG-06 y SEC-LG-07):
 3. **Pedidos falsos en masa:** hoy alguien con la clave pública podría llenar la cocina de pedidos inventados. Después
    de la migración **cada mesa admite como máximo 10 pedidos cada 10 minutos**; el pedido 11 se rechaza y el cliente ve
    "Recibimos muchos pedidos de esta mesa. Esperá unos minutos o llamá al mozo.". Un cliente real nunca llega a ese tope.
-4. **Fotos:** el bucket de fotos pasa a aceptar solo JPG, PNG, WEBP y GIF de hasta 5 MB (hasta ahora el límite solo
+4. **Las mesas dejan de ser una lista pública (SEC-AF-02):** hoy cualquiera con la clave pública del sitio podría pedir
+   a la base la lista de TODAS las mesas con sus códigos QR y, con eso, llenar el cupo de pedidos de todas las mesas
+   (nadie podría pedir). Después de la migración las mesas solo las ve el personal de su restaurante; un cliente
+   solo puede abrir la mesa del código que ya tiene (el del QR). Además, los pedidos **cancelados ya no cuentan** para
+   el tope de 10 pedidos cada 10 minutos.
+5. **Fotos:** el bucket de fotos pasa a aceptar solo JPG, PNG, WEBP y GIF de hasta 5 MB (hasta ahora el límite solo
    estaba en la pantalla). Es un ajuste de configuración del bucket, no toca datos.
 
-Lo que NO cambia: la lectura pública de la carta (los clientes ven el menú igual), los llamados al mozo, las mesas,
+Lo que NO cambia: la lectura pública de la carta (los clientes ven el menú igual), los llamados al mozo, el alta y baja de mesas por el admin,
 el personal, las fotos de los platos y lo que hace cada rol hoy en cocina y salón (cambiar estados, atender llamados).
 
 Lo que notan los clientes: nada, salvo que en "Tu pedido" el estado se actualiza hasta ~3 segundos después de que
 cocina lo cambia (antes era instantáneo). Esto ya está decidido (D-4).
 
-La migración **no borra ni modifica ningún dato**: solo cambia reglas y agrega 3 funciones.
+La migración **no borra ni modifica ningún dato**: solo cambia reglas y agrega 4 funciones.
 
 ## Antes de empezar (5 minutos)
 
@@ -86,6 +91,9 @@ Esto aplica las migraciones que falten (0004). Revisar antes con `supabase db di
 | 11 | **Obligatoria** (SQL Editor) | "Con la clave pública no se leen pedidos": ver el bloque 2 abajo | Devuelve **0** |
 | 12 | **Obligatoria** (navegador o terminal) | Con la clave pública (anon key), pedir `/rest/v1/orders?select=id` | Lista vacía `[]`; y un insert directo da error de permisos |
 | 13 | Cliente en una mesa DE PRUEBA | Hacer 11 pedidos seguidos (ver abajo) | Los 10 primeros pasan; el 11 muestra el cartel de "muchos pedidos" |
+| 14 | **Obligatoria** (navegador o terminal) | "Sin sesión no se listan mesas": con la clave pública pedir `/rest/v1/tables?select=id,qr_token` (ver abajo) | Lista vacía `[]` |
+| 15 | Cliente (sin sesión) | "Con el token se abre la carta y se pide": abrir `/m/<mesa>` con el código del QR, pedir un plato y llamar al mozo | La carta se abre con el nombre de la mesa, el pedido llega a "Tu pedido" y el llamado aparece en `/floor` |
+| 16 | Admin / Mozo / Cocina | Abrir `/admin/mesas` (y descargar un QR), `/floor` y `/kitchen` | Se ven las mesas de su restaurante y los pedidos con el nombre de la mesa, como siempre |
 
 ### Bloque 1: el mozo no puede cambiar un precio (paso 10)
 
@@ -127,20 +135,39 @@ curl "https://<ref>.supabase.co/rest/v1/orders?select=id" -H "apikey: <ANON_KEY>
 
 Debe devolver `[]`. Es obligatoria: confirma que lo que pasó en la prueba automática también pasa en la base real.
 
+### Paso 14: sin sesión no se listan mesas (SEC-AF-02)
+
+```
+curl "https://<ref>.supabase.co/rest/v1/tables?select=id,qr_token" -H "apikey: <ANON_KEY>" -H "Authorization: Bearer <ANON_KEY>"
+```
+
+Debe devolver `[]`. Y en el SQL Editor (se deshace sola):
+
+```sql
+begin;
+set local role anon;
+select count(*) from tables;                                   -- esperado: 0
+select public.get_table_by_token('<CODIGO_DE_UNA_MESA>');       -- esperado: {"id":…,"label":…,"restaurant_id":…}
+select public.get_table_by_token('%');                          -- esperado: null (no enumera)
+rollback;
+```
+
+Si `count(*)` devuelve más de 0, la migración NO quedó bien aplicada: avisar al Líder y no seguir.
+
 ### Paso 13: el límite de pedidos por mesa
 
 Usar una mesa de prueba (no una mesa con clientes): abrir `/m/<mesa-de-prueba>`, pedir un plato barato y repetir
 11 veces seguidas. Los primeros 10 llegan a "Tu pedido"; el 11 muestra "Recibimos muchos pedidos de esta mesa. Esperá
 unos minutos o llamá al mozo." Después de 10 minutos vuelve a funcionar. Cancelar los pedidos de prueba en `/kitchen`
-(los cancelados también cuentan para el límite, así que hay que esperar los 10 minutos para volver a probar).
+(los cancelados NO cuentan para el límite: cancelar un pedido libera su lugar).
 Si en un servicio real una mesa legítima llegara al tope, esperar unos minutos o llamar al mozo; el tope se puede
 cambiar editando `c_rate_max` y `c_rate_window` al principio de la función `create_order` (pedir al Líder).
 
 ## Si algo falla: cómo volver atrás
 
 1. Abrir el **SQL Editor** y correr TODO el contenido de `supabase/rollback/0004_role_policies_down.sql`.
-2. Eso restituye las reglas anteriores (y borra las 3 funciones). **No toca datos.**
-3. Avisar al Líder. Ojo: volver atrás reabre los dos agujeros de seguridad; es solo para salir del paso mientras se
+2. Eso restituye las reglas anteriores (y borra las 4 funciones). **No toca datos.**
+3. Avisar al Líder. Ojo: volver atrás reabre los agujeros de seguridad (incluida la lista pública de mesas, SEC-AF-02); es solo para salir del paso mientras se
    corrige.
 
 El código nuevo funciona con la base vieja (modo compatibilidad), así que volver atrás la base no obliga a volver
@@ -164,7 +191,7 @@ atrás el código.
 
 ## Qué quedó pendiente de confirmar en la base real
 
-La prueba automática (ver `supabase/tests/rls/README.md`) corre las reglas en un Postgres embebido y pasa 131 de 131
+La prueba automática (ver `supabase/tests/rls/README.md`) corre las reglas en un Postgres embebido y pasa 176 de 176
 casos, pero no puede reproducir: (a) Realtime con permisos (que el personal siga recibiendo los pedidos en vivo y el
 anónimo no), (b) el Storage real de las fotos, (c) los permisos por defecto reales de Supabase. Los pasos 2, 3 y 7 de la
 prueba de humo los cubren: **si alguno falla en la base real, avisar antes de seguir.**
