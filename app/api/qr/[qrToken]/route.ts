@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateTableQrPng } from "@/lib/qr";
+import { getTableByToken } from "@/lib/tables/getTableByToken";
 
 export async function GET(
   _request: Request,
@@ -9,11 +10,7 @@ export async function GET(
   const { qrToken } = await params;
 
   const supabase = await createClient();
-  const { data: table } = await supabase
-    .from("tables")
-    .select("label")
-    .eq("qr_token", qrToken)
-    .maybeSingle();
+  const table = await getTableByToken(supabase, qrToken);
 
   if (!table) {
     return NextResponse.json({ error: "Mesa no encontrada" }, { status: 404 });

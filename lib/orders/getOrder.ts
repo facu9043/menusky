@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getTableByToken } from "@/lib/tables/getTableByToken";
 import type { OrderStatus } from "@/lib/types/database.types";
 import type { CartSelectedOption } from "@/lib/types/cart";
 
@@ -101,11 +102,9 @@ async function getOrderLegacy(
 ): Promise<{ order: OrderView; items: OrderItemView[] } | null> {
   const supabase = await createClient();
 
-  const { data: table } = await supabase
-    .from("tables")
-    .select("id")
-    .eq("qr_token", qrToken)
-    .maybeSingle();
+  // SEC-AF-02: con la base ya migrada este camino no corre (get_public_order existe).
+  // Si la base tiene get_table_by_token pero no get_public_order, igual resuelve la mesa.
+  const table = await getTableByToken(supabase, qrToken);
   if (!table) return null;
 
   const { data: order } = await supabase

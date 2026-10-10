@@ -247,7 +247,9 @@ function allowed(ctx, table, op, row) {
     if (table === "orders") return op === "select" || op === "insert" ? true : op === "update" ? isStaff : false;
     if (table === "order_items") return op === "select" || op === "insert";
   }
-  if (CARTA.has(table) || table === "tables") return op === "select" ? true : isAdmin;
+  // 0004 (SEC-AF-02, D-21): mesas legibles solo por el staff de su restaurante; las escribe el admin.
+  if (table === "tables") return op === "select" ? isStaff : isAdmin;
+  if (CARTA.has(table)) return op === "select" ? true : isAdmin;
   switch (table) {
     case "restaurants": return op === "select" ? true : op === "update" ? isAdmin : false;
     case "staff_users": return op === "select" ? row.auth_user_id === ctx.user?.id || isAdmin : isAdmin;
@@ -567,7 +569,7 @@ function createOrder(qrToken, items) {
   const table = db.tables.find((t) => t.qr_token === qrToken);
   if (!table) throw raise("table_not_found", "P0002");
   // Límite de tasa de 0004 (SEC-AD-01): máx. RATE_MAX pedidos por mesa en RATE_WINDOW_MS (JS es de un solo hilo: sin carreras).
-  if (db.orders.filter((o) => o.table_id === table.id && Date.parse(o.created_at) > Date.now() - RATE_WINDOW_MS).length >= RATE_MAX) throw raise("rate_limited", "P0429");
+  if (db.orders.filter((o) => o.table_id === table.id && o.status !== "cancelled" && Date.parse(o.created_at) > Date.now() - RATE_WINDOW_MS).length >= RATE_MAX) throw raise("rate_limited", "P0429");
   if (!Array.isArray(items) || items.length < 1 || items.length > 50) throw raise("invalid_items");
 
   let total = 0;
@@ -612,6 +614,13 @@ function createOrder(qrToken, items) {
   return order.id;
 }
 
+// Misma lógica que get_table_by_token de 0004 (security definer): token exacto, devuelve lo mínimo o null.
+function getTableByToken(qrToken) {
+  if (typeof qrToken !== "string" || qrToken.length === 0) return null;
+  const t = db.tables.find((x) => x.qr_token === qrToken);
+  return t ? { id: t.id, label: t.label, restaurant_id: t.restaurant_id } : null;
+}
+
 function getPublicOrder(qrToken, orderId) {
   const table = db.tables.find((t) => t.qr_token === qrToken);
   const order = table && typeof orderId === "string" ? db.orders.find((o) => o.id === orderId && o.table_id === table.id) : null;
@@ -636,6 +645,7 @@ function handleRpc(url, body) {
   if (LEGACY) throw new PgError(404, "PGRST202", `Could not find the function public.${fn} in the schema cache`);
   switch (fn) {
     case "create_order": return { status: 200, body: createOrder(body?.p_qr_token, body?.p_items) };
+    case "get_table_by_token": return { status: 200, body: getTableByToken(body?.p_qr_token) };
     case "get_public_order": return { status: 200, body: getPublicOrder(body?.p_qr_token, body?.p_order_id) };
     case "get_public_order_status": return { status: 200, body: getPublicOrder(body?.p_qr_token, body?.p_order_id)?.status ?? null };
     default:
