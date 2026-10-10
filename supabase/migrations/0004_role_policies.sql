@@ -9,6 +9,10 @@
 --    y el cliente lee SU pedido con get_public_order() /
 --    get_public_order_status() (exigen qr_token de la mesa + id del pedido).
 --    El staff lee los pedidos de su restaurante por RLS.
+-- 3) Las mesas dejan de ser legibles por cualquiera (SEC-AF-02, D-21): se quita
+--    "public read tables" (listaba todas las mesas y sus qr_token). El staff lee
+--    las mesas de SU restaurante por RLS; el publico resuelve SOLO la mesa del token
+--    que ya tiene con get_table_by_token().
 -- No modifica ni borra filas. Reversa: supabase/rollback/0004_role_policies_down.sql
 -- ============================================================
 
@@ -81,6 +85,15 @@ create policy "staff read order_items" on order_items for select
     where o.id = order_items.order_id and is_staff_of(o.restaurant_id)
   ));
 
+-- ---------- 2b. Mesas (SEC-AF-02, D-21) ----------
+-- Antes: "public read tables" using (true) -> el anonimo listaba todas las mesas y sus
+-- qr_token. Ahora: lectura solo para staff (admin, waiter, kitchen) de su restaurante.
+-- Las politicas de escritura ("admin insert/update/delete tables") no cambian.
+drop policy if exists "public read tables" on tables;
+drop policy if exists "staff read tables" on tables;
+create policy "staff read tables" on tables for select
+  using (is_staff_of(restaurant_id));
+
 -- ---------- 3. Funciones ----------
 
 -- Crea el pedido de forma atomica. Recalcula TODO en la base: el total del
@@ -130,11 +143,13 @@ begin
     raise exception 'table_not_found' using errcode = 'P0002';
   end if;
 
-  -- Serializa por mesa y cuenta los pedidos recientes de ESA mesa (incluye cancelados).
+  -- Serializa por mesa y cuenta los pedidos recientes de ESA mesa (D-21: los
+  -- cancelados no cuentan).
   perform pg_advisory_xact_lock(hashtextextended('create_order:' || v_table_id::text, 0));
   select count(*) into v_recent
   from public.orders o
-  where o.table_id = v_table_id and o.created_at > now() - c_rate_window;
+  where o.table_id = v_table_id and o.status <> 'cancelled'
+    and o.created_at > now() - c_rate_window;
   if v_recent >= c_rate_max then
     raise exception 'rate_limited' using errcode = 'P0429';
   end if;
@@ -258,6 +273,20 @@ begin
 end;
 $$;
 
+-- Resuelve la mesa del token que el cliente YA tiene (SEC-AF-02, D-21). Token exacto
+-- (sin LIKE): no permite listar ni enumerar. Devuelve lo minimo o null si no existe.
+create or replace function get_table_by_token(p_qr_token text)
+returns jsonb
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select jsonb_build_object('id', t.id, 'label', t.label, 'restaurant_id', t.restaurant_id)
+  from public.tables t
+  where p_qr_token is not null and length(p_qr_token) > 0 and t.qr_token = p_qr_token;
+$$;
+
 -- Lectura del pedido propio: exige el qr_token de la mesa Y el id del pedido.
 -- Devuelve null si no coincide (mismo trato que "no existe").
 create or replace function get_public_order(p_qr_token text, p_order_id uuid)
@@ -313,9 +342,11 @@ as $$
 $$;
 
 revoke all on function create_order(text, jsonb) from public;
+revoke all on function get_table_by_token(text) from public;
 revoke all on function get_public_order(text, uuid) from public;
 revoke all on function get_public_order_status(text, uuid) from public;
 grant execute on function create_order(text, jsonb) to anon, authenticated;
+grant execute on function get_table_by_token(text) to anon, authenticated;
 grant execute on function get_public_order(text, uuid) to anon, authenticated;
 grant execute on function get_public_order_status(text, uuid) to anon, authenticated;
 

@@ -149,6 +149,10 @@ console.log(polOld.filter((p) => /orders|order_items|categories|menu_items|optio
   const w = await as("waiterA", `update menu_items set price = 0 where id = $1 returning id`, [ITEM.provoleta]);
   record("BASE-2", "waiterA", `ANTES de 0004: el mozo cambia un precio (${w.count} fila): SEC-LG-06 reproducido`, w.count === 1);
   await db.query(`update menu_items set price = 5200 where id = $1`, [ITEM.provoleta]);
+  // SEC-AF-02: antes de 0004 (y en la 0004 sin el arreglo) el anonimo lista todas las mesas y sus qr_token
+  const tk = await as("anon", `select label, qr_token from tables`);
+  const totalTables = Number((await su(`select count(*)::int n from tables`))[0].n);
+  record("BASE-3", "anon", `ANTES de 0004: el anonimo lista TODAS las mesas y sus qr_token (${tk.rows.length} de ${totalTables}, de 2 restaurantes): SEC-AF-02 reproducido`, tk.rows.length === totalTables && totalTables >= 4 && tk.rows.some((x) => x.qr_token === "mesa-b-token"));
 }
 
 {
@@ -258,7 +262,7 @@ await expectAll12Denied("CA-1.5", "adminB", "admin B sobre datos de A");
 {
   await resetVictims();
   const exp = {};
-  for (const t of ["categories", "menu_items", "item_option_groups", "item_option_choices", "restaurants", "tables"]) {
+  for (const t of ["categories", "menu_items", "item_option_groups", "item_option_choices", "restaurants"]) { // tables salió de la lectura pública (SEC-AF-02): ver bloque SEC-AF-02
     exp[t] = Number((await su(`select count(*)::int n from ${t}`))[0].n);
   }
   for (const actor of Object.keys(ACTORS)) {
@@ -267,7 +271,7 @@ await expectAll12Denied("CA-1.5", "adminB", "admin B sobre datos de A");
       const r = await as(actor, `select id from ${t}`);
       if (r.rows.length !== exp[t]) { ok = false; det.push(`${t}: ${r.rows.length}/${exp[t]}`); }
     }
-    record("CA-1.6", actor, "lee todas las filas de carta, restaurantes y mesas (lectura pública)", ok, det.join(", "));
+    record("CA-1.6", actor, "lee todas las filas de carta y restaurantes (lectura pública; las mesas ya no, SEC-AF-02)", ok, det.join(", "));
   }
 }
 
@@ -449,12 +453,98 @@ let newOrderId;
   for (let i = 0; i < 10; i++) rAll.push((await CALL("anon", mesa2.qr_token, one)).err);
   const rAfter = await CALL("anon", mesa2.qr_token, one);
   record("SEC-AD-01", "anon", "con toda la ventana vencida pasan 10 de nuevo y el 11 vuelve a fallar", rAll.every((e) => !e) && rAfter.err?.message === "rate_limited");
-  // Los cancelados cuentan (si no, bastaría cancelarlos para saltear el límite)
-  await db.query(`update orders set status='cancelled' where table_id=$1`, [mesa2.id]);
+  // D-21: los cancelados NO cuentan. Mesa llena (10) -> se cancela 1 -> el siguiente pasa -> el otro vuelve a fallar.
+  const fill = await recent(mesa2);
+  for (let i = fill; i < 10; i++) await CALL("anon", mesa2.qr_token, one);
+  const full = await CALL("anon", mesa2.qr_token, one);
+  record("D-21", "anon", "mesa con 10 pedidos en la ventana: el siguiente da rate_limited", full.err?.message === "rate_limited");
+  await db.query(`update orders set status='cancelled' where id=(select id from orders where table_id=$1 and status<>'cancelled' and created_at > now() - interval '10 minutes' order by id limit 1)`, [mesa2.id]);
   const rCancel = await CALL("anon", mesa2.qr_token, one);
-  record("SEC-AD-01", "anon", "los pedidos cancelados también cuentan para el límite", rCancel.err?.message === "rate_limited");
+  record("D-21", "anon", "cancelar 1 pedido libera 1 lugar: el siguiente pasa", !rCancel.err, rCancel.err?.message);
+  const rCancel2 = await CALL("anon", mesa2.qr_token, one);
+  record("D-21", "anon", "y el que sigue vuelve a fallar con rate_limited (siguen 10 no cancelados)", rCancel2.err?.message === "rate_limited");
+  await db.query(`update orders set status='cancelled' where table_id=$1`, [mesa2.id]);
+  const rAllC = [];
+  for (let i = 0; i < 10; i++) rAllC.push((await CALL("anon", mesa2.qr_token, one)).err);
+  record("D-21", "anon", "con todos cancelados caben 10 nuevos (el cancelado no suma)", rAllC.every((e) => !e));
   // Dejar la mesa libre para el resto de la matriz
   await db.query(`update orders set created_at = now() - interval '11 minutes' where table_id=$1`, [mesa2.id]);
+}
+
+// SEC-AF-02 / D-21: mesas no legibles por el publico; el token se resuelve con get_table_by_token
+{
+  const GT = (actor, token) => as(actor, `select get_table_by_token($1) as t`, [token]);
+  const allTables = await su(`select id, label, qr_token, restaurant_id from tables order by label`);
+  const tA = allTables.filter((t) => t.restaurant_id === A), tB = allTables.filter((t) => t.restaurant_id === B);
+
+  const l1 = await as("anon", `select id, label, qr_token from tables`);
+  record("SEC-AF-02", "anon", "NO lista las mesas: select * from tables -> 0 filas", l1.rows.length === 0 && !l1.err, `${l1.rows.length}`);
+  const l2 = await as("anon", `select qr_token from tables where qr_token like 'mesa%'`);
+  record("SEC-AF-02", "anon", "ni por filtro LIKE sobre qr_token -> 0 filas", l2.rows.length === 0);
+  const l3 = await as("anon", `select id from tables where restaurant_id=$1`, [A]);
+  record("SEC-AF-02", "anon", "ni por restaurant_id -> 0 filas", l3.rows.length === 0);
+  const l4 = await as("anon", `select id from tables where qr_token=$1`, [tA[0].qr_token]);
+  record("SEC-AF-02", "anon", "ni conociendo un token, por select directo -> 0 filas (solo por la función)", l4.rows.length === 0);
+  const l5 = await as("anon", `select o.id, t.qr_token from orders o join tables t on t.id=o.table_id`);
+  record("SEC-AF-02", "anon", "ni por join desde pedidos -> 0 filas", l5.rows.length === 0);
+  const l6 = await as("noStaff", `select id from tables`);
+  record("SEC-AF-02", "noStaff", "autenticado sin staff tampoco lista mesas -> 0 filas", l6.rows.length === 0);
+
+  // Reproducción del ataque de SEC-AF-02: listar tokens y agotar el cupo de todas las mesas
+  const stolen = (await as("anon", `select qr_token from tables`)).rows.map((r) => r.qr_token);
+  record("SEC-AF-02", "anon", "ATAQUE reproducido: el anónimo obtiene 0 tokens por listado, no puede agotar el cupo de otras mesas", stolen.length === 0);
+
+  // La función: token exacto
+  const g = await GT("anon", tA[0].qr_token);
+  const gt = g.rows[0]?.t;
+  record("SEC-AF-02", "anon", "get_table_by_token(token exacto) devuelve su mesa {id,label,restaurant_id}",
+    !g.err && gt?.id === tA[0].id && gt?.label === tA[0].label && gt?.restaurant_id === A && JSON.stringify(Object.keys(gt).sort()) === JSON.stringify(["id", "label", "restaurant_id"]), g.err?.message ?? JSON.stringify(gt));
+  record("SEC-AF-02", "anon", "la respuesta no incluye el qr_token ni otras columnas (mínimo)", gt && !("qr_token" in gt) && Object.keys(gt).length === 3);
+  const gb = await GT("anon", "mesa-b-token");
+  record("SEC-AF-02", "anon", "con el token de otro restaurante devuelve esa mesa (el token es la credencial)", gb.rows[0]?.t?.restaurant_id === B);
+  for (const [name, tok] of [["inexistente", "no-existe-123"], ["con comodín %", "%"], ["prefijo (no es exacto)", tA[0].qr_token.slice(0, 5)], ["con LIKE mesa%", "mesa%"], ["mayúsculas (otro formato)", tA[0].qr_token.toUpperCase()], ["con espacios", " " + tA[0].qr_token], ["vacío", ""], ["null", null], ["inyección ' or 1=1 --", "' or 1=1 --"]]) {
+    const r = await GT("anon", tok);
+    record("SEC-AF-02", "anon", `get_table_by_token(${name}) -> null (nada)`, !r.err && (r.rows[0].t === null), r.err?.message);
+  }
+  const gAuth = await GT("noStaff", tA[0].qr_token);
+  record("SEC-AF-02", "noStaff", "authenticated también puede ejecutarla", gAuth.rows[0]?.t?.id === tA[0].id);
+  const meta = (await su(`select prosecdef, proconfig, proacl::text as acl from pg_proc where proname='get_table_by_token'`))[0];
+  record("SEC-AF-02", "superuser", "es security definer con search_path vacío", meta.prosecdef === true && JSON.stringify(meta.proconfig) === JSON.stringify(['search_path=""']), JSON.stringify(meta));
+  record("SEC-AF-02", "superuser", "PUBLIC sin execute (revoke); anon y authenticated con execute", !/(^\{|,)=X/.test(meta.acl) && /anon=X/.test(meta.acl) && /authenticated=X/.test(meta.acl), meta.acl);
+
+  // Staff: lee las mesas de su restaurante y no las del otro
+  const idsA = tA.map((t) => t.id).sort(), idsB = tB.map((t) => t.id).sort();
+  for (const actor of ["waiterA", "kitchenA", "adminA"]) {
+    const r = await as(actor, `select id from tables order by id`);
+    record("SEC-AF-02", actor, `lee sus ${idsA.length} mesas y ninguna de B`, JSON.stringify(r.rows.map((x) => x.id).sort()) === JSON.stringify(idsA), String(r.rows.length));
+    const j = await as(actor, `select o.id, t.label from orders o join tables t on t.id=o.table_id order by o.id`);
+    const expJ = Number((await su(`select count(*)::int n from orders where restaurant_id=$1`, [A]))[0].n);
+    record("SEC-AF-02", actor, `join orders -> tables(label) sigue andando (${expJ} pedidos de A con su mesa)`, j.rows.length === expJ && j.rows.every((x) => x.label), String(j.rows.length));
+    const bt = await as(actor, `select id from tables where id=$1`, [tB[0].id]);
+    record("SEC-AF-02", actor, "no ve la mesa de B ni pidiéndola por id", bt.rows.length === 0);
+  }
+  const rbB = await as("adminB", `select id from tables order by id`);
+  record("SEC-AF-02", "adminB", "ve solo sus mesas (B) y ninguna de A", JSON.stringify(rbB.rows.map((x) => x.id).sort()) === JSON.stringify(idsB));
+  const ia = await as("adminA", `insert into tables (restaurant_id, label, qr_token) values ($1,'Mesa nueva','tok-nueva-af02') returning id, qr_token`, [A]);
+  record("SEC-AF-02", "adminA", "el admin sigue creando mesas (insert ... returning)", ia.count === 1 && !ia.err, ia.err?.message);
+  const da = await as("adminA", `delete from tables where qr_token='tok-nueva-af02' returning id`);
+  record("SEC-AF-02", "adminA", "y borrándolas", da.count === 1, da.err?.message);
+
+  // Lo que el público hace con el token sigue andando
+  const w0 = Number((await su(`select count(*)::int n from waiter_calls`))[0].n);
+  const resolved = (await GT("anon", tA[0].qr_token)).rows[0].t;
+  const call = await as("anon", `insert into waiter_calls (table_id, restaurant_id, reason) values ($1,$2,'cuenta')`, [resolved.id, resolved.restaurant_id]);
+  const w1 = Number((await su(`select count(*)::int n from waiter_calls`))[0].n);
+  record("SEC-AF-02", "anon", "llamar al mozo (token -> get_table_by_token -> insert waiter_calls) sigue funcionando", !call.err && w1 === w0 + 1, call.err?.message);
+  const ord = await as("anon", `select create_order($1, $2::jsonb) as id`, [tA[2].qr_token, JSON.stringify([{ menu_item_id: ITEM.agua, quantity: 1 }])]);
+  record("SEC-AF-02", "anon", "pedir por create_order(token) sigue funcionando sin lectura pública de tables", !ord.err && !!ord.rows[0]?.id, ord.err?.message);
+  const own = await as("anon", `select get_public_order($1,$2) as o, get_public_order_status($1,$2) as s`, [tA[2].qr_token, ord.rows[0]?.id]);
+  record("SEC-AF-02", "anon", "'Tu pedido' (get_public_order / _status) sigue funcionando", own.rows[0]?.o?.id === ord.rows[0]?.id && own.rows[0]?.s === "received", own.err?.message);
+  const rest = await as("anon", `select id, name from restaurants where id=$1`, [A]);
+  record("SEC-AF-02", "anon", "la carta pública no cambia: restaurants y categories siguen legibles", rest.rows.length === 1 && (await as("anon", `select id from categories`)).rows.length > 0);
+  // Estado limpio para el resto de la matriz (los pedidos/llamados de arriba cambian los conteos esperados)
+  await db.query(`delete from orders where id=$1`, [ord.rows[0].id]);
+  await db.query(`delete from waiter_calls where table_id=$1 and id <> $2`, [tA[0].id, callA]);
 }
 
 // CA-2.8 aislamiento entre restaurantes
@@ -523,9 +613,10 @@ for (const actor of ["waiterA", "kitchenA", "adminA"]) {
   for (const t of ["categories", "menu_items", "item_option_groups", "item_option_choices", "orders", "order_items", "waiter_calls", "tables", "restaurants", "staff_users"]) console.log(`  ${t}: ${names(t)}`);
   const stale = ["staff manage categories", "staff manage menu_items", "staff manage option groups", "staff manage option choices", "public insert orders", "public insert order_items", "public read orders", "public read order_items"];
   record("1.1/1.2", "superuser", "las 8 políticas viejas ya no existen", stale.every((s) => !pol.some((p) => p.policyname === s)));
-  record("1.1/1.2", "superuser", "waiter_calls/tables/restaurants/staff_users conservan sus políticas de 0001",
+  const oldTablesNoPublic = polOld.filter((p) => p.tablename === "tables" && p.policyname !== "public read tables").map((p) => p.policyname).concat("staff read tables").sort().join(", ");
+  record("SEC-AF-02", "superuser", "tables: sin 'public read tables'; con 'staff read tables' y las 3 de escritura de admin de 0001", names("tables") === oldTablesNoPublic && !pol.some((p) => p.policyname === "public read tables"), names("tables"));
+  record("1.1/1.2", "superuser", "waiter_calls/restaurants/staff_users conservan sus políticas de 0001",
     names("waiter_calls") === polOld.filter((p) => p.tablename === "waiter_calls").map((p) => p.policyname).sort().join(", ") &&
-    names("tables") === polOld.filter((p) => p.tablename === "tables").map((p) => p.policyname).sort().join(", ") &&
     names("restaurants") === polOld.filter((p) => p.tablename === "restaurants").map((p) => p.policyname).sort().join(", ") &&
     names("staff_users") === polOld.filter((p) => p.tablename === "staff_users").map((p) => p.policyname).sort().join(", "));
 }
@@ -544,8 +635,11 @@ console.log("\n=== Reversa ===");
   await db.exec(sql("supabase/rollback/0004_role_policies_down.sql"));
   const polAfterDown = await policies();
   record("REVERSA", "superuser", "la reversa restituye exactamente el conjunto de políticas de 0001", JSON.stringify(polAfterDown) === JSON.stringify(polOld), "");
-  const fn = await su(`select count(*)::int n from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('create_order','get_public_order','get_public_order_status')`);
-  record("REVERSA", "superuser", "la reversa borra las 3 funciones", fn[0].n === 0);
+  const fn = await su(`select count(*)::int n from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('create_order','get_public_order','get_public_order_status','get_table_by_token')`);
+  record("REVERSA", "superuser", "la reversa borra las 4 funciones (incluida get_table_by_token)", fn[0].n === 0);
+  const tkRev = await as("anon", `select qr_token from tables`);
+  const polRev = await policies();
+  record("REVERSA", "anon", `con la reversa vuelve 'public read tables': el anónimo lista las mesas (${tkRev.rows.length}) y existe la política`, tkRev.rows.length >= 4 && polRev.some((p) => p.tablename === "tables" && p.policyname === "public read tables") && !polRev.some((p) => p.policyname === "staff read tables"));
   record("REVERSA", "superuser", "la reversa no modifica filas", dumpPre === (await dump()));
   const bb = (await su(`select allowed_mime_types, file_size_limit from storage.buckets where id='menu-photos'`))[0];
   record("REVERSA", "superuser", "la reversa deja el bucket menu-photos como estaba (null, null)", bb.allowed_mime_types === null && bb.file_size_limit === null, JSON.stringify(bb));
@@ -562,6 +656,8 @@ console.log("\n=== Reversa ===");
   record("REVERSA", "superuser", "reaplicar 0004 después de la reversa deja las mismas políticas", JSON.stringify(await policies()) === polNewState);
   const r2 = await as("anon", `select id from orders`);
   record("REVERSA", "anon", "tras reaplicar, el anónimo vuelve a no leer pedidos", r2.rows.length === 0);
+  const tk2 = await as("anon", `select qr_token from tables`);
+  record("REVERSA", "anon", "tras reaplicar, el anónimo vuelve a no listar mesas (0 filas)", tk2.rows.length === 0);
 }
 
 // ---------------------------------------------------------------- resumen
