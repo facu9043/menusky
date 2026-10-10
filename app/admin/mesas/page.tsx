@@ -9,7 +9,9 @@ export const metadata: Metadata = {
 
 export default async function AdminTablesPage() {
   const staff = await getStaffUser();
-  if (!staff) return null;
+  // Rol antes de cualquier lectura (CA-NR.01, SEC-AF-01): el layout muestra
+  // NotAdminAccess, pero la página se renderiza igual (y viaja en el RSC).
+  if (!staff || staff.role !== "admin") return null;
 
   // Lanza AdminDataError si la lectura falla: lo atrapa error.tsx (CA-11.5),
   // así un error nunca se ve como "sin mesas".

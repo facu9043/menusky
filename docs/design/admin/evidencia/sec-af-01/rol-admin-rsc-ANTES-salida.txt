@@ -1,0 +1,60 @@
+peticiones RSC de navegación capturadas (admin): 4 -> /admin/menu, /admin/mesas, /admin/apariencia, /admin
+FAIL directa   mozo@demo.test    /admin             -> 200 | NotAdminAccess=true | datos: liveOk | 19497 bytes
+     (307 -> /admin?_rsc)
+FAIL RSC-plana mozo@demo.test    /admin             -> 200 | NotAdminAccess=true | datos: liveOk | 10941 bytes
+FAIL RSC-nav   mozo@demo.test    /admin             -> 200 | NotAdminAccess=false | datos: liveOk | 4481 bytes
+FAIL directa   mozo@demo.test    /admin/menu        -> 200 | NotAdminAccess=true | datos: isAvailable | 25287 bytes
+     (307 -> /admin/menu?_rsc)
+FAIL RSC-plana mozo@demo.test    /admin/menu        -> 200 | NotAdminAccess=true | datos: isAvailable | 16046 bytes
+FAIL RSC-nav   mozo@demo.test    /admin/menu        -> 200 | NotAdminAccess=false | datos: isAvailable | 8244 bytes
+FAIL directa   mozo@demo.test    /admin/mesas       -> 200 | NotAdminAccess=true | datos: qrToken | 20220 bytes
+     (307 -> /admin/mesas?_rsc)
+FAIL RSC-plana mozo@demo.test    /admin/mesas       -> 200 | NotAdminAccess=true | datos: qrToken | 11537 bytes
+FAIL RSC-nav   mozo@demo.test    /admin/mesas       -> 200 | NotAdminAccess=false | datos: qrToken | 4758 bytes
+FAIL directa   mozo@demo.test    /admin/apariencia  -> 200 | NotAdminAccess=true | datos: accentPrimary | 19598 bytes
+     (307 -> /admin/apariencia?_rsc)
+FAIL RSC-plana mozo@demo.test    /admin/apariencia  -> 200 | NotAdminAccess=true | datos: accentPrimary | 11015 bytes
+FAIL RSC-nav   mozo@demo.test    /admin/apariencia  -> 200 | NotAdminAccess=false | datos: accentPrimary | 4755 bytes
+OK   directa   mozo@demo.test    /admin/menu/<id>   -> 200 | NotAdminAccess=true | datos: no | 18146 bytes
+     (307 -> /admin/menu/4473ee86-23be-44e4-a545-89e47e927019?_rsc)
+OK   RSC-plana mozo@demo.test    /admin/menu/<id>   -> 200 | NotAdminAccess=true | datos: no | 9707 bytes
+FAIL directa   cocina@demo.test  /admin             -> 200 | NotAdminAccess=true | datos: liveOk | 19497 bytes
+     (307 -> /admin?_rsc)
+FAIL RSC-plana cocina@demo.test  /admin             -> 200 | NotAdminAccess=true | datos: liveOk | 10941 bytes
+FAIL RSC-nav   cocina@demo.test  /admin             -> 200 | NotAdminAccess=false | datos: liveOk | 4481 bytes
+FAIL directa   cocina@demo.test  /admin/menu        -> 200 | NotAdminAccess=true | datos: isAvailable | 25287 bytes
+     (307 -> /admin/menu?_rsc)
+FAIL RSC-plana cocina@demo.test  /admin/menu        -> 200 | NotAdminAccess=true | datos: isAvailable | 16046 bytes
+FAIL RSC-nav   cocina@demo.test  /admin/menu        -> 200 | NotAdminAccess=false | datos: isAvailable | 8244 bytes
+FAIL directa   cocina@demo.test  /admin/mesas       -> 200 | NotAdminAccess=true | datos: qrToken | 20220 bytes
+     (307 -> /admin/mesas?_rsc)
+FAIL RSC-plana cocina@demo.test  /admin/mesas       -> 200 | NotAdminAccess=true | datos: qrToken | 11537 bytes
+FAIL RSC-nav   cocina@demo.test  /admin/mesas       -> 200 | NotAdminAccess=false | datos: qrToken | 4758 bytes
+FAIL directa   cocina@demo.test  /admin/apariencia  -> 200 | NotAdminAccess=true | datos: accentPrimary | 19598 bytes
+     (307 -> /admin/apariencia?_rsc)
+FAIL RSC-plana cocina@demo.test  /admin/apariencia  -> 200 | NotAdminAccess=true | datos: accentPrimary | 11015 bytes
+FAIL RSC-nav   cocina@demo.test  /admin/apariencia  -> 200 | NotAdminAccess=false | datos: accentPrimary | 4755 bytes
+OK   directa   cocina@demo.test  /admin/menu/<id>   -> 200 | NotAdminAccess=true | datos: no | 18146 bytes
+     (307 -> /admin/menu/4473ee86-23be-44e4-a545-89e47e927019?_rsc)
+OK   RSC-plana cocina@demo.test  /admin/menu/<id>   -> 200 | NotAdminAccess=true | datos: no | 9707 bytes
+OK   directa   admin@demo.test   /admin             -> 200 | NotAdminAccess=false | datos: qrToken | 35713 bytes
+     (307 -> /admin?_rsc)
+OK   RSC-plana admin@demo.test   /admin             -> 200 | NotAdminAccess=false | datos: qrToken | 12808 bytes
+OK   RSC-nav   admin@demo.test   /admin             -> 200 | NotAdminAccess=false | datos: liveOk | 4481 bytes
+OK   directa   admin@demo.test   /admin/menu        -> 200 | NotAdminAccess=false | datos: Provoleta | 57901 bytes
+     (307 -> /admin/menu?_rsc)
+OK   RSC-plana admin@demo.test   /admin/menu        -> 200 | NotAdminAccess=false | datos: qrToken | 17913 bytes
+OK   RSC-nav   admin@demo.test   /admin/menu        -> 200 | NotAdminAccess=false | datos: isAvailable | 8244 bytes
+OK   directa   admin@demo.test   /admin/mesas       -> 200 | NotAdminAccess=false | datos: mesa-1-demo0001 | 44501 bytes
+     (307 -> /admin/mesas?_rsc)
+OK   RSC-plana admin@demo.test   /admin/mesas       -> 200 | NotAdminAccess=false | datos: qrToken | 13404 bytes
+OK   RSC-nav   admin@demo.test   /admin/mesas       -> 200 | NotAdminAccess=false | datos: qrToken | 4758 bytes
+OK   directa   admin@demo.test   /admin/apariencia  -> 200 | NotAdminAccess=false | datos: accentPrimary | 55394 bytes
+     (307 -> /admin/apariencia?_rsc)
+OK   RSC-plana admin@demo.test   /admin/apariencia  -> 200 | NotAdminAccess=false | datos: qrToken | 12882 bytes
+OK   RSC-nav   admin@demo.test   /admin/apariencia  -> 200 | NotAdminAccess=false | datos: accentPrimary | 4755 bytes
+OK   directa   admin@demo.test   /admin/menu/<id>   -> 307 | NotAdminAccess=false | datos: qrToken | 17246 bytes
+     (307 -> /admin/menu/4473ee86-23be-44e4-a545-89e47e927019?_rsc)
+OK   RSC-plana admin@demo.test   /admin/menu/<id>   -> 200 | NotAdminAccess=false | datos: qrToken | 11574 bytes
+
+18 OK, 24 FAIL | respuestas de mozo/cocina con datos de la página: 24
