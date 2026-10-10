@@ -1,0 +1,5 @@
+Sat Oct 10 03:27:34     2026
+netstat -ano, puertos 3420-3449, estado LISTENING:
+  (ninguno)
+Conexiones en TIME_WAIT (cierre normal): 387
+Otros estados: 0

@@ -1,0 +1,8 @@
+4 capturas en docs/design/admin/capturas/:
+  inicio-1440x900.png
+  inicio-error-parcial-1440x900.png
+  inicio-390x844.png
+  inicio-error-parcial-390x844.png
+2 capturas en docs/design/admin/capturas/:
+  estado-inicio-sin-pedidos-1440x900.png
+  estado-inicio-sin-pedidos-390x844.png

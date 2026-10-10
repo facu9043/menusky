@@ -1,0 +1,23 @@
+     etiqueta: despues | APP http://127.0.0.1:3420
+     [1440x900] Inicio "Pedidos de hoy": numero "4" 40px/800 color rgb(255, 253, 248) sobre rgb(215, 38, 30) = 4.94:1; etiqueta rgb(255, 253, 248)
+     [1440x900] Carta "Pedidos hoy": numero "4" color rgb(255, 253, 248) sobre rgb(215, 38, 30) = 4.94:1
+OK   QA-AD-04 [1440x900] numero de Inicio en papel, igual que la Carta | rgb(255, 253, 248) vs Carta rgb(255, 253, 248)
+OK   QA-AD-04 [1440x900] contraste del numero >= 4.5:1 | 4.94:1
+     [1440x900] admin: --ms-dur-reveal=.56s --adm-dur-enter=.4s
+     [1440x900] Pomo (no-preference): animation-name=adm-rise animation-duration=0.4s getAnimations=[{"name":"adm-rise","dur":400}]
+OK   QA-AD-03 [1440x900] entrada de Pomo <= 400 ms | adm-rise 400 ms
+     [1440x900] Pomo (reduce): animation-name=none animation-duration=0s getAnimations=[]
+OK   QA-AD-03 [1440x900] reduced-motion apaga la entrada de Pomo | none, 0 animaciones
+     [390x844] Inicio "Pedidos de hoy": numero "4" 26px/800 color rgb(255, 253, 248) sobre rgb(215, 38, 30) = 4.94:1; etiqueta rgb(255, 253, 248)
+     [390x844] Carta "Pedidos hoy": numero "4" color rgb(255, 253, 248) sobre rgb(215, 38, 30) = 4.94:1
+OK   QA-AD-04 [390x844] numero de Inicio en papel, igual que la Carta | rgb(255, 253, 248) vs Carta rgb(255, 253, 248)
+OK   QA-AD-04 [390x844] contraste del numero >= 4.5:1 | 4.94:1
+     [390x844] admin: --ms-dur-reveal=.56s --adm-dur-enter=.4s
+     [390x844] Pomo (no-preference): animation-name=adm-rise animation-duration=0.4s getAnimations=[{"name":"adm-rise","dur":400}]
+OK   QA-AD-03 [390x844] entrada de Pomo <= 400 ms | adm-rise 400 ms
+     [390x844] Pomo (reduce): animation-name=none animation-duration=0s getAnimations=[]
+OK   QA-AD-03 [390x844] reduced-motion apaga la entrada de Pomo | none, 0 animaciones
+OK   --ms-dur-reveal en / sigue en 560ms | .56s = 560 ms
+OK   --ms-dur-reveal en /login sigue en 560ms | .56s = 560 ms
+
+10 OK, 0 FAIL
