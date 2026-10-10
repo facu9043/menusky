@@ -1,10 +1,10 @@
-Build de verificación del release admin - 2026-10-10T03:04:52-03:00 - commit 3612e23
+Build de verificación del release admin - 2026-10-10T03:47:26-03:00 - commit e6a73aa
 Env ficticias: NEXT_PUBLIC_SUPABASE_URL=https://example.supabase.co NEXT_PUBLIC_SUPABASE_ANON_KEY=dummy-anon-key
 ▲ Next.js 16.3.8 (Turbopack)
-✓ Running next.config.ts took 35ms
+✓ Running next.config.ts took 36ms
 
   Creating an optimized production build ...
-✓ Compiled successfully in 1777ms
+✓ Compiled successfully in 1500ms
   Running TypeScript ...
   Finished TypeScript in 2.9s ...
   Collecting page data using 11 workers ...
