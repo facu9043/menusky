@@ -8,7 +8,9 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 
 ## Paso actual: PAUSA ORDENADA. Maquetas APROBADAS por el Director (2026-10-15); la construcción arranca en otra sesión, cuando él lo indique.
 
-## Respuestas del Director (2026-10-15)
+## CAMBIO DEL DIRECTOR (2026-10-15, más tarde): construir TODO en TEMA CLARO, como las maquetas claras (`cocina.html`, `salon.html`, `shell.html` y vacías). La variante oscura NO se construye ahora. A futuro: una función de "tema oscuro" para TODOS los paneles (admin, Cocina y Salón) -> backlog, la decide el Director más adelante. Ya no hace falta la captura de Salón oscuro. Construcción APROBADA para empezar ahora.
+
+## Respuestas del Director (2026-10-15; la 1 quedó reemplazada por el cambio de arriba)
 1. Tema: **OSCURO** (la variante `cocina-oscuro.html`, no el claro que era el default). Salón y el menú compartido también van en oscuro con el mismo criterio; como no hay maqueta de Salón oscuro, mostrarle una captura rápida de Salón oscuro antes de construir.
 2. Siempre la paleta MenuSky, sin el color del restaurante: **SÍ**.
 3. Tamaños (mesa 24-28 px, renglones 18/20 px, botones 56 px; 3 comandas por fila en tablet horizontal y 1 en celular): **SÍ**, con prueba final en tablet real.
