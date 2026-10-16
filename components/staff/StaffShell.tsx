@@ -1,58 +1,45 @@
-import type { CSSProperties } from "react";
-import { Fraunces } from "next/font/google";
-import { getRestaurantThemeOrDefault } from "@/lib/admin/getRestaurantTheme";
-import { getForegroundColor } from "@/lib/theme/contrast";
+import { STAFF_BRAND_CLASS, StaffBrand } from "@/components/staff/StaffBrand";
+import { StaffHeader } from "@/components/staff/StaffHeader";
+import type { StaffUser } from "@/lib/auth/getStaffUser";
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: "variable",
-  variable: "--font-staff-display",
-  display: "swap",
-});
-
-// Estética tipo "consola" para cocina/salón/admin — sigue siendo oscura y de
-// alto contraste a propósito (legibilidad rápida bajo presión en cocina),
-// pero ahora sí se siente "de ese restaurante":
-// - Fraunces (la misma tipografía de títulos que ve el cliente) en los
-//   encabezados de StaffHeader, en vez de la sans genérica para todo.
-// - El fondo/tarjetas oscuros llevan un tinte del accentPrimary del
-//   restaurante (color-mix), en vez de un gris-negro neutro igual para
-//   cualquiera.
-// - accentSecondary también entra en juego (--secondary), no solo el
-//   primario.
-// - data-theme-style reutiliza los mismos bloques CSS de
-//   app/globals.css (brutal/neumorphic/clay) que ya aplican por
-//   [data-slot="card"|"button"|"badge"|...] — así los paneles de staff
-//   heredan bordes/sombra/esquinas del mismo estilo elegido para la carta,
-//   sin duplicar CSS.
-export async function StaffShell({
-  restaurantId,
-  className = "",
+/**
+ * Shell de staff (CA-8.10): encabezado con logo, paneles del rol, persona y
+ * "Cerrar sesión"; título h1 único con "restaurante · persona" (K-3).
+ */
+export function StaffShell({
+  title,
+  staff,
   children,
 }: {
-  restaurantId: string;
-  className?: string;
+  title: string;
+  staff: StaffUser;
   children: React.ReactNode;
 }) {
-  const theme = await getRestaurantThemeOrDefault(restaurantId);
-
   return (
-    <div
-      data-theme-style={theme.style ?? "soft"}
-      className={`dark ${fraunces.variable} flex min-h-screen flex-col bg-background text-foreground ${className}`}
-      style={
-        {
-          "--primary": theme.accentPrimary,
-          "--primary-foreground": getForegroundColor(theme.accentPrimary),
-          "--secondary": theme.accentSecondary,
-          "--secondary-foreground": getForegroundColor(theme.accentSecondary),
-          "--background": `color-mix(in srgb, ${theme.accentPrimary} 14%, #111318)`,
-          "--card": `color-mix(in srgb, ${theme.accentPrimary} 10%, #181B22)`,
-          "--popover": `color-mix(in srgb, ${theme.accentPrimary} 10%, #181B22)`,
-        } as CSSProperties
-      }
-    >
-      {children}
-    </div>
+    <StaffBrand>
+      <a href="#contenido" className="adm-skip">
+        Saltar al contenido
+      </a>
+      <StaffHeader
+        staff={{
+          name: staff.name,
+          role: staff.role,
+          restaurantId: staff.restaurantId,
+          restaurantName: staff.restaurantName,
+        }}
+        portalClass={STAFF_BRAND_CLASS}
+      />
+      <main id="contenido" tabIndex={-1} className="st-main">
+        <div className="st-page">
+          <div className="st-title">
+            <h1 className="adm-h1">{title}</h1>
+            <p className="st-title__who">
+              {staff.restaurantName} · {staff.name}
+            </p>
+          </div>
+          {children}
+        </div>
+      </main>
+    </StaffBrand>
   );
 }
