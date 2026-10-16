@@ -202,6 +202,8 @@ for (const [email, route] of [["cocina@demo.test", "/kitchen"], ["admin@demo.tes
   }
   check(`Teclado ${route}: salto al contenido primero, todo con foco visible (contorno >= 2 px)`, seq[0] === "Saltar al contenido" && outlinesOk, seq.join(" > "));
   await page.goto(`${APP}${route}`);
+  await page.waitForSelector("h1");
+  await page.waitForTimeout(800); // hidratado antes de usar el teclado
   await page.keyboard.press("Tab");
   await page.keyboard.press("Enter");
   const focused = await page.evaluate(() => document.activeElement.id);

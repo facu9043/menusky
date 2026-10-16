@@ -1,30 +1,30 @@
      == cocina ==
-OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 169 ms
+OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 159 ms
 OK   cocina 1440x900: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1440/1440; fuente Geist; animaciones 0
 OK   cocina 1440x900: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa 28; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 279.78125px; textos cortados 0
      cocina 1440x900: columnas comandas 4, mesas -, página -
 OK   cocina 1440x900: axe 0 críticos/serios | 0 violaciones (ninguna); 24 reglas pasan; 0 a revisar
-OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 162 ms
+OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 157 ms
 OK   cocina 1280x800: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1280/1280; fuente Geist; animaciones 0
 OK   cocina 1280x800: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa 28; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 288.1875px; textos cortados 0
      cocina 1280x800: columnas comandas 3, mesas -, página -
 OK   cocina 1280x800: axe 0 críticos/serios | 0 violaciones (ninguna); 24 reglas pasan; 0 a revisar
-OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 156 ms
+OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 168 ms
 OK   cocina 1024x768: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1024/1024; fuente Geist; animaciones 0
 OK   cocina 1024x768: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa 28; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 288.1875px; textos cortados 0
      cocina 1024x768: columnas comandas 3, mesas -, página -
 OK   cocina 1024x768: axe 0 críticos/serios | 0 violaciones (ninguna); 24 reglas pasan; 0 a revisar
-OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 169 ms
+OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 154 ms
 OK   cocina 768x1024: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 768/768; fuente Geist; animaciones 0
 OK   cocina 768x1024: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa 28; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 203.984375px; textos cortados 0
      cocina 768x1024: columnas comandas 2, mesas -, página -
 OK   cocina 768x1024: axe 0 críticos/serios | 0 violaciones (ninguna); 24 reglas pasan; 0 a revisar
-OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 155 ms
+OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 154 ms
 OK   cocina 390x844: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 390/390; fuente Geist; animaciones 0
 OK   cocina 390x844: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa 24; renglón 18; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 183.6875px; textos cortados 0
      cocina 390x844: columnas comandas 1, mesas -, página -
 OK   cocina 390x844: axe 0 críticos/serios | 0 violaciones (ninguna); 24 reglas pasan; 0 a revisar
-OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 166 ms
+OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 168 ms
 OK   cocina 360x640: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 360/360; fuente Geist; animaciones 0
 OK   cocina 360x640: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa 24; renglón 18; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 183.6875px; textos cortados 0
      cocina 360x640: columnas comandas 1, mesas -, página -
@@ -182,7 +182,7 @@ OK   solo-admin 390x844: tamaños CA-3.1/3.2 | texto mín 15px ("Cerrar sesión"
      solo-admin 390x844: columnas comandas -, mesas -, página -
 OK   solo-admin 390x844: axe 0 críticos/serios | 0 violaciones (ninguna); 19 reglas pasan; 0 a revisar
      == Teclado ==
-OK   Teclado /kitchen: salto al contenido primero, todo con foco visible (contorno >= 2 px) | Saltar al contenido > MenuSky, ir a Cocina > Cocina > Cerrar sesión > Marcar listo, Mesa 2 > Tomar pedido, Mesa 1
+OK   Teclado /kitchen: salto al contenido primero, todo con foco visible (contorno >= 2 px) | Saltar al contenido > MenuSky, ir a Cocina > Cocina(hay pendientes) > Cerrar sesión > Marcar listo, Mesa 2 > Tomar pedido, Mesa 1
 OK   Teclado /kitchen: "Saltar al contenido" lleva el foco a main#contenido | contenido
 OK   Teclado /floor: salto al contenido primero, todo con foco visible (contorno >= 2 px) | Saltar al contenido > MenuSky, ir a Salón > Cocina(hay pendientes) > Salón(hay pendientes) > Admin > Cerrar sesión > Atendido, Mesa 2 > Entregado, Mesa 3
 OK   Teclado /floor: "Saltar al contenido" lleva el foco a main#contenido | contenido

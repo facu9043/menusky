@@ -7,7 +7,7 @@ OK   K.5 región aria-live vacía al cargar (no anuncia el tablero) y sin sonido
 OK   K.6 pedido received: 'Tomar pedido', sin píldora, nombre accesible con la mesa
 OK   K.7 pedido in_kitchen: píldora 'En preparación' y 'Marcar listo'
 OK   K.8 'Cuenta de la mesa hoy: $ ...', renglón 'N× nombre', nota entre comillas
-OK   K.9 pedido nuevo aparece sin recargar (<= 5 s) | 169 ms
+OK   K.9 pedido nuevo aparece sin recargar (<= 5 s) | 157 ms
 OK   K.10 etiqueta 'Nuevo' visible con reduced-motion (CA-8.1, CA-5.2)
 OK   K.11 suena el aviso al llegar el pedido (CA-NR.7) | osciladores: 1
 OK   K.12 anuncio 'Pedido nuevo: Mesa 3' (CA-5.1) | Pedido nuevo: Mesa 3
@@ -27,12 +27,12 @@ OK   F.3 mesas con estado en texto: Mesa 1 Con pedido, Mesa 2 Llamando, Mesa 3 L
 OK   F.4 llamado: motivo · hora y 'Cuenta de hoy' solo con 'Pide la cuenta'
 OK   F.5 listo para llevar sin notas, botón 'Entregado, Mesa 3'
 OK   F.6 sin anuncios ni sonido al cargar
-OK   F.7 llamado nuevo aparece sin recargar (<= 5 s) | 158 ms
+OK   F.7 llamado nuevo aparece sin recargar (<= 5 s) | 183 ms
 OK   F.8 toast 'Una mesa está llamando al mozo' + aviso sonoro | osciladores 1
 OK   F.9 anuncio 'Llamado de Mesa 3: Tiene una consulta' | Llamado de Mesa 3: Tiene una consulta
 OK   F.10 contador sube a 'Llamados de mozo · 2' y Mesa 3 pasa a 'Llamando'
 OK   F.11 'Atendido' -> toast 'Llamado atendido', desaparece y el contador baja
-OK   F.12 pedido 'ready' aparece en 'Listos para llevar' sin recargar, con 'Nuevo' | 167 ms
+OK   F.12 pedido 'ready' aparece en 'Listos para llevar' sin recargar, con 'Nuevo' | 2 ms
 OK   F.13 anuncio 'Pedido listo: Mesa 1' y contador 'Listos para llevar · 2' | Llamado de Mesa 3: Tiene una consulta | Pedido listo: Mesa 1
 OK   F.14 'Entregado' -> toast 'Pedido entregado' y desaparece
 OK   F.15 pedido nuevo 'received' hace sonar el aviso en Salón (F-9)
@@ -52,7 +52,7 @@ OK   A.8 volver atrás pide login (CA-2.1) | http://127.0.0.1:3422/login?redirec
      == Sin staff, vacíos y temas ==
 OK   S.1 sin fila de staff: 'Tu cuenta no está vinculada a ningún restaurante' + staff_users + 'Cerrar sesión'
 OK   S.2 sin Pomo en la pantalla sin permiso (CA-8.8)
-OK   S.3 con otro tema guardado (Glaciar/brutal) la Cocina se ve idéntica (CA-1.3) | PATCH 200; capturas 63142/63142 bytes
+OK   S.3 con otro tema guardado (Glaciar/brutal) la Cocina se ve idéntica (CA-1.3) | PATCH 200; capturas 63473/63473 bytes
 OK   S.4 Cocina vacía: Pomo + 'No hay pedidos pendientes.' (CA-8.8, CA-NR.9) | DELETE 200
 OK   S.5 Salón sin mesas: solo 'Mesas' con 'Todavía no hay mesas.' (CA-8.7, F-3)
 

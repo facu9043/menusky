@@ -529,9 +529,8 @@
   height: 22px;
 }
 .st-act:disabled {
+  /* Fondo y texto: los de .adm-btn:disabled del admin (sin HEX sueltos acá). */
   cursor: progress;
-  background: #efe6d6;
-  color: #5e4a40;
   box-shadow: none;
   transform: translateY(3px);
 }
