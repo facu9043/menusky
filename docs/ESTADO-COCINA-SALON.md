@@ -6,7 +6,15 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 - Sin push, sin merge a master, nada a producción. Nunca base real ni credenciales reales.
 - Contexto: el estado anterior del admin está en `docs/ESTADO-ADMIN.md` (rama feat/admin-ui @ 5b12886, solo local).
 
-## Paso actual: PAUSA ORDENADA. Spec y maquetas listas; esperan respuestas y aprobación del Director. NO construir.
+## Paso actual: PAUSA ORDENADA. Maquetas APROBADAS por el Director (2026-10-15); la construcción arranca en otra sesión, cuando él lo indique.
+
+## Respuestas del Director (2026-10-15)
+1. Tema: **OSCURO** (la variante `cocina-oscuro.html`, no el claro que era el default). Salón y el menú compartido también van en oscuro con el mismo criterio; como no hay maqueta de Salón oscuro, mostrarle una captura rápida de Salón oscuro antes de construir.
+2. Siempre la paleta MenuSky, sin el color del restaurante: **SÍ**.
+3. Tamaños (mesa 24-28 px, renglones 18/20 px, botones 56 px; 3 comandas por fila en tablet horizontal y 1 en celular): **SÍ**, con prueba final en tablet real.
+4. Al resto de las 16 preguntas: **OK a todo como está en las maquetas y el README** (menú en celular con 2 toques como el admin; aviso de desconexión al backlog; anuncios para lector de pantalla; etiqueta "Nuevo"; textos nuevos; landing sin tocar; distribución de Salón; colores de mesa; píldora "En preparación"; contador en títulos; "Cerrar sesión" con texto; pantallas sin permiso con logo).
+5. "Lo demás después": no se construye en esta sesión. Al retomar: el PO cierra la spec v1.0 con estas respuestas, captura de Salón oscuro al Director y después construcción, Seguridad, QA y release.
+- Migración 0004 y pasos 10-16 en la base real: siguen NO confirmados por el Director.
 
 ## Encargo del Director (2026-10-15)
 - Rediseñar Cocina (`/kitchen`) y Salón (`/floor`) con el lenguaje visual de la Carta del admin (colores, tipografías, bordes y sombras sello): "es lo característico de MenuSky; no puede haber un apartado distinto" (decisión 3 de ESTADO-ADMIN). Más: "también debe tener un rediseño como los demás paneles".
