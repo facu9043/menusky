@@ -11,7 +11,7 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 ## CAMBIO DEL DIRECTOR (2026-10-15, más tarde): construir TODO en TEMA CLARO, como las maquetas claras (`cocina.html`, `salon.html`, `shell.html` y vacías). La variante oscura NO se construye ahora. A futuro: una función de "tema oscuro" para TODOS los paneles (admin, Cocina y Salón) -> backlog, la decide el Director más adelante. Ya no hace falta la captura de Salón oscuro. Construcción APROBADA para empezar ahora.
 
 ## Respuestas del Director (2026-10-15; la 1 quedó reemplazada por el cambio de arriba)
-1. Tema: **OSCURO** (la variante `cocina-oscuro.html`, no el claro que era el default). Salón y el menú compartido también van en oscuro con el mismo criterio; como no hay maqueta de Salón oscuro, mostrarle una captura rápida de Salón oscuro antes de construir.
+1. Tema: (REEMPLAZADO por el cambio de arriba: rige CLARO) ~~OSCURO~~ (la variante `cocina-oscuro.html`, no el claro que era el default). Salón y el menú compartido también van en oscuro con el mismo criterio; como no hay maqueta de Salón oscuro, mostrarle una captura rápida de Salón oscuro antes de construir.
 2. Siempre la paleta MenuSky, sin el color del restaurante: **SÍ**.
 3. Tamaños (mesa 24-28 px, renglones 18/20 px, botones 56 px; 3 comandas por fila en tablet horizontal y 1 en celular): **SÍ**, con prueba final en tablet real.
 4. Al resto de las 16 preguntas: **OK a todo como está en las maquetas y el README** (menú en celular con 2 toques como el admin; aviso de desconexión al backlog; anuncios para lector de pantalla; etiqueta "Nuevo"; textos nuevos; landing sin tocar; distribución de Salón; colores de mesa; píldora "En preparación"; contador en títulos; "Cerrar sesión" con texto; pantallas sin permiso con logo).
@@ -34,8 +34,8 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 | 1. Spec `docs/specs/cocina-salon.md` (PO, agente aaf44d34aa4d1674a) | HECHO v0.1: HU-1..HU-7, CA-NR.1..11, 12 casos límite, 10 preguntas con default | este commit |
 | 2. Maquetas `docs/design/cocina-salon/maquetas/` (Frontend, agente ac02212fa24c11ae7) | HECHO: 6 HTML (cocina, cocina-vacia, cocina-oscuro, salon, salon-vacio, shell), 23 capturas en 4 tamaños, axe 0, sin scroll horizontal, 0 animaciones con reduce, contraste AA | ddcc30a..9d66441 |
 | 3. Aprobación del Director (spec + maquetas) | HECHO: aprobadas; tema CLARO; oscuro al backlog | c933e15 |
-| 4a. Spec v1.0 (PO) | EN CURSO | |
-| 4b. Construcción (Frontend) | PENDIENTE | |
+| 4a. Spec v1.0 (PO) | HECHO + resoluciones 11.1 del Líder (D-24) | ca0caff y este commit |
+| 4b. Construcción (Frontend) | EN CURSO | |
 | 4c. Seguridad (por alcance) | PENDIENTE | |
 | 4d. QA (por alcance + regresión admin, /login, /m, flujo QR) | PENDIENTE | |
 | 4e. Release `docs/releases/cocina-salon.md` | PENDIENTE | |

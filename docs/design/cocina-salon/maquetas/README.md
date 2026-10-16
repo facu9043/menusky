@@ -21,7 +21,7 @@ Capturas en `capturas/<maqueta>-<ancho>x<alto>.png`, página completa, en 1280x8
 |---|---|---|
 | `cocina.html` | Encabezado de staff (rol cocina), h1 "Cocina" + "restaurante · persona". 5 comandas: 3 en `received` (2 con "Nuevo"), 2 en `in_kitchen` (píldora "En preparación"), una con el botón en proceso (deshabilitado, ícono de carga). Opciones unidas con " · ", notas entre comillas en cursiva sobre fondo mostaza claro. Mesa de nombre largo y cuenta de 7 cifras. Grilla 1 / 2 / 3 columnas (celular / 768 / 1024 y 1280); 4 desde 1440 en el CSS (no capturado). | CA-1.1, 1.4, 1.5; CA-3.1, 3.2, 3.4, 3.6; CA-5.2, 5.3 (`aria-label` "Tomar pedido, Mesa 4"), 5.4; CA-6.1, 6.2, 6.3; CA-NR.1, NR.5; casos límite 4 y 5 |
 | `cocina-vacia.html` | Cocina sin pedidos: Pomo estático (`aria-hidden`, el mismo de los vacíos del admin) + "No hay pedidos pendientes." en grande. | CA-NR.9; pregunta 3 |
-| `cocina-oscuro.html` | La misma Cocina en variante oscura de marca (fondo carne, tarjetas `#3a2219` como la tarjeta del local del admin, bordes tostado), para comparar. | Pregunta 1 |
+| `cocina-oscuro.html` | La misma Cocina en variante oscura de marca (fondo carne, tarjetas `#3a2219` como la tarjeta del local del admin, bordes tostado), para comparar. | Pregunta 1 | **NO se construye: el Director eligió el tema CLARO (2026-10-15); el tema oscuro para todos los paneles va al backlog.**
 | `salon.html` | Rol mozo. "Llamados de mozo · 3" (los 3 motivos; "Cuenta de hoy" solo con "Pide la cuenta"; "Atendido" a la derecha en fila ancha y a lo ancho en celular), "Listos para llevar · 2" (sin notas, uno "Nuevo", "Entregado") y "Mesas" con los 4 estados. En >= 1024 px las acciones van a la izquierda y "Mesas" queda fija a la derecha. | CA-1.4; CA-3.1, 3.2, 3.4; CA-5.3, 5.4; CA-NR.3, NR.4, NR.5, NR.6 |
 | `salon-vacio.html` | Salón sin llamados ni listos (solo "Mesas", como hoy, F-3) y restaurante sin mesas con "Todavía no hay mesas." | F-3; caso límite 2; pregunta 9 |
 | `shell.html` | Encabezado por rol: cocina (solo Cocina), mozo (solo Salón), admin en /kitchen (Cocina, Salón con pendientes, Admin). Menú de cuenta del celular abierto (admin y mozo). `NoStaffAccess` y `NotAdminAccess` con la marca. En los marcos "Celular" se ve el menú también en vistas anchas: es solo para mostrarlo. | CA-2.1, 2.2, 2.3, 2.4, 2.5; pregunta 4 |
@@ -85,7 +85,7 @@ Nuevos (todos a aprobar):
 
 ## Preguntas para el Director
 Las de la spec que la maqueta deja a la vista (no están decididas: se muestran con su default):
-1. (spec 1) ¿Claro como la Carta (`cocina.html`) u oscuro de marca (`cocina-oscuro.html`)? Ambos pasan contraste.
+1. (spec 1) ¿Claro como la Carta (`cocina.html`) u oscuro de marca (`cocina-oscuro.html`)? Ambos pasan contraste. **Respuesta del Director: CLARO.**
 2. (spec 2) Siempre con la paleta MenuSky, sin el color del restaurante: ¿de acuerdo?
 3. (spec 3) Pomo en Cocina vacía (`cocina-vacia.html`): ¿va?
 4. (spec 4) Shell propio liviano: banda marrón con los paneles del rol en tablet/escritorio, y en celular encabezado
