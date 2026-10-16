@@ -19,13 +19,13 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 | Paso | Estado | Evidencia |
 |---|---|---|
 | 0. Rama, ESTADO, identidad git (facu9043) | HECHO | este commit |
-| 1. Spec `docs/specs/cocina-salon.md` (PO) | EN CURSO | |
-| 2. Maquetas `docs/design/cocina-salon/maquetas/` (Frontend) | PENDIENTE | |
+| 1. Spec `docs/specs/cocina-salon.md` (PO, agente aaf44d34aa4d1674a) | HECHO v0.1: HU-1..HU-7, CA-NR.1..11, 12 casos límite, 10 preguntas con default | este commit |
+| 2. Maquetas `docs/design/cocina-salon/maquetas/` (Frontend) | EN CURSO | |
 | 3. Aprobación del Director (spec + maquetas) | PENDIENTE | |
 | 4. Construcción, Seguridad, QA, release | NO EMPEZAR sin aprobación | |
 
 ## Preguntas abiertas para el Director
-(se completan con las de la spec y las maquetas)
+Las 10 de `docs/specs/cocina-salon.md` §8 (tema claro u oscuro; color del restaurante; Pomo; shell compartido; tamaños de texto; aviso de desconexión; anuncios para lector; etiqueta "Nuevo"; textos nuevos; mockups de la landing). Más las que agreguen las maquetas.
 
 ## Procesos levantados (puerto, PID, dueño)
 - Equipo: (ninguno). Puertos: D-1 (Backend 3400-3419, Frontend 3420-3449, Seguridad 3450-3469, QA 3470-3489, Líder 3490-3499). No tocar 3500, 3501 ni 4317.
