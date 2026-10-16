@@ -44,4 +44,5 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 Las 10 de `docs/specs/cocina-salon.md` §8 y las 13 de `docs/design/cocina-salon/maquetas/README.md` (se superponen 1-3, 5-7). Notas técnicas para la construcción (decide el Líder): compartir el shell sin duplicar la suscripción de pendientes (R-9/D-20); si se deja de usar getRestaurantThemeOrDefault en estas pantallas (D-12) según la respuesta 2; confirmar Geist en el build (D-19).
 
 ## Procesos levantados (puerto, PID, dueño)
-- Equipo: (ninguno). Puertos: D-1 (Backend 3400-3419, Frontend 3420-3449, Seguridad 3450-3469, QA 3470-3489, Líder 3490-3499). No tocar 3500, 3501 ni 4317.
+- Frontend (construcción 4b, 2026-10-15): mock Supabase 127.0.0.1:3421 (PID 6452) y `next start` 127.0.0.1:3422 (PID 2612). Se paran al terminar.
+- Equipo: (ninguno más). Puertos: D-1 (Backend 3400-3419, Frontend 3420-3449, Seguridad 3450-3469, QA 3470-3489, Líder 3490-3499). No tocar 3500, 3501 ni 4317.
