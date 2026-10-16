@@ -36,6 +36,7 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 | 3. Aprobación del Director (spec + maquetas) | HECHO: aprobadas; tema CLARO; oscuro al backlog | c933e15 |
 | 4a. Spec v1.0 (PO) | HECHO + resoluciones 11.1 del Líder (D-24) | ca0caff y este commit |
 | 4b. Construcción (Frontend) | HECHO: shell, Cocina, Salón, sin permiso, carga/error; e2e 53/53, calidad 136/136 (6 anchos), axe 42 vistas 0 violaciones, regresión admin 74/74 y 65/65, tsc y eslint limpios. Hallazgo PREEXISTENTE: tiempo real tras recargar no entrega eventos en el mock (también en master). Detalle: `docs/design/cocina-salon/evidencia/README.md` | 9a98d37..este commit |
+| 4b-bis. Hallazgo preexistente: tiempo real sin access_token tras recargar /kitchen con sesión guardada (también en master d66b639). Backend investiga y corrige en `fix/realtime-session-token` (desde feat/staff-redesign @ 31b017e) | EN CURSO | docs/design/cocina-salon/evidencia/realtime-recarga-salida.txt |
 | 4c. Seguridad (por alcance) | PENDIENTE | |
 | 4d. QA (por alcance + regresión admin, /login, /m, flujo QR) | PENDIENTE | |
 | 4e. Release `docs/releases/cocina-salon.md` | PENDIENTE | |
