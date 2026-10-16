@@ -1,7 +1,12 @@
 # Spec: Rediseño de Cocina (`/kitchen`) y Salón (`/floor`)
 
-Estado: **v0.1, borrador para el Director** (2026-10-15). Autor: Product Owner.
-Rama: `feat/staff-redesign` (desde master @ d66b639). Estado de la fase: `docs/ESTADO-COCINA-SALON.md`.
+Estado: **v1.0, aprobada por el Director** (2026-10-15; borrador v0.1 el mismo día). Autor: Product Owner.
+Rama: `feat/staff-redesign` (desde master @ d66b639). Estado de la fase: `docs/ESTADO-COCINA-SALON.md`. Decisión técnica del Líder: `docs/DECISIONES.md` D-23.
+Referencia visual APROBADA: `docs/design/cocina-salon/maquetas/` (`cocina.html`, `cocina-vacia.html`, `salon.html`, `salon-vacio.html`, `shell.html`; README y capturas). Las variantes oscuras (`cocina-oscuro.html`) NO se construyen. Si la maqueta y un CA parecen distintos, manda el CA y se avisa al Líder.
+
+Registro de cambios:
+- v1.0 (2026-10-15): el Director responde las 10 preguntas de v0.1 y las 13 del README de las maquetas (sección 8, "Decisiones del Director"). Tema CLARO. Se agrega HU-8 (detalles aprobados en las maquetas) y la sección Backlog (10). Se actualizan CA-1.2, CA-NR.9, R-1 y R-3. Contradicciones abiertas: sección 11.
+- v0.1 (2026-10-15): borrador con 10 preguntas y defaults.
 Stack: `docs/STACK.md` (esta spec no define tecnología). Modelo de formato y criterios compartidos: `docs/specs/admin.md` (se CITA, no se repite). Lenguaje visual: `docs/design/admin-boceto-aprobado.md` y `docs/design/direccion-de-arte.md`.
 
 Convenciones: las del admin (`docs/specs/admin.md`, encabezado): "Hecho verificado" = respaldado por un archivo de este repo (ruta:línea); "Propuesta del PO (a confirmar)"; "Línea base: a medir por el Líder" = sin número medido, no se inventa. Criterios CA-x.y (Dado / Cuando / Entonces), probados sobre `npm run build && npm run start` con el Supabase simulado (`scripts/mock-supabase/`, D-5). Viewports: **360x640** y **390x844** (celular), **768x1024** (tablet vertical), **1024x768** y **1280x800** (tablet horizontal), **1440x900** (escritorio); 320 px solo para scroll horizontal.
@@ -12,8 +17,8 @@ Convenciones: las del admin (`docs/specs/admin.md`, encabezado): "Hecho verifica
 
 1. Pedido del Director (2026-10-15, `docs/ESTADO-COCINA-SALON.md` líneas 9-12): Cocina y Salón con el lenguaje de la Carta del admin ("no puede haber un apartado distinto"), con rediseño como los demás paneles. **Mismo funcionamiento, otro aspecto.** Uso en tablet y celular.
 2. No cambian datos, API, permisos, tiempo real, textos de acciones ni reglas de estado. No hay funciones nuevas.
-3. Lo único "nuevo" que esta spec propone y deja como pregunta: tema claro/oscuro, tema del restaurante, Pomo, tamaños de texto a distancia, aviso de desconexión, etiqueta "Nuevo".
-4. Ninguna pregunta bloquea las maquetas: cada una trae un default (sección 8).
+3. Decisiones del Director (sección 8): tema CLARO, siempre paleta MenuSky, tamaños grandes con prueba en tablet real, y OK a todo lo de las maquetas (Pomo en Cocina vacía, etiqueta "Nuevo", píldora "En preparación", cantidades en títulos, "Cerrar sesión" con texto, colores de mesa, Salón en dos columnas).
+4. Tema oscuro para todos los paneles, aviso de desconexión y mockups de la landing: backlog (sección 10). No se construyen ahora.
 
 ---
 
@@ -22,7 +27,7 @@ Convenciones: las del admin (`docs/specs/admin.md`, encabezado): "Hecho verifica
 - Problema: Cocina y Salón son lo único que quedó con el aspecto viejo (oscuro con tinte del color del restaurante, `components/staff/StaffShell.tsx:42-52`), mientras landing, login, admin y carta ya comparten la marca. Se ve como "otra app".
 - Para quién: cocineros y mozos (y el admin cuando entra), de pie, en tablet o celular, con prisa, a veces mirando de lejos.
 - Objetivo: que se vean como MenuSky (paleta, Bricolage en títulos, Geist en cuerpo, bordes marrones gruesos con sombra "sello", píldoras) y que se lean y toquen mejor en tablet y celular, **sin cambiar qué hacen**.
-- Se mide así: (a) revisión visual contra la Carta (CA-1.x); (b) lista de funciones de la sección 2 que siguen pasando sin cambios (CA-NR); (c) prueba con 2 personas de cocina o salón en una tablet real: leen mesa y cantidades a 1,5 m y marcan un pedido "listo" al primer toque (notas como evidencia; criterio pendiente de la tablet, ver pregunta 5).
+- Se mide así: (a) revisión visual contra la Carta (CA-1.x); (b) lista de funciones de la sección 2 que siguen pasando sin cambios (CA-NR); (c) prueba con 2 personas de cocina o salón en una tablet real: leen mesa y cantidades a 1,5 m y marcan un pedido "listo" al primer toque (notas como evidencia; prueba final en tablet real exigida por el Director, decisión 3).
 
 ---
 
@@ -87,7 +92,7 @@ Convenciones: las del admin (`docs/specs/admin.md`, encabezado): "Hecho verifica
 - Accesibilidad y reduced-motion de lo anterior (incluida la corrección de K-14 y K-17, ver HU-5 y HU-6).
 
 ### 3.2 Fuera (explícito)
-- Cualquier cambio de datos, esquema, RLS, API, `proxy.ts`, hooks de `lib/realtime/*`, `lib/orders/*`, `lib/waiterCalls/*`, reglas de estado (K-4, F-4, F-7) y permisos. Tampoco el sonido ni el texto de toasts (salvo que el Director responda otra cosa en 8.5, 8.6).
+- Cualquier cambio de datos, esquema, RLS, API, `proxy.ts`, hooks de `lib/realtime/*`, `lib/orders/*`, `lib/waiterCalls/*`, reglas de estado (K-4, F-4, F-7) y permisos. Tampoco el sonido ni el texto de toasts (salvo los textos y etiquetas nuevos aprobados en HU-8). Aviso de desconexión, tema oscuro y mockups de la landing: backlog (sección 10).
 - Funciones nuevas: cancelar pedido, notas en "Listos para llevar", filtros, búsqueda, historial, tiempos de espera/cronómetro por pedido, agrupar por mesa, impresión de comandas, reordenar, ajustes de sonido, modo oscuro conmutable.
 - Admin, carta del cliente, landing y login (solo se reutilizan sus tokens y componentes de marca).
 - Medición de rendimiento con Lighthouse (se hace después en la PC de 16 GB; `docs/ESTADO-ADMIN.md` líneas 78-81, `docs/specs/admin.md` CA-RNF.4).
@@ -116,8 +121,8 @@ Los criterios de contraste, foco, nombres, teclado, objetivos táctiles base, sc
 Como cocinero o mozo quiero que mi pantalla se vea como el resto de MenuSky, para que sea una sola app.
 
 - CA-1.1 Dado `/kitchen` y `/floor` abiertos con un `kitchen`, un `waiter` y un `admin`, cuando se comparan con la Carta del admin (1440x900 y 390x844), entonces usan los mismos tokens `--ms-*` (fondo miga, papel, patty, cheddar, tomate, lechuga oscura), Bricolage Grotesque 700 en títulos y números grandes, Geist en el cuerpo, borde marrón de 1,5-2 px con sombra "sello" `0 3px 0` en tarjetas y botones, radios de 12-16 px y píldoras en estados. Evidencia: capturas lado a lado y búsqueda en el CSS de que los colores salen de los tokens, sin HEX sueltos.
-- CA-1.2 Dado que el Director dijo "no puede haber un apartado distinto", cuando se revisa el código de estilos de los paneles, entonces no queda ninguna clase `dark`, `color-mix` con `accentPrimary` ni Fraunces en Cocina/Salón (salvo que el Director responda otra cosa en 8.1 u 8.2).
-- CA-1.3 Dado un restaurante con cualquiera de los 8 temas guardados, cuando se abre `/kitchen` o `/floor`, entonces se ve igual (default de 8.2: siempre MenuSky). Capturas con 2 temas distintos.
+- CA-1.2 Dado que el Director dijo "no puede haber un apartado distinto", cuando se revisa el código de estilos de los paneles, entonces no queda ninguna clase `dark`, `color-mix` con `accentPrimary` ni Fraunces en Cocina/Salón (decisiones 1 y 2 de la sección 8). La variante oscura no se construye.
+- CA-1.3 Dado un restaurante con cualquiera de los 8 temas guardados, cuando se abre `/kitchen` o `/floor`, entonces se ve igual (decisión 2: siempre MenuSky). Capturas con 2 temas distintos.
 - CA-1.4 Estados de pedido y de mesa distinguibles sin depender solo del color: cada uno tiene texto (los de K-5/F-7, que se conservan) más ícono o forma. Contraste AA de cada par (ver `direccion-de-arte.md` §2: prohibidos cheddar sobre tomate, lechuga #4C9A2A como texto, patty sobre tomate).
 - CA-1.5 El texto del cuerpo se ve en Geist (no en Times; S-7). Evidencia: `getComputedStyle(body).fontFamily` en `/kitchen` y `/floor`.
 
@@ -134,7 +139,7 @@ Como persona del equipo quiero reconocer encabezado, identidad y navegación com
 ### HU-3 Legible a distancia y usable en tablet y celular
 Como cocinero quiero leer mesa y cantidades desde 1-2 m y tocar con la mano mojada o con prisa.
 
-Los números de abajo son **propuesta del PO (a confirmar con una tablet real, pregunta 8.5)**; hoy el tamaño más chico es 11 px (F-7) y el de los renglones es `text-sm` (K-5). Línea base de las alturas actuales de botón: a medir por el Líder.
+Los números de abajo están **aprobados por el Director (decisión 5), con prueba final en tablet real**; hoy el tamaño más chico es 11 px (F-7) y el de los renglones es `text-sm` (K-5). Línea base de las alturas actuales de botón: a medir por el Líder.
 
 - CA-3.1 Mesa en cada tarjeta: >= 24 px, Bricolage 700. Renglones del pedido (`N× nombre`): >= 20 px en tablet y >= 18 px en celular. Opciones, nota, hora y "Cuenta ... hoy": >= 16 px. Ningún texto con información (incluido el estado de mesa) por debajo de 14 px.
 - CA-3.2 Botones de acción de las tarjetas ("Tomar pedido", "Marcar listo", "Entregado", "Atendido"): ancho completo de la tarjeta (excepto "Atendido" en fila ancha) y alto >= 56 px; separación >= 12 px entre botones de tarjetas distintas para no tocar el vecino. Cualquier otro control táctil >= 44x44 px (CA-13.5 del admin).
@@ -156,15 +161,15 @@ Cada fila es un criterio CA-NR; los textos entre comillas se conservan **literal
 | CA-NR.6 | La grilla "Mesas" muestra todas las mesas con el estado Llamando / Listo / Con pedido / Libre y la prioridad de F-7; cambia sola cuando llega un pedido, un `ready` o un llamado. |
 | CA-NR.7 | Sonido: suena el aviso al llegar un pedido activo nuevo (Cocina y Salón) y al llegar un llamado (Salón), y sale el toast "Una mesa está llamando al mozo" SOLO en `/floor` (K-12, F-8, F-9; en el admin no suena, `docs/specs/admin.md` CA-8.6). No suena al cargar la página. |
 | CA-NR.8 | Un pedido o llamado hecho desde otro dispositivo se ve en <= 5 s sin recargar (mismo comportamiento de tiempo real de hoy; la demora real es: línea base a medir por el Líder con el simulado). |
-| CA-NR.9 | Cocina vacía: texto "No hay pedidos pendientes." (K-8). Con la misma frase aunque se le agregue ilustración (8.3). |
+| CA-NR.9 | Cocina vacía: texto "No hay pedidos pendientes." (K-8). Con la misma frase y con Pomo decorativo (decisión 3, HU-8). |
 | CA-NR.10 | Navegación, redirecciones por rol, cerrar sesión e indicador de pendientes: HU-2. |
 | CA-NR.11 | `git diff` contra `master` no toca `lib/**`, `app/api/**`, `proxy.ts`, `supabase/**` ni la lógica de `components/{kitchen,floor}/*` salvo marcado, clases y atributos de accesibilidad. Se exceptúa `lib/floor/tableStatus.ts`/`TableStatus` solo si hace falta mover el tipo de lugar sin cambiar su resultado (F-10). |
 
 ### HU-5 Accesibilidad
 Reglas base: `docs/specs/admin.md` CA-13.1 a 13.10. Propio de acá:
 
-- CA-5.1 **Avisos en vivo.** Dado un lector de pantalla (NVDA / VoiceOver), cuando llega un pedido nuevo a Cocina o un llamado o pedido listo a Salón, entonces se anuncia una vez, sin interrumpir, con un texto corto que dice qué pasó y de qué mesa (p. ej. "Pedido nuevo: Mesa 4"; texto exacto a confirmar, pregunta 8.7). Al cargar la página no se anuncia todo el tablero. Evidencia: notas de QA y el DOM con la región `aria-live="polite"` (`assertive` solo para llamados, a confirmar por QA).
-- CA-5.2 **Marca de "nuevo" sin depender del color ni del movimiento.** Dado un pedido nuevo (K-10, K-11), entonces además del punto hay una señal estática no cromática (forma, ícono o texto; ver pregunta 8.8) que se sigue viendo con `prefers-reduced-motion` y sin ver colores.
+- CA-5.1 **Avisos en vivo.** Dado un lector de pantalla (NVDA / VoiceOver), cuando llega un pedido nuevo a Cocina o un llamado o pedido listo a Salón, entonces se anuncia una vez, sin interrumpir, con un texto corto que dice qué pasó y de qué mesa (p. ej. "Pedido nuevo: Mesa 4"; textos aprobados, decisión 7). Al cargar la página no se anuncia todo el tablero. Evidencia: notas de QA y el DOM con la región `aria-live="polite"` (`assertive` solo para llamados, a confirmar por QA).
+- CA-5.2 **Marca de "nuevo" sin depender del color ni del movimiento.** Dado un pedido nuevo (K-10, K-11), entonces además del punto hay una señal estática no cromática (la etiqueta "Nuevo", CA-8.1) que se sigue viendo con `prefers-reduced-motion` y sin ver colores.
 - CA-5.3 **Nombres accesibles.** Cada botón de acción incluye la mesa en su nombre ("Tomar pedido, Mesa 4"), manteniendo el texto visible dentro del nombre (WCAG 2.5.3). "Cerrar sesión" conserva su nombre.
 - CA-5.4 **Estados de mesa y de pedido** se anuncian como texto, no solo por color (CA-1.4). Tarjetas y secciones con encabezados (`h2`/`h3`) en orden lógico; `h1` único con el nombre del panel.
 - CA-5.5 **Contraste y foco** según CA-13.1 y CA-13.3 del admin, medidos sobre los estados reales: tarjeta con pedido recibido, en preparación, llamado, mesa llamando, deshabilitado y atenuado. Adjuntar pares y ratios.
@@ -181,15 +186,29 @@ Reglas base: `docs/specs/admin.md` CA-12.1 a 12.6.
 ### HU-7 Rendimiento
 - CA-7.1 Sin librería de animación ni de UI nueva (`docs/STACK.md`, regla 3).
 - CA-7.2 Con 30 pedidos activos en Cocina y 20 llamados + 40 mesas en Salón (simulado), tocar un botón cambia su estado visible en <= 100 ms y no hay scroll horizontal ni saltos de diseño al entrar una tarjeta nueva. Medición de cuadros, INP y CPU: **PENDIENTE en la PC de 16 GB; no bloquea esta fase**. Línea base: a medir por el Líder; ningún número del Celeron se usa como meta.
-- CA-7.3 El JS cliente de `/kitchen` y `/floor` no crece más de lo que pese Pomo si se aprueba (8.3); peso antes y después: a medir por el Líder.
+- CA-7.3 El JS cliente de `/kitchen` y `/floor` no crece más de lo que pese Pomo (CA-8.8); peso antes y después: a medir por el Líder.
+
+### HU-8 Detalles aprobados en las maquetas (decisiones 3, 8, 9, 11 a 16)
+Referencia visual: `docs/design/cocina-salon/maquetas/` (README: tablas "Shell de staff" y "Estados y colores"). Los textos nuevos son literales.
+
+- CA-8.1 **"Nuevo".** Dado un pedido marcado "nuevo" (K-10), entonces la tarjeta muestra la etiqueta de texto "Nuevo" (estática, en la esquina; `cocina.html`, `salon.html`), visible con `prefers-reduced-motion`; el punto que late solo se anima con el movimiento permitido. Al actuar sobre el pedido (K-10) la etiqueta desaparece.
+- CA-8.2 **"En preparación".** Dado un pedido `in_kitchen` en Cocina, entonces la tarjeta muestra la píldora "En preparación" (con ícono) y su botón es "Marcar listo"; un pedido `received` no la muestra y su botón es "Tomar pedido". El toast "Pedido en preparación" no cambia.
+- CA-8.3 **Cantidades en títulos.** Dado Salón con 3 llamados y 2 pedidos listos, entonces los títulos dicen "Llamados de mozo · 3" y "Listos para llevar · 2" y el número se actualiza solo al llegar o salir un elemento. Las secciones siguen apareciendo solo si tienen elementos (F-3).
+- CA-8.4 **"Cerrar sesión" con texto.** Dado >= 1024 px, el menú de cuenta del celular o las pantallas `NoStaffAccess` / `NotAdminAccess`, entonces el control dice "Cerrar sesión" en texto visible. Entre 768 y 1023 px puede ser solo ícono con nombre accesible "Cerrar sesión". Comportamiento sin cambios (CA-2.1).
+- CA-8.5 **Salón en dos columnas.** Dado >= 1024 px, entonces Salón muestra a la izquierda las acciones ("Llamados de mozo" y "Listos para llevar") y a la derecha "Mesas" fija; por debajo de 1024 px todo apilado. En celular (< 768 px) la grilla de mesas va en 2 columnas con el nombre completo y el estado visibles sin achicar el texto (CA-3.1). Verificar en 1024x768, 1280x800, 768x1024 y 390x844. Cantidad de columnas de mesas en >= 1024 px: ver sección 11, punto 2.
+- CA-8.6 **Colores de mesa.** Cada estado (prioridad de F-7) se reconoce por texto + ícono + color, con estos colores de marca: Libre = verde claro con lechuga oscura (círculo punteado); Con pedido = mostaza clara (cubiertos); Listo = cheddar lleno con sombra sello (círculo con tilde); Llamando = tomate lleno con texto papel al 100 % (campana). "Con pedido" y "Listo" son de la misma familia de color: se distinguen por relleno, sombra, ícono y texto (CA-1.4). Ningún par prohibido de `direccion-de-arte.md` §2.
+- CA-8.7 **Sin mesas.** Dado un restaurante sin mesas, entonces la sección "Mesas" muestra "Todavía no hay mesas." (`salon-vacio.html`). Salón sin llamados ni listos no muestra mensaje (F-3).
+- CA-8.8 **Pomo en Cocina vacía.** Dado Cocina sin pedidos, entonces se ve Pomo estático (`aria-hidden`, el mismo del admin) y "No hay pedidos pendientes." en grande. Pomo no aparece junto a pedidos, ni en Salón, ni en las pantallas sin permiso (que llevan logo e ícono). Se mantiene la prohibición de `docs/specs/admin.md` CA-11.3 para el resto de `/kitchen` y `/floor`.
+- CA-8.9 **Textos de estado de mesa.** Se conservan Llamando / Listo / Con pedido / Libre (no se alinean con Libre / Ocupada / Llama al mozo del admin).
+- CA-8.10 **Shell.** Celular (< 768 px): encabezado con logo y botón de cuenta (punto rojo si hay pendientes); el menú de cuenta muestra nombre, "Rol · Local", los enlaces del rol (activo marcado, con "(hay pendientes)" oculto) y "Cerrar sesión". Sin barra de pestañas. Tablet y escritorio (>= 768 px): banda marrón con logo, enlaces del rol (`aria-current="page"`), avatar con iniciales, nombre, rol y "Cerrar sesión". Pendientes con la regla de S-2 y una sola suscripción para pendientes (D-23).
 
 ---
 
 ## 6. Casos límite y errores
 
 1. **Muchos pedidos** (30+ en Cocina; 40+ mesas): scroll vertical de la página, sin scroll horizontal; encabezado y navegación no tapan la última fila (CA-2.4). Sin paginar ni virtualizar (no hay funciones nuevas).
-2. **Ninguno**: Cocina muestra K-8. Salón sin llamados ni listos muestra solo "Mesas" (F-3), como hoy; sin mesas, la sección "Mesas" queda vacía hoy (F-7): se propone mostrar un texto corto en ese caso (pregunta 8.9 por ser texto nuevo).
-3. **Desconexión**: hoy no se avisa (K-16); la pantalla puede quedar con datos viejos sin que se note. No se agrega aviso salvo que el Director lo pida (8.6). Riesgo R-1.
+2. **Ninguno**: Cocina muestra K-8. Salón sin llamados ni listos muestra solo "Mesas" (F-3), como hoy; sin mesas, la sección "Mesas" queda vacía hoy (F-7): se muestra "Todavía no hay mesas." (CA-8.7).
+3. **Desconexión**: hoy no se avisa (K-16); la pantalla puede quedar con datos viejos sin que se note. No se agrega aviso (backlog, decisión 6). Riesgo R-1 aceptado.
 4. **Nombres largos**: mesa de 40 caracteres, plato de 80, opción/nota de 200+ caracteres, mesa "Mesa 10" vs "Mesa 2": sin cortes ni desborde, el texto baja de línea (renglones y notas) o se corta con puntos suspensivos y nombre completo accesible (etiquetas de mesa); el botón de acción no sale de la tarjeta (CA-13.6 del admin).
 5. **Precios de 7 cifras** ($1.234.567) en "Cuenta ... hoy" sin desborde.
 6. **Pedido con muchos renglones** (50, tope de `create_order`, D-10): la tarjeta crece; el botón sigue alcanzable sin perder la mesa de vista (propuesta: el botón queda al pie de la tarjeta).
@@ -211,36 +230,34 @@ Reglas base: `docs/specs/admin.md` CA-12.1 a 12.6.
 
 ---
 
-## 8. Preguntas abiertas para el Director (con default propuesto; ninguna bloquea las maquetas)
+## 8. Decisiones del Director (2026-10-15)
 
-1. **Tema claro u oscuro.** Hoy los paneles son oscuros "por legibilidad en cocina" (comentario en `StaffShell.tsx:13-15`); la Carta es clara/crema. ¿Cocina y Salón en claro como la Carta, o en oscuro con la paleta de MenuSky (fondo marrón carne)?
-   *Default: claro, igual que la Carta (es lo que pidió: "no puede haber un apartado distinto"), con contraste AAA en texto principal; las maquetas pueden mostrar también la variante oscura para comparar.*
-2. **Color del restaurante.** ¿El tema del restaurante sigue teñiendo Cocina y Salón o siempre MenuSky?
-   *Default: siempre MenuSky, igual que el admin (`docs/specs/admin.md` CA-5.1). El color del restaurante queda solo en la carta del cliente.*
-3. **Pomo.** Hoy Pomo solo está permitido en `/login` y `/admin/*` y prohibido en `/kitchen` y `/floor` (S-6, `docs/specs/admin.md` CA-11.3). ¿Aparece en el estado vacío de Cocina ("No hay pedidos pendientes.")?
-   *Default: sí, solo en ese estado vacío de Cocina, decorativo (`aria-hidden`), con el mismo texto; nunca junto a pedidos. En Salón no.*
-4. **Shell.** ¿Cocina y Salón comparten el mismo shell del admin (menú lateral en pantallas anchas y pestañas abajo en celular) o un shell propio de staff con el mismo lenguaje?
-   *Default: mismo lenguaje y mismos componentes visuales (logo, tarjeta del local, avatar, cerrar sesión, indicador de pendientes) en un shell propio más liviano de staff: encabezado fijo + navegación con solo los enlaces del rol. Un `waiter` o `kitchen` tienen un solo panel, así que un menú lateral con Inicio/Carta/Mesas no les aplica. Las maquetas lo muestran en tablet y celular.*
-5. **Tamaños de texto a 1-2 m.** ¿Aprueba los mínimos de CA-3.1 y CA-3.2 (mesa >= 24 px, renglones >= 20 px en tablet y 18 px en celular, botones >= 56 px de alto)?
-   *Default: sí, como están, y se validan con una prueba en una tablet real a 1,5 m antes de cerrar la fase.*
-6. **Aviso de desconexión** (función nueva, K-16). ¿Se agrega un aviso "Sin conexión" como el del admin?
-   *Default: no en esta fase (mismo funcionamiento); queda en el backlog como riesgo R-1.*
-7. **Aviso para lector de pantalla.** ¿Texto de los anuncios (CA-5.1)?
-   *Default: "Pedido nuevo: <mesa>", "Llamado de <mesa>: <motivo>", "Pedido listo: <mesa>". Es solo texto oculto, no visible.*
-8. **Etiqueta "Nuevo".** El punto con pulso solo se ve por color y movimiento (K-11). ¿Se agrega una etiqueta de texto "Nuevo" (o un ícono) en la tarjeta?
-   *Default: sí, etiqueta "Nuevo" estática en la esquina de la tarjeta mientras sea nuevo, por accesibilidad con reduced-motion y daltonismo.*
-9. **Textos nuevos mínimos.** (a) Sin mesas en Salón: ¿"Todavía no hay mesas."? (b) Salón sin llamados ni listos: ¿mostrar algo? (c) Etiquetas de mesa: el admin dice Libre / Ocupada / Llama al mozo y el Salón Libre / Con pedido / Listo / Llamando: ¿se unifican?
-   *Default: (a) sí con ese texto, (b) no, queda como hoy (F-3), (c) no se unifican; se conservan los textos de cada pantalla.*
-10. **Mockups de la landing.** ¿Hay que actualizar los mockups de cocina/salón de la landing (S-5) cuando se publique el rediseño?
-    *Default: no en esta fase; se revisa si quedan muy distintos.*
+Fuente: respuestas del Director registradas en `docs/ESTADO-COCINA-SALON.md` (líneas 11-18). Cubren las 10 preguntas de v0.1 y las 13 del README de las maquetas. Ya no hay preguntas abiertas (salvo la sección 11, que son diferencias de documentos, no del Director).
+
+1. **Tema: CLARO** en todo (Cocina, Salón, shell, pantallas vacías y sin permiso), como la Carta y las maquetas `cocina.html`, `salon.html`, `shell.html`. La variante oscura NO se construye; un tema oscuro para todos los paneles va al backlog. Reemplaza una primera respuesta que había dicho oscuro.
+2. **Paleta: siempre MenuSky**, sin el color del restaurante. `StaffShell` deja de teñirse (D-23).
+3. **Pomo: sí, solo en el estado vacío de Cocina** ("No hay pedidos pendientes."), decorativo y con el mismo texto (`cocina-vacia.html`). Levanta la prohibición de `docs/specs/admin.md` CA-11.3 solo para ese estado. En Salón y en las pantallas sin permiso no hay Pomo (esas llevan logo e ícono).
+4. **Shell propio liviano de staff** con el lenguaje del admin: celular = encabezado + menú de cuenta (para pasar de Cocina a Salón el admin toca 2 veces, como en el admin); tablet y escritorio (>= 768 px) = banda marrón con los paneles del rol. Sin barra de pestañas.
+5. **Tamaños grandes: SÍ** (mesa 24-28 px, renglones 20 px en tablet y 18 px en celular, botones 56 px; 3 comandas por fila en tablet horizontal y 1 en celular), con **prueba final en tablet real**.
+6. **Aviso de desconexión: backlog.** No se construye (riesgo R-1 aceptado).
+7. **Anuncios para lector de pantalla:** "Pedido nuevo: <mesa>", "Llamado de <mesa>: <motivo>", "Pedido listo: <mesa>", texto oculto.
+8. **Etiqueta "Nuevo"** estática en la esquina de la tarjeta, más el punto con pulso solo si el movimiento está permitido.
+9. **Textos nuevos:** (a) "Todavía no hay mesas." (b) Salón sin llamados ni listos queda sin mensaje, como hoy. (c) Los textos de estado de mesa NO se unifican con los del admin.
+10. **Mockups de la landing: sin tocar** (backlog).
+11. **Salón en >= 1024 px:** acciones (llamados y listos) a la izquierda y "Mesas" fija a la derecha; en celular, mesas en 2 columnas.
+12. **Colores de mesa:** Libre verde claro, Con pedido mostaza clara, Listo cheddar lleno con sombra sello, Llamando tomate lleno.
+13. **Píldora "En preparación"** en las comandas ya tomadas.
+14. **Cantidades en los títulos de sección** ("Llamados de mozo · 3", "Listos para llevar · 2").
+15. **"Cerrar sesión" con texto visible** (>= 1024 px, menú de cuenta del celular y pantallas sin permiso).
+16. **Pantallas sin permiso** con logo e ícono, sin Pomo.
 
 ---
 
 ## 9. Riesgos y notas por rol
 
-- **R-1 (producto)** Sin aviso de desconexión, una tablet sin red parece "sin pedidos" y la cocina no se entera (K-16). Aviso fuera del alcance por defecto.
+- **R-1 (producto)** Sin aviso de desconexión, una tablet sin red parece "sin pedidos" y la cocina no se entera (K-16). El Director lo mandó al backlog (sección 10): riesgo ACEPTADO por ahora.
 - **R-2 (producto)** Una lectura inicial fallida se ve como vacío (K-15, D-12). Preexistente, no cambia el veredicto.
-- **R-3 (producto)** Pasar de oscuro a claro cambia el aspecto en cocinas con poca luz (brillo, reflejos). Por eso la pregunta 1 y la prueba en tablet real.
+- **R-3 (producto)** Pasar de oscuro a claro cambia el aspecto en cocinas con poca luz (brillo, reflejos). El Director eligió claro (decisión 1); mitigación: prueba en tablet real en el lugar de uso, con el brillo habitual.
 - **R-4 (UX)** Aumentar tamaños reduce cuántas tarjetas entran por pantalla. Equilibrio a mostrar en las maquetas con 1280x800 y 390x844.
 - **R-5 (regresión)** Tocar `TableGrid.tsx` puede romper el tipo `TableStatus` que usa el admin (F-10). Mantener el contrato.
 - **R-6 (regresión)** El sonido y el toast solo en `/floor` (CA-8.6 del admin) comparten hooks con el admin (`useWaiterCalls`, `notify`); no cambiar el valor por defecto.
@@ -248,4 +265,24 @@ Reglas base: `docs/specs/admin.md` CA-12.1 a 12.6.
 - **Backend**: sin tareas previstas. Si el Frontend necesita un dato nuevo (p. ej. conteos para el shell), lo pide al Líder; no se agrega en esta fase.
 - **Seguridad**: auditar que el rediseño no abra datos antes de la redirección por rol (CA-2.6), que `NoStaffAccess`/`NotAdminAccess` no muestren datos de otro restaurante, y que no se agreguen consultas nuevas.
 - **QA**: reutilizar `scripts/mock-supabase/` para los 3 roles; probar los CA-NR con red cortada; adjuntar capturas por viewport, pares de contraste, salida de axe y notas con lector de pantalla; la prueba de tablet real y de iPhone queda como pendiente registrada, no bloqueante, como en el admin (`docs/specs/admin.md` CA-13.11).
-- **Líder**: decidir cómo comparte el shell (pregunta 4) sin duplicar la suscripción de pendientes (R-9 del admin / D-20); medir líneas base de CA-NR.8, CA-7.2 y CA-7.3; confirmar D-19 antes de dar por buena la tipografía.
+- **Líder**: el shell ya está decidido (D-23: una sola suscripción de pendientes, `useStaffPendingCounts`); medir las líneas base siguientes; medir líneas base de CA-NR.8, CA-7.2 y CA-7.3; confirmar D-19 antes de dar por buena la tipografía.
+
+---
+
+## 10. Backlog (decidido por el Director; NO se construye en esta fase)
+
+1. **Tema oscuro para TODOS los paneles** (admin, Cocina y Salón), como función única; lo decide el Director más adelante. `cocina-oscuro.html` queda solo como referencia.
+2. **Aviso de desconexión** en Cocina y Salón (K-16, R-1): hoy una tablet sin red parece "sin pedidos".
+3. **Mockups de cocina/salón de la landing** (`components/landing/mockups/Pieces.tsx`): revisar si quedan muy distintos tras publicar el rediseño (S-5).
+
+---
+
+## 11. Diferencias entre la spec, las maquetas y los documentos (NO decididas; las resuelve el Líder o el Director)
+
+1. **Navegación en celular vs CA-2.2 / CA-2.3.** CA-2.2 dice que "los enlaces visibles" son los del rol, y CA-2.3 que el indicador de pendientes se ve "en la navegación". En la maqueta aprobada, en celular los enlaces están dentro del menú de cuenta (2 toques; solo se ve el punto rojo en el botón de cuenta). Hay que decidir si CA-2.2/2.3 se leen "visibles en el menú de cuenta" en celular (CA-8.10 lo describe así).
+2. **Columnas de "Mesas" en >= 1024 px.** El README de las maquetas dice "acciones a la izquierda y 'Mesas' fija a la derecha, en 3 columnas". No queda claro si son 3 columnas de mesas dentro del panel derecho o 3 columnas de página. CA-8.5 solo fija las dos zonas. Hoy son 3/4/6 columnas (F-7).
+3. **CA-5.1 (anuncios en vivo) vs CA-NR.11 ("sin cambios de lógica").** Detectar qué pedido o llamado es nuevo para anunciarlo, y mostrar el contador en los títulos, puede requerir código nuevo de cliente en los tableros. CA-NR.11 solo admite marcado, clases y atributos. Falta decidir si se amplía la excepción.
+4. **CA-3.1 (opciones, nota y hora >= 16 px) sin respaldo en la medición de las maquetas.** `capturas-salida.txt` informa 14 px como mínimo visible (etiqueta "Nuevo", rol, meta del menú) y mesa y renglones, pero no dice el tamaño de opciones, nota y hora. No es una contradicción comprobada: está sin verificar.
+5. **Maquetas y README desactualizados frente a la decisión de tema.** El README de las maquetas todavía dice que se aplican los defaults "claro..." pero deja la pregunta 1 abierta y documenta `cocina-oscuro.html`; en `docs/ESTADO-COCINA-SALON.md` la respuesta 1 (líneas 14-18) sigue diciendo OSCURO, con captura de Salón oscuro como paso pendiente, y la línea 11 la reemplaza. Conviene corregirlos para que nadie construya la variante oscura.
+6. **Ancho de página no capturado.** El CSS de las maquetas usa 4 columnas de comandas desde 1440 px; no hay captura ni medición a 1440x900 ni a 360x640 (README, "Qué NO cubre"), y CA-3.4 solo fija 1 / 2 / 3 columnas hasta 1280 px.
+7. **"Cerrar sesión" entre 768 y 1023 px.** La decisión 15 pide texto visible; la maqueta lo muestra como solo ícono en ese rango (README). CA-8.4 lo permite; el Director aprobó "como está en las maquetas".
