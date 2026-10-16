@@ -3,9 +3,9 @@ import { getStaffUser } from "@/lib/auth/getStaffUser";
 import { getKitchenOrders } from "@/lib/orders/getKitchenOrders";
 import { getTableTotals } from "@/lib/orders/getTableTotals";
 import { StaffShell } from "@/components/staff/StaffShell";
-import { StaffHeader } from "@/components/staff/StaffHeader";
 import { NoStaffAccess } from "@/components/staff/NoStaffAccess";
 import { OrderBoard } from "@/components/kitchen/OrderBoard";
+import { KitchenEmpty } from "@/components/kitchen/KitchenEmpty";
 
 export default async function KitchenPage() {
   const staff = await getStaffUser();
@@ -19,12 +19,12 @@ export default async function KitchenPage() {
   ]);
 
   return (
-    <StaffShell restaurantId={staff.restaurantId}>
-      <StaffHeader title="Cocina" staff={staff} />
+    <StaffShell title="Cocina" staff={staff}>
       <OrderBoard
         restaurantId={staff.restaurantId}
         initialOrders={orders}
         initialTableTotals={tableTotals}
+        empty={<KitchenEmpty />}
       />
     </StaffShell>
   );
