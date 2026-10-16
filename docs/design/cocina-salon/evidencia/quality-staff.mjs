@@ -121,8 +121,9 @@ async function visit({ name, email, route, sizes, seed, after, shots = sizes, me
     await seed();
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, reducedMotion: "reduce" });
     const page = await ctx.newPage();
+    // Sin recargar después del login: tras una recarga el tiempo real del mock no entrega eventos (hallazgo
+    // preexistente, ver realtime-recarga-salida.txt).
     await login(page, email, route);
-    await page.goto(`${APP}${route}`);
     await page.waitForSelector("h1");
     if (after) await after(page);
     if (menu) {

@@ -1,0 +1,7 @@
+Corrida 2026-10-15 (Chrome de Playwright), mock 127.0.0.1:3421; master d66b639 en 3423, rama feat/staff-redesign en 3422.
+Pedido nuevo de Mesa 3 por /__mock/event, 2,5 s después de cargar /kitchen como cocina@demo.test; se espera "Provoleta" <= 5 s.
+master sin recarga { ok: true, ms: 162 }
+master con recarga { ok: false, ms: 5087 }
+rama   sin recarga { ok: true, ms: 169 }
+rama   con recarga { ok: false, ms: 5068 }
+Traza de WebSocket en la rama (con recarga): los phx_join de staff-pending, kitchen-orders y table-totals salen SIN access_token; el mock (server.mjs:809, ctxFromToken) los trata como anónimos y emit() (server.mjs:789) no les entrega orders.
