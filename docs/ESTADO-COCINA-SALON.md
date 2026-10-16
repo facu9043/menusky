@@ -6,7 +6,7 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 - Sin push, sin merge a master, nada a producción. Nunca base real ni credenciales reales.
 - Contexto: el estado anterior del admin está en `docs/ESTADO-ADMIN.md` (rama feat/admin-ui @ 5b12886, solo local).
 
-## Paso actual: PAUSA ORDENADA. Maquetas APROBADAS por el Director (2026-10-15); la construcción arranca en otra sesión, cuando él lo indique.
+## Paso actual: CONSTRUCCIÓN APROBADA (2026-10-15, tema claro). Orden: 1) PO spec v1.0 -> 2) Frontend construye en feat/staff-redesign (D-23) -> 3) Seguridad y QA por alcance -> 4) release en docs/releases/ (sin merge a master ni push). Pausa ordenada cuando la sesión principal lo indique (uso 5 h al 45%).
 
 ## CAMBIO DEL DIRECTOR (2026-10-15, más tarde): construir TODO en TEMA CLARO, como las maquetas claras (`cocina.html`, `salon.html`, `shell.html` y vacías). La variante oscura NO se construye ahora. A futuro: una función de "tema oscuro" para TODOS los paneles (admin, Cocina y Salón) -> backlog, la decide el Director más adelante. Ya no hace falta la captura de Salón oscuro. Construcción APROBADA para empezar ahora.
 
@@ -33,8 +33,12 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 | 0. Rama, ESTADO, identidad git (facu9043) | HECHO | este commit |
 | 1. Spec `docs/specs/cocina-salon.md` (PO, agente aaf44d34aa4d1674a) | HECHO v0.1: HU-1..HU-7, CA-NR.1..11, 12 casos límite, 10 preguntas con default | este commit |
 | 2. Maquetas `docs/design/cocina-salon/maquetas/` (Frontend, agente ac02212fa24c11ae7) | HECHO: 6 HTML (cocina, cocina-vacia, cocina-oscuro, salon, salon-vacio, shell), 23 capturas en 4 tamaños, axe 0, sin scroll horizontal, 0 animaciones con reduce, contraste AA | ddcc30a..9d66441 |
-| 3. Aprobación del Director (spec + maquetas) | ESPERANDO al Director: 10 preguntas de la spec §8 + 13 del README de maquetas | |
-| 4. Construcción, Seguridad, QA, release | NO EMPEZAR sin aprobación | |
+| 3. Aprobación del Director (spec + maquetas) | HECHO: aprobadas; tema CLARO; oscuro al backlog | c933e15 |
+| 4a. Spec v1.0 (PO) | EN CURSO | |
+| 4b. Construcción (Frontend) | PENDIENTE | |
+| 4c. Seguridad (por alcance) | PENDIENTE | |
+| 4d. QA (por alcance + regresión admin, /login, /m, flujo QR) | PENDIENTE | |
+| 4e. Release `docs/releases/cocina-salon.md` | PENDIENTE | |
 
 ## Preguntas abiertas para el Director
 Las 10 de `docs/specs/cocina-salon.md` §8 y las 13 de `docs/design/cocina-salon/maquetas/README.md` (se superponen 1-3, 5-7). Notas técnicas para la construcción (decide el Líder): compartir el shell sin duplicar la suscripción de pendientes (R-9/D-20); si se deja de usar getRestaurantThemeOrDefault en estas pantallas (D-12) según la respuesta 2; confirmar Geist en el build (D-19).
