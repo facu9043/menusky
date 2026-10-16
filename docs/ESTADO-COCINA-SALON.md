@@ -6,7 +6,14 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 - Sin push, sin merge a master, nada a producción. Nunca base real ni credenciales reales.
 - Contexto: el estado anterior del admin está en `docs/ESTADO-ADMIN.md` (rama feat/admin-ui @ 5b12886, solo local).
 
-## Paso actual: CONSTRUCCIÓN APROBADA (2026-10-15, tema claro). Orden: 1) PO spec v1.0 -> 2) Frontend construye en feat/staff-redesign (D-23) -> 3) Seguridad y QA por alcance -> 4) release en docs/releases/ (sin merge a master ni push). Pausa ordenada cuando la sesión principal lo indique (uso 5 h al 45%).
+## PAUSA ORDENADA (2026-10-15, el Director reinicia la PC). Retomar así:
+- Carpeta en `fix/realtime-session-token` @ b4ad11e (WIP de Backend, sale de feat/staff-redesign @ 31b017e). Construcción de Cocina y Salón HECHA en feat/staff-redesign (Frontend: e2e 53/0, calidad 136/0, axe 0, regresión admin OK).
+- Realtime tras recargar: Backend diagnosticó DEFECTO DE LA APP (no del mock), presente en producción (master d66b639): el join sale sin access_token; con la 0004 aplicada, el staff deja de recibir pedidos en vivo tras recargar. Arreglo hecho (`lib/realtime/startChannel.ts` + setAuth antes de suscribir), 6/6. FALTA: control en master, e2e del mock, admin-live-pending, test-admin-data y e2e de Cocina y Salón; conclusión con fuentes. Ver la sección "Backend: realtime tras recargar".
+- Luego: integrar fix en feat/staff-redesign, Seguridad y QA por alcance (incluida la recarga), docs/releases/cocina-salon.md. Conviene publicar el arreglo ANTES de aplicar la 0004 en producción (la 0004 sigue sin confirmar).
+- OK DEL DIRECTOR (2026-10-15): (1) textos nuevos de carga y error ("No pudimos cargar los pedidos", "No pudimos cargar el salón", "Puede ser la conexión o un problema del servicio.", "Reintentar", "Cargando los pedidos...", "Cargando el salón..."): APROBADOS; (2) proporción de Salón 1.35:1 en lugar de 1.55:1: APROBADA.
+- Sin procesos del equipo levantados.
+
+## Anterior: CONSTRUCCIÓN APROBADA (2026-10-15, tema claro). Orden: 1) PO spec v1.0 -> 2) Frontend construye en feat/staff-redesign (D-23) -> 3) Seguridad y QA por alcance -> 4) release en docs/releases/ (sin merge a master ni push). Pausa ordenada cuando la sesión principal lo indique (uso 5 h al 45%).
 
 ## CAMBIO DEL DIRECTOR (2026-10-15, más tarde): construir TODO en TEMA CLARO, como las maquetas claras (`cocina.html`, `salon.html`, `shell.html` y vacías). La variante oscura NO se construye ahora. A futuro: una función de "tema oscuro" para TODOS los paneles (admin, Cocina y Salón) -> backlog, la decide el Director más adelante. Ya no hace falta la captura de Salón oscuro. Construcción APROBADA para empezar ahora.
 
