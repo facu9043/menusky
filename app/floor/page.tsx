@@ -5,7 +5,6 @@ import { getFloorOrders } from "@/lib/orders/getFloorOrders";
 import { getTableTotals } from "@/lib/orders/getTableTotals";
 import { getPendingWaiterCalls } from "@/lib/waiterCalls/getPendingWaiterCalls";
 import { StaffShell } from "@/components/staff/StaffShell";
-import { StaffHeader } from "@/components/staff/StaffHeader";
 import { NoStaffAccess } from "@/components/staff/NoStaffAccess";
 import { FloorBoard } from "@/components/floor/FloorBoard";
 
@@ -23,8 +22,7 @@ export default async function FloorPage() {
   ]);
 
   return (
-    <StaffShell restaurantId={staff.restaurantId}>
-      <StaffHeader title="Salón" staff={staff} />
+    <StaffShell title="Salón" staff={staff}>
       <FloorBoard
         restaurantId={staff.restaurantId}
         tables={tables}

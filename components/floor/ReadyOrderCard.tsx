@@ -2,10 +2,8 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { Check } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Check, Clock, LoaderCircle } from "lucide-react";
+import { NewTag, OrderLines } from "@/components/staff/OrderLines";
 import { formatPrice } from "@/lib/format";
 import type { BoardOrder } from "@/lib/orders/board";
 
@@ -39,46 +37,43 @@ export function ReadyOrderCard({
     }
   };
 
-  return (
-    <Card className="board-card-enter relative flex flex-col gap-3 p-4">
-      {isNew && (
-        <span className="absolute -top-1.5 -right-1.5 flex size-3">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-          <span className="relative inline-flex size-3 rounded-full bg-primary" />
-        </span>
-      )}
+  const Icon = loading ? LoaderCircle : Check;
+  const headingId = `listo-${order.id}`;
 
-      <div className="flex items-center justify-between gap-2">
-        <Badge>{order.tableLabel}</Badge>
-        <span className="text-xs text-muted-foreground">
+  return (
+    <article className="st-order" data-status="ready" aria-labelledby={headingId}>
+      {isNew && <NewTag />}
+
+      <div className="st-order__head">
+        <h3 className="st-order__table" id={headingId}>
+          {order.tableLabel}
+        </h3>
+        <span className="st-order__time">
+          <Clock aria-hidden="true" />
           {timeFormatter.format(new Date(order.createdAt))}
         </span>
       </div>
 
-      <p className="text-xs text-muted-foreground">
-        Cuenta de la mesa hoy:{" "}
-        <span className="font-medium text-foreground">{formatPrice(tableTotal)}</span>
-      </p>
+      <div className="st-order__body">
+        <p className="st-order__bill">
+          Cuenta de la mesa hoy: <b>{formatPrice(tableTotal)}</b>
+        </p>
+        {/* Sin la nota del cliente, como hoy (F-6). */}
+        <OrderLines items={order.items} withNotes={false} />
+      </div>
 
-      <ul className="flex flex-col gap-1.5">
-        {order.items.map((item) => (
-          <li key={item.id} className="text-sm">
-            <span className="font-medium">
-              {item.quantity}× {item.menuItemName}
-            </span>
-            {item.selectedOptions.length > 0 && (
-              <p className="text-xs text-muted-foreground">
-                {item.selectedOptions.map((o) => o.choiceName).join(" · ")}
-              </p>
-            )}
-          </li>
-        ))}
-      </ul>
-
-      <Button type="button" disabled={loading} onClick={handleDeliver}>
-        <Check />
-        Entregado
-      </Button>
-    </Card>
+      <div className="st-order__foot">
+        <button
+          type="button"
+          className="adm-btn adm-btn--primary st-act"
+          disabled={loading}
+          onClick={handleDeliver}
+          aria-label={`Entregado, ${order.tableLabel}`}
+        >
+          <Icon aria-hidden="true" className={loading ? "st-spin" : undefined} />
+          Entregado
+        </button>
+      </div>
+    </article>
   );
 }
