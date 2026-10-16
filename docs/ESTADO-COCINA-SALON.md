@@ -47,3 +47,10 @@ Las 10 de `docs/specs/cocina-salon.md` §8 y las 13 de `docs/design/cocina-salon
 ## Procesos levantados (puerto, PID, dueño)
 - Frontend: todos sus procesos PARADOS al terminar 4b (netstat 3420-3449: 0 escuchando).
 - Equipo: (ninguno más). Puertos: D-1 (Backend 3400-3419, Frontend 3420-3449, Seguridad 3450-3469, QA 3470-3489, Líder 3490-3499). No tocar 3500, 3501 ni 4317.
+
+## Backend: realtime tras recargar (fix/realtime-session-token) - PAUSA 2026-10-15
+- Diagnostico (parcial): es defecto de la APP, no del mock. Al recargar con sesion en cookies, el phx_join de los canales staff sale sin access_token (realtime-js RealtimeChannel.ts:415-417 usa socket.accessTokenValue, aun null) y la sesion llega despues (RealtimeClient.ts:645-668: no hay push si el canal aun no se unio; luego setAuth() ve el mismo token y no empuja). Traza antes: /kitchen y /floor con recarga FAIL (token=NO); /admin anda por suerte de timing.
+- Con 0004 aplicada, Realtime evalua RLS como anonimo y no entrega orders/waiter_calls al staff; sin 0004 el anonimo lee orders (public read) y el bug no se nota. El mock imita bien eso.
+- Arreglo hecho: lib/realtime/startChannel.ts (getSession + realtime.setAuth antes de suscribir) usado en useOrdersBoard, useTableTotals, useStaffPendingCounts, useWaiterCalls y AdminLiveProvider. Despues: 6/6 (con y sin recarga en /kitchen, /floor, /admin), joins con token. tsc y eslint limpios.
+- Falta: control en master (el build webpack del worktree fallo), e2e del mock, admin-live-pending-e2e, test-admin-data y e2e de Cocina y Salon del Frontend, conclusion final con fuentes. La reaccion del servidor real a un access_token posterior al join NO se pudo verificar en el repo.
+- Procesos: mock 3401, next 3402 y 3403 detenidos; netstat 3400-3419 sin LISTENING.

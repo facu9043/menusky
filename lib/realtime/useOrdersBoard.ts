@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { startChannel } from "@/lib/realtime/startChannel";
 import { fetchBoardOrder } from "@/lib/orders/fetchBoardOrder";
 import { updateOrderStatus } from "@/lib/orders/updateOrderStatus";
 import { playChime } from "@/lib/notify/playChime";
@@ -33,7 +34,7 @@ export function useOrdersBoard(
 
   useEffect(() => {
     const supabase = createClient();
-    const channel = supabase
+    return startChannel(supabase, () => supabase
       .channel(`${channelName}-${restaurantId}`)
       .on(
         "postgres_changes",
@@ -76,11 +77,7 @@ export function useOrdersBoard(
           }
         }
       )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+      .subscribe());
     // eslint-disable-next-line react-hooks/exhaustive-deps -- activeStatuses es una constante de módulo pasada por el caller, no cambia de identidad
   }, [channelName, restaurantId]);
 

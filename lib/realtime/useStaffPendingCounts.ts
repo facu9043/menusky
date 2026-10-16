@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { startChannel } from "@/lib/realtime/startChannel";
 import type { StaffPendingCounts } from "@/lib/staff/pendingCounts";
 
 // "Pendiente ahora mismo", no "no visto": cocina se marca cuando hay algún
@@ -44,7 +45,7 @@ export function useStaffPendingCounts(restaurantId: string): StaffPendingCounts 
     // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial desde una fuente externa (Supabase), no un cálculo derivable en el render
     refetch();
     const supabase = createClient();
-    const channel = supabase
+    return startChannel(supabase, () => supabase
       .channel(`staff-pending-${restaurantId}`)
       .on(
         "postgres_changes",
@@ -56,11 +57,7 @@ export function useStaffPendingCounts(restaurantId: string): StaffPendingCounts 
         { event: "*", schema: "public", table: "waiter_calls", filter: `restaurant_id=eq.${restaurantId}` },
         refetch
       )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+      .subscribe());
   }, [restaurantId, refetch]);
 
   return counts;
