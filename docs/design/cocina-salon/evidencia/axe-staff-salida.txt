@@ -1,0 +1,49 @@
+Generado 2026-10-16T02:28:04.904Z con Chrome (Playwright channel "chrome"), build de producción en http://127.0.0.1:3422, reducedMotion "reduce".
+cocina 1440x900: 0 violaciones; 24 pasan; 0 a revisar a mano
+cocina 1280x800: 0 violaciones; 24 pasan; 0 a revisar a mano
+cocina 1024x768: 0 violaciones; 24 pasan; 0 a revisar a mano
+cocina 768x1024: 0 violaciones; 24 pasan; 0 a revisar a mano
+cocina 390x844: 0 violaciones; 24 pasan; 0 a revisar a mano
+cocina 360x640: 0 violaciones; 24 pasan; 0 a revisar a mano
+cocina-vacia 1440x900: 0 violaciones; 23 pasan; 0 a revisar a mano
+cocina-vacia 1280x800: 0 violaciones; 23 pasan; 0 a revisar a mano
+cocina-vacia 1024x768: 0 violaciones; 23 pasan; 0 a revisar a mano
+cocina-vacia 768x1024: 0 violaciones; 23 pasan; 0 a revisar a mano
+cocina-vacia 390x844: 0 violaciones; 21 pasan; 0 a revisar a mano
+cocina-vacia 360x640: 0 violaciones; 21 pasan; 0 a revisar a mano
+salon 1440x900: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon 1280x800: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon 1024x768: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon 768x1024: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon 390x844: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon 360x640: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon-sin-acciones 1440x900: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon-sin-acciones 1280x800: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon-sin-acciones 1024x768: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon-sin-acciones 768x1024: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon-sin-acciones 390x844: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon-sin-acciones 360x640: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon-sin-mesas 1440x900: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon-sin-mesas 1280x800: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon-sin-mesas 1024x768: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon-sin-mesas 768x1024: 0 violaciones; 24 pasan; 0 a revisar a mano
+salon-sin-mesas 390x844: 0 violaciones; 22 pasan; 0 a revisar a mano
+salon-sin-mesas 360x640: 0 violaciones; 22 pasan; 0 a revisar a mano
+menu-cuenta 390x844: 0 violaciones; 27 pasan; 3 a revisar a mano
+  ? aria-hidden-focus: 6 nodos (span[data-base-ui-focus-guard=""][aria-hidden="true"]:nth-child(5) | span[data-base-ui-focus-guard=""][aria-hidden="true"]:nth-child(7))
+  ? aria-valid-attr-value: 1 nodos (#base-ui-_R_rclubrb_)
+  ? color-contrast: 1 nodos (.adm-menu__meta)
+menu-cuenta 360x640: 0 violaciones; 27 pasan; 3 a revisar a mano
+  ? aria-hidden-focus: 6 nodos (span[data-base-ui-focus-guard=""][aria-hidden="true"]:nth-child(5) | span[data-base-ui-focus-guard=""][aria-hidden="true"]:nth-child(7))
+  ? aria-valid-attr-value: 1 nodos (#base-ui-_R_rclubrb_)
+  ? color-contrast: 1 nodos (.adm-menu__meta)
+admin-cocina 1024x768: 0 violaciones; 24 pasan; 0 a revisar a mano
+admin-cocina 768x1024: 0 violaciones; 24 pasan; 0 a revisar a mano
+sin-staff 1440x900: 0 violaciones; 19 pasan; 0 a revisar a mano
+sin-staff 1280x800: 0 violaciones; 19 pasan; 0 a revisar a mano
+sin-staff 1024x768: 0 violaciones; 19 pasan; 0 a revisar a mano
+sin-staff 768x1024: 0 violaciones; 19 pasan; 0 a revisar a mano
+sin-staff 390x844: 0 violaciones; 19 pasan; 0 a revisar a mano
+sin-staff 360x640: 0 violaciones; 19 pasan; 0 a revisar a mano
+solo-admin 1280x800: 0 violaciones; 19 pasan; 0 a revisar a mano
+solo-admin 390x844: 0 violaciones; 19 pasan; 0 a revisar a mano

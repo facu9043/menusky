@@ -36,6 +36,9 @@
   border-bottom: 2px solid var(--ms-patty);
 }
 .st-head__logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   border-radius: 10px;
   text-decoration: none;
 }
@@ -455,7 +458,7 @@
 .st-order:has(.st-new) .st-order__head {
   padding-top: 1.25rem;
 }
-.st-root .adm-menu__meta {
+.st-menu .adm-menu__meta {
   font-size: 0.875rem;
 }
 /* Salón sin llamados ni listos (F-3): solo "Mesas", a todo el ancho. */
@@ -539,7 +542,7 @@
 @media (min-width: 64rem) {
   .st-floor {
     display: grid;
-    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
     gap: 2rem;
     align-items: start;
   }
