@@ -6,6 +6,8 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 - Sin push, sin merge a master, nada a producción. Nunca base real ni credenciales reales.
 - Contexto: el estado anterior del admin está en `docs/ESTADO-ADMIN.md` (rama feat/admin-ui @ 5b12886, solo local).
 
+## Paso actual: PAUSA ORDENADA. Spec y maquetas listas; esperan respuestas y aprobación del Director. NO construir.
+
 ## Encargo del Director (2026-10-15)
 - Rediseñar Cocina (`/kitchen`) y Salón (`/floor`) con el lenguaje visual de la Carta del admin (colores, tipografías, bordes y sombras sello): "es lo característico de MenuSky; no puede haber un apartado distinto" (decisión 3 de ESTADO-ADMIN). Más: "también debe tener un rediseño como los demás paneles".
 - Mismo funcionamiento que hoy; nuevo aspecto. Uso en tablet y celular.
@@ -20,12 +22,12 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 |---|---|---|
 | 0. Rama, ESTADO, identidad git (facu9043) | HECHO | este commit |
 | 1. Spec `docs/specs/cocina-salon.md` (PO, agente aaf44d34aa4d1674a) | HECHO v0.1: HU-1..HU-7, CA-NR.1..11, 12 casos límite, 10 preguntas con default | este commit |
-| 2. Maquetas `docs/design/cocina-salon/maquetas/` (Frontend) | EN CURSO | |
-| 3. Aprobación del Director (spec + maquetas) | PENDIENTE | |
+| 2. Maquetas `docs/design/cocina-salon/maquetas/` (Frontend, agente ac02212fa24c11ae7) | HECHO: 6 HTML (cocina, cocina-vacia, cocina-oscuro, salon, salon-vacio, shell), 23 capturas en 4 tamaños, axe 0, sin scroll horizontal, 0 animaciones con reduce, contraste AA | ddcc30a..9d66441 |
+| 3. Aprobación del Director (spec + maquetas) | ESPERANDO al Director: 10 preguntas de la spec §8 + 13 del README de maquetas | |
 | 4. Construcción, Seguridad, QA, release | NO EMPEZAR sin aprobación | |
 
 ## Preguntas abiertas para el Director
-Las 10 de `docs/specs/cocina-salon.md` §8 (tema claro u oscuro; color del restaurante; Pomo; shell compartido; tamaños de texto; aviso de desconexión; anuncios para lector; etiqueta "Nuevo"; textos nuevos; mockups de la landing). Más las que agreguen las maquetas.
+Las 10 de `docs/specs/cocina-salon.md` §8 y las 13 de `docs/design/cocina-salon/maquetas/README.md` (se superponen 1-3, 5-7). Notas técnicas para la construcción (decide el Líder): compartir el shell sin duplicar la suscripción de pendientes (R-9/D-20); si se deja de usar getRestaurantThemeOrDefault en estas pantallas (D-12) según la respuesta 2; confirmar Geist en el build (D-19).
 
 ## Procesos levantados (puerto, PID, dueño)
 - Equipo: (ninguno). Puertos: D-1 (Backend 3400-3419, Frontend 3420-3449, Seguridad 3450-3469, QA 3470-3489, Líder 3490-3499). No tocar 3500, 3501 ni 4317.
