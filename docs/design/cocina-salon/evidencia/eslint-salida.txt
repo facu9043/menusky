@@ -1,0 +1,2 @@
+npx eslint app/kitchen app/floor components/staff components/kitchen components/floor docs/design/cocina-salon/evidencia (2026-10-15)
+exit=0

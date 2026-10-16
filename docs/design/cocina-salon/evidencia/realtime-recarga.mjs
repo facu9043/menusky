@@ -2,7 +2,7 @@
 // real del mock no entrega los pedidos nuevos (el phx_join sale sin access_token). Sin recargar (entrando
 // desde /login) sí llegan. Se comparó master d66b639 (build --webpack de un clon temporal en 3423, ya
 // borrado) con esta rama (3422), contra el mismo mock (3421). Salida en realtime-recarga-salida.txt.
-import { launch, login, resetMock, mockEvent, waitFor } from "./lib-staff.mjs";
+import { launch, resetMock, mockEvent, waitFor } from "./lib-staff.mjs";
 const b = await launch();
 for (const app of ["http://127.0.0.1:3423", "http://127.0.0.1:3422"]) for (const reload of [false, true]) {
   await resetMock();

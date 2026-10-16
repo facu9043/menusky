@@ -1,0 +1,2 @@
+npx tsc --noEmit -p . (2026-10-15, rama feat/staff-redesign)
+exit=0
