@@ -1,0 +1,5 @@
+npx tsc --noEmit -p . (2026-10-17, fix/staff-role-redirect)
+exit=0
+
+npx eslint app/kitchen app/floor components/staff/currentStaff.ts docs/design/cocina-salon/evidencia/sec-cs-01
+exit=0

@@ -1,0 +1,35 @@
+     HTML anon   /kitchen -> 307 loc=/login?redirect=%2Fkitchen | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=no | "Cocina"=no | "Salón"=no | 26 bytes
+     RSC  anon   /kitchen -> 307 loc=/login?redirect=%2Fkitchen | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=no | "Cocina"=no | "Salón"=no | 26 bytes
+OK   anon /kitchen -> 307 a /login?redirect=%2Fkitchen (proxy.ts, como hoy)
+     HTML anon   /floor   -> 307 loc=/login?redirect=%2Ffloor | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=no | "Cocina"=no | "Salón"=no | 24 bytes
+     RSC  anon   /floor   -> 307 loc=/login?redirect=%2Ffloor | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=no | "Cocina"=no | "Salón"=no | 24 bytes
+OK   anon /floor -> 307 a /login?redirect=%2Ffloor
+     HTML mozo   /kitchen -> 307 loc=/floor | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=no | "Cocina"=sí | "Salón"=no | 13121 bytes
+     RSC  mozo   /kitchen -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=no | "Cocina"=sí | "Salón"=no | 7983 bytes
+     HTML mozo   /floor   -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=sí | "El Buen Sabor"=sí | "Cocina"=no | "Salón"=sí | 29034 bytes
+     RSC  mozo   /floor   -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=sí | "Cocina"=no | "Salón"=sí | 11451 bytes
+OK   mozo /kitchen -> 307 Location /floor (HTML), sin esqueleto ni datos de cocina; RSC sin esqueleto ni datos
+OK   mozo /floor -> 200 con su pantalla de carga en el stream y sus datos
+OK   mozo: navegador en /kitchen termina en /floor y en /floor termina en /floor | /floor /floor
+     HTML cocina /kitchen -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=sí | "Cargando el salón"=no | "El Buen Sabor"=sí | "Cocina"=sí | "Salón"=no | 34235 bytes
+     RSC  cocina /kitchen -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=sí | "Cocina"=sí | "Salón"=no | 16933 bytes
+     HTML cocina /floor   -> 307 loc=/kitchen | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=no | "Cocina"=no | "Salón"=sí | 12994 bytes
+     RSC  cocina /floor   -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=no | "Cocina"=no | "Salón"=sí | 7874 bytes
+OK   cocina /floor -> 307 Location /kitchen (HTML), sin esqueleto ni datos de salón; RSC sin esqueleto ni datos
+OK   cocina /kitchen -> 200 con su pantalla de carga en el stream y sus datos
+OK   cocina: navegador en /kitchen termina en /kitchen y en /floor termina en /kitchen | /kitchen /kitchen
+     HTML admin  /kitchen -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=sí | "Cargando el salón"=no | "El Buen Sabor"=sí | "Cocina"=sí | "Salón"=sí | 35171 bytes
+     RSC  admin  /kitchen -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=sí | "Cocina"=sí | "Salón"=no | 16929 bytes
+     HTML admin  /floor   -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=sí | "El Buen Sabor"=sí | "Cocina"=sí | "Salón"=sí | 30008 bytes
+     RSC  admin  /floor   -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=sí | "Cocina"=no | "Salón"=sí | 11452 bytes
+OK   admin /kitchen y /floor -> 200 sin redirección, con su pantalla de carga y datos
+OK   admin: navegador en /kitchen termina en /kitchen y en /floor termina en /floor | /kitchen /floor
+     HTML sinstaff /kitchen -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=no | "Cocina"=sí | "Salón"=no | 22309 bytes
+     RSC  sinstaff /kitchen -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=no | "Cocina"=sí | "Salón"=no | 12918 bytes
+     HTML sinstaff /floor   -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=no | "Cocina"=no | "Salón"=sí | 22094 bytes
+     RSC  sinstaff /floor   -> 200 loc=- | meta-refresh=no | "Cargando los pedidos"=no | "Cargando el salón"=no | "El Buen Sabor"=no | "Cocina"=no | "Salón"=sí | 12725 bytes
+OK   sin fila de staff /kitchen y /floor -> 200 con 'Tu cuenta no está vinculada...' y sin esqueleto
+OK   sinstaff: navegador en /kitchen termina en /kitchen y en /floor termina en /floor | /kitchen /floor
+OK   sin JS: mozo en /kitchen termina en /floor de una (307) y nunca ve 'Cocina' | 307 /kitchen, 200 /floor
+
+13 OK, 0 FAIL
