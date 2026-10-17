@@ -1,0 +1,59 @@
+     == Cocina (cocina@demo.test) ==
+OK   K.1 h1 'Cocina' y 'restaurante · persona'
+OK   K.2 cuerpo en Geist, h1 en Bricolage, sin .dark (CA-1.2, CA-1.5) | {"body":"Geist, \"Geist Fallback\"","root":"Geist, \"Geist Fallback\", system-ui, sans-serif","dark":false,"h1":"\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", Geist, \"Geist Fallback\", system-ui, sans-serif"}
+OK   K.3 navegación del rol cocina: solo 'Cocina', activa, con pendientes | ["Cocina(hay pendientes)"]
+OK   K.4 persona, rol y 'Cerrar sesión' en el encabezado
+OK   K.5 región aria-live vacía al cargar (no anuncia el tablero) y sin sonido al cargar
+OK   K.6 pedido received: 'Tomar pedido', sin píldora, nombre accesible con la mesa
+OK   K.7 pedido in_kitchen: píldora 'En preparación' y 'Marcar listo'
+OK   K.8 'Cuenta de la mesa hoy: $ ...', renglón 'N× nombre', nota entre comillas
+OK   K.9 pedido nuevo aparece sin recargar (<= 5 s) | 171 ms
+OK   K.10 etiqueta 'Nuevo' visible con reduced-motion (CA-8.1, CA-5.2)
+OK   K.11 suena el aviso al llegar el pedido (CA-NR.7) | osciladores: 1
+OK   K.12 anuncio 'Pedido nuevo: Mesa 3' (CA-5.1) | Pedido nuevo: Mesa 3
+OK   K.13 sin toast al llegar un pedido en cocina (K-12)
+OK   K.14 0 animaciones con reduce tras llegar el pedido (CA-6.2)
+OK   K.15 'Tomar pedido' -> toast 'Pedido en preparación'
+OK   K.16 queda 'En preparación' + 'Marcar listo' y se quita 'Nuevo'
+OK   K.17 0 animaciones con reduce tras tocar 'Tomar pedido'
+OK   K.18 'Marcar listo' -> toast 'Pedido listo' y sale del tablero
+OK   K.19 error: toast 'No se pudo actualizar el pedido', sigue 'Tomar pedido' y se puede volver a tocar
+OK   K.20 cocina en /floor termina en /kitchen (R-2)
+OK   K.21 cocina en /admin ve 'Esta sección es solo para administradores' con marca y 'Cerrar sesión'
+     == Salón (mozo@demo.test) ==
+OK   F.1 h1 'Salón'; navegación del rol mozo: solo 'Salón' con pendientes | ["Salón(hay pendientes)"]
+OK   F.2 títulos con contador: 'Llamados de mozo · 1', 'Listos para llevar · 1', 'Mesas' | ["Llamados de mozo · 1","Listos para llevar · 1","Mesas"]
+OK   F.3 mesas con estado en texto: Mesa 1 Con pedido, Mesa 2 Llamando, Mesa 3 Listo (prioridad F-7) | Mesa 1=Con pedido,Mesa 2=Llamando,Mesa 3=Listo
+OK   F.4 llamado: motivo · hora y 'Cuenta de hoy' solo con 'Pide la cuenta'
+OK   F.5 listo para llevar sin notas, botón 'Entregado, Mesa 3'
+OK   F.6 sin anuncios ni sonido al cargar
+OK   F.7 llamado nuevo aparece sin recargar (<= 5 s) | 164 ms
+OK   F.8 toast 'Una mesa está llamando al mozo' + aviso sonoro | osciladores 1
+OK   F.9 anuncio 'Llamado de Mesa 3: Tiene una consulta' | Llamado de Mesa 3: Tiene una consulta
+OK   F.10 contador sube a 'Llamados de mozo · 2' y Mesa 3 pasa a 'Llamando'
+OK   F.11 'Atendido' -> toast 'Llamado atendido', desaparece y el contador baja
+OK   F.12 pedido 'ready' aparece en 'Listos para llevar' sin recargar, con 'Nuevo' | 6 ms
+OK   F.13 anuncio 'Pedido listo: Mesa 1' y contador 'Listos para llevar · 2' | Llamado de Mesa 3: Tiene una consulta | Pedido listo: Mesa 1
+OK   F.14 'Entregado' -> toast 'Pedido entregado' y desaparece
+OK   F.15 pedido nuevo 'received' hace sonar el aviso en Salón (F-9)
+OK   F.16 0 animaciones con reduce tras llegadas y acciones (CA-6.2)
+OK   F.17 error de 'Atendido': toast 'No se pudo marcar como atendido' y el llamado sigue
+OK   F.18 error de 'Entregado': toast 'No se pudo marcar como entregado' y la tarjeta sigue
+OK   F.19 mozo en /kitchen termina en /floor sin ver cocina (R-2)
+     == Admin y celular ==
+OK   A.1 admin en /kitchen sin redirección
+OK   A.2 admin ve Cocina (activa), Salón y Admin; pendientes en Cocina y Salón | Cocina(hay pendientes)*,Salón(hay pendientes),Admin
+OK   A.3 admin en /floor sin redirección
+OK   A.4 celular: sin banda de paneles; botón de cuenta con punto
+OK   A.5 menú de cuenta: nombre, 'Admin · El Buen Sabor', paneles con '(hay pendientes)', 'Cerrar sesión' | Admin · El Buen Sabor | Cocina(hay pendientes),Salón(hay pendientes)*,Admin,Cerrar sesión
+OK   A.6 desde el menú se pasa a Cocina (2 toques)
+OK   A.7 'Cerrar sesión' lleva a /login
+OK   A.8 volver atrás pide login (CA-2.1) | http://127.0.0.1:3422/login?redirect=%2Fkitchen
+     == Sin staff, vacíos y temas ==
+OK   S.1 sin fila de staff: 'Tu cuenta no está vinculada a ningún restaurante' + staff_users + 'Cerrar sesión'
+OK   S.2 sin Pomo en la pantalla sin permiso (CA-8.8)
+OK   S.3 con otro tema guardado (Glaciar/brutal) la Cocina se ve idéntica (CA-1.3) | PATCH 200; capturas 62460/62460 bytes
+OK   S.4 Cocina vacía: Pomo + 'No hay pedidos pendientes.' (CA-8.8, CA-NR.9) | DELETE 200
+OK   S.5 Salón sin mesas: solo 'Mesas' con 'Todavía no hay mesas.' (CA-8.7, F-3)
+
+53 OK, 0 FAIL
