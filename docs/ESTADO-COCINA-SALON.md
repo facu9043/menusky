@@ -6,7 +6,7 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 - Sin push, sin merge a master, nada a producción. Nunca base real ni credenciales reales.
 - Contexto: el estado anterior del admin está en `docs/ESTADO-ADMIN.md` (rama feat/admin-ui @ 5b12886, solo local).
 
-## Paso actual (2026-10-17): retomado tras reinicio. 1) Backend termina pruebas del arreglo de tiempo real (fix/realtime-session-token) -> 2) merge en feat/staff-redesign -> 3) Seguridad -> 4) QA -> 5) docs/releases/cocina-salon.md -> 6) pausa. Sin merge a master ni push.
+## Paso actual (2026-10-17): arreglo de tiempo real HECHO (Backend; código b4ad11e, cierre a0ae086; control master 4/6 -> rama 6/6, e2e-staff 53/53, admin-live 15/15, browser-poll 10/10, mock e2e 56/58 con 2 aserciones viejas 307->200 por loading.tsx; conclusión en docs/evidencia/backend/realtime-recarga-2026-10-15.txt) e integrado en feat/staff-redesign. Siguiente: Seguridad por alcance -> QA -> release -> pausa.
 
 ## PAUSA ORDENADA anterior (2026-10-15, el Director reinicia la PC):
 - Carpeta en `fix/realtime-session-token` @ b4ad11e (WIP de Backend, sale de feat/staff-redesign @ 31b017e). Construcción de Cocina y Salón HECHA en feat/staff-redesign (Frontend: e2e 53/0, calidad 136/0, axe 0, regresión admin OK).
