@@ -10,6 +10,7 @@ import type { WaiterCallView } from "@/lib/waiterCalls/getPendingWaiterCalls";
 const timeFormatter = new Intl.DateTimeFormat("es-AR", {
   hour: "2-digit",
   minute: "2-digit",
+  hourCycle: "h23", // 24 h ("13:13"), decisión del Director 2026-10-17
 });
 
 export function WaiterCallRow({
