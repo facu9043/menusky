@@ -1,0 +1,5 @@
+OK   360x640: scroll-padding-top /kitchen=78px, /floor=78px (esperado 78px); /admin/menu=auto (esperado auto)
+OK   768x1024: scroll-padding-top /kitchen=80px, /floor=80px (esperado 80px); /admin/menu=auto (esperado auto)
+OK   1280x800: scroll-padding-top /kitchen=80px, /floor=80px (esperado 80px); /admin/menu=auto (esperado auto)
+
+3 OK, 0 FAIL

@@ -6,7 +6,7 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 - Sin push, sin merge a master, nada a producción. Nunca base real ni credenciales reales.
 - Contexto: el estado anterior del admin está en `docs/ESTADO-ADMIN.md` (rama feat/admin-ui @ 5b12886, solo local).
 
-## Paso actual (2026-10-17): Seguridad cerró SEC-CS-01 (df69cef): A Apto, B Apto. En curso: QA por alcance. Luego release -> pausa. Nota: pwe2e tiene Playwright 1.64.1 sin Chromium 1248; usar chromium_headless_shell-1243 con executablePath.
+## Paso actual (2026-10-17): QA Aprobado con reservas (782fd12). QA-CS-01 (Media: .st-head fijo tapa el foco a 360x640) -> Frontend en `fix/staff-sticky-focus` + re-verificación corta de QA. Luego release -> pausa. Backlog: orden natural de mesas ("Mesa 10"), hora 12 h vs 24 h (consulta al Director), estados de error forzados (Backend), aserción vieja 429 de regresion-fuera-admin.mjs, 4 pruebas viejas del login, Playwright 1.64.1 sin Chromium 1248 (usar chromium_headless_shell-1243 con executablePath).
 
 ## PAUSA ORDENADA anterior (2026-10-15, el Director reinicia la PC):
 - Carpeta en `fix/realtime-session-token` @ b4ad11e (WIP de Backend, sale de feat/staff-redesign @ 31b017e). Construcción de Cocina y Salón HECHA en feat/staff-redesign (Frontend: e2e 53/0, calidad 136/0, axe 0, regresión admin OK).
