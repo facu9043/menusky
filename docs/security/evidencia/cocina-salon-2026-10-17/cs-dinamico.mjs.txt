@@ -1,0 +1,106 @@
+// Seguridad (TEMPORAL): auditoría Cocina/Salón + realtime, feat/staff-redesign @ 0ade2f4. Datos ficticios del mock.
+// Uso (desde la raíz del repo): node cs-dinamico.mjs   (mock en 3451, app en 3452)
+import { createRequire } from "node:module";
+const req = createRequire("C:/Users/facundo/Desktop/menusky/package.json");
+const pw = createRequire("C:/Users/facundo/AppData/Local/Temp/pwe2e/package.json")("playwright");
+const { createServerClient } = req("@supabase/ssr");
+const MOCK = "http://127.0.0.1:3451", APP = "http://127.0.0.1:3452", ANON = "mock-anon-key";
+await fetch(MOCK + "/__mock/reset", { method: "POST" });
+const ev = (b) => fetch(MOCK + "/__mock/event", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) }).then((r) => r.json());
+async function login(email) {
+  const jar = new Map();
+  const s = createServerClient(MOCK, ANON, { cookies: { getAll: () => [...jar].map(([name, value]) => ({ name, value })), setAll: (l) => l.forEach(({ name, value }) => jar.set(name, value)) } });
+  const { data, error } = await s.auth.signInWithPassword({ email, password: "demo-1234" });
+  if (error) throw error;
+  return { jar: [...jar], token: data.session.access_token, s };
+}
+const cookieOf = (j) => j.jar.map(([k, v]) => `${k}=${v}`).join("; ");
+const U = { mozo: await login("mozo@demo.test"), cocina: await login("cocina@demo.test"), admin: await login("admin@demo.test") };
+const DATA = /Provoleta|Empanadas|Mesa \d|El Buen Sabor|st-orders__|st-table__/;
+
+// 1) Redirecciones R-2 sin JS: estado, cuerpo, meta refresh, datos del panel
+console.log("== 1) R-2 sin JS (fetch, sin seguir redirecciones)");
+for (const [who, path] of [["mozo", "/kitchen"], ["cocina", "/floor"], ["mozo", "/floor"], ["cocina", "/kitchen"]]) {
+  for (const mode of ["HTML", "RSC"]) {
+    const h = { cookie: cookieOf(U[who]) }; if (mode === "RSC") h.rsc = "1";
+    let r = await fetch(APP + path, { redirect: "manual", headers: h });
+    if (mode === "RSC" && r.status === 307 && /_rsc/.test(r.headers.get("location") ?? "")) r = await fetch(new URL(r.headers.get("location"), APP), { redirect: "manual", headers: h });
+    const b = await r.text();
+    const meta = b.match(/<meta[^>]*http-equiv="refresh"[^>]*>/i)?.[0] ?? "";
+    const d = b.match(DATA);
+    console.log(`${mode.padEnd(4)} ${who.padEnd(6)} ${path.padEnd(8)} -> ${r.status} loc=${r.headers.get("location") ?? "-"} | meta-refresh=${meta ? meta.replace(/\s+/g, " ") : "no"} | NEXT_REDIRECT=${/NEXT_REDIRECT/.test(b)} | datos del panel: ${d ? d[0] : "no"} | ${b.length} bytes`);
+  }
+}
+const anon = await fetch(APP + "/kitchen", { redirect: "manual" });
+console.log(`HTML anon   /kitchen -> ${anon.status} loc=${anon.headers.get("location")}`);
+
+// 2) R-2 en navegador SIN JavaScript
+console.log("\n== 2) R-2 en Chromium con JavaScript desactivado");
+const browser = await pw.chromium.launch();
+for (const [who, path] of [["mozo", "/kitchen"], ["cocina", "/floor"]]) {
+  const ctx = await browser.newContext({ javaScriptEnabled: false });
+  await ctx.addCookies(U[who].jar.map(([name, value]) => ({ name, value, domain: "127.0.0.1", path: "/" })));
+  const p = await ctx.newPage();
+  await p.goto(APP + path, { waitUntil: "load" });
+  const first = await p.locator("body").innerText();
+  await p.waitForTimeout(3500);
+  console.log(`${who.padEnd(6)} ${path} -> URL final ${new URL(p.url()).pathname} | texto antes de redirigir: ${JSON.stringify(first.slice(0, 80))} | datos: ${(first.match(DATA) || ["no"])[0]}`);
+  await ctx.close();
+}
+
+// 3) Inyección: mesa con HTML en la etiqueta (la pone el admin), nota y llamado; anuncios aria-live
+console.log("\n== 3) Inyección por datos del cliente");
+const XSS = `<img src=x onerror="window.__xss=1">"'`;
+const { data: tb, error: te } = await U.admin.s.from("tables").insert({ restaurant_id: "11111111-1111-4111-8111-111111111111", label: "Mesa " + XSS, qr_token: "xss-sec-cs" }).select("id, label").single();
+console.log(`admin crea mesa con etiqueta HTML -> ${te ? te.message : "OK"}`);
+const tokens = [];
+async function panel(who, path) {
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+  await ctx.addCookies(U[who].jar.map(([name, value]) => ({ name, value, domain: "127.0.0.1", path: "/" })));
+  const p = await ctx.newPage();
+  const logs = [], sent = [];
+  p.on("console", (m) => logs.push(m.text()));
+  p.on("websocket", (ws) => ws.on("framesent", (f) => sent.push(String(f.payload))));
+  await p.goto(APP + path, { waitUntil: "networkidle" });
+  await p.waitForTimeout(1500);
+  return { ctx, p, logs, sent };
+}
+const k = await panel("cocina", "/kitchen");
+await ev({ type: "new_order", table: tb.id, items: [{ name: "Provoleta", quantity: 1, note: XSS }] });
+await k.p.waitForTimeout(2000);
+const kLive = await k.p.evaluate(() => [...document.querySelectorAll("[aria-live]")].map((e) => e.textContent).filter(Boolean));
+const kNote = await k.p.locator(".st-item__note", { hasText: "onerror" }).count();
+console.log(`cocina: window.__xss=${await k.p.evaluate(() => window.__xss)} | <img> inyectadas=${await k.p.evaluate(() => document.querySelectorAll('img[src="x"]').length)} | nota mostrada como texto=${kNote > 0} | aria-live=${JSON.stringify(kLive)}`);
+const f = await panel("mozo", "/floor");
+await ev({ type: "waiter_call", table: tb.id, reason: "cuenta" });
+const ordId = (await (await fetch(MOCK + "/__mock/state")).json()).orders.find((o) => o.table_id === tb.id).id;
+await ev({ type: "order_status", orderId: ordId, status: "ready" });
+await f.p.waitForTimeout(2000);
+const fLive = await f.p.evaluate(() => [...document.querySelectorAll("[aria-live]")].map((e) => e.textContent).filter(Boolean));
+console.log(`salón: window.__xss=${await f.p.evaluate(() => window.__xss)} | <img> inyectadas=${await f.p.evaluate(() => document.querySelectorAll('img[src="x"]').length)} | aria-live=${JSON.stringify(fLive)}`);
+
+// 4) Realtime: token del canal, filtración, cierre de sesión
+console.log("\n== 4) Realtime");
+const dec = (t) => { try { return JSON.parse(Buffer.from(t.split(".")[1], "base64url").toString()); } catch { return null; } };
+for (const [who, x] of [["cocina", k], ["mozo", f]]) {
+  const joins = x.sent.map((s) => { try { return JSON.parse(s); } catch { return null; } }).filter((m) => Array.isArray(m) && m[3] === "phx_join" && /postgres|realtime:/.test(m[2]));
+  const toks = joins.map((m) => m[4]?.access_token);
+  const ok = toks.length > 0 && toks.every((t) => t === U[who].token || (dec(t)?.sub === dec(U[who].token)?.sub && dec(t)?.role === "authenticated"));
+  const html = await x.p.content();
+  const inHtml = toks.some((t) => t && html.includes(t));
+  const inLogs = toks.some((t) => t && x.logs.some((l) => l.includes(t)));
+  const ls = await x.p.evaluate(() => JSON.stringify({ ...localStorage }) + JSON.stringify({ ...sessionStorage }));
+  console.log(`${who.padEnd(6)} joins=${joins.length} temas=${JSON.stringify(joins.map((m) => m[2]))} | token del join = JWT de ${dec(toks[0])?.email ?? dec(toks[0])?.sub ?? toks[0]} (role ${dec(toks[0])?.role}) | correcto=${ok} | ninguno con la clave anon=${!toks.includes(ANON)} | token en HTML=${inHtml} | en consola=${inLogs} | en local/sessionStorage=${toks.some((t) => t && ls.includes(t))} | mensajes de consola=${x.logs.length}`);
+}
+// Cierre de sesión en Cocina: qué se envía por el socket y a dónde va
+const before = k.sent.length;
+await k.p.locator("button.st-logout").click();
+await k.p.waitForURL((u) => u.pathname === "/login", { timeout: 10000 }).catch(() => {});
+await k.p.waitForTimeout(1000);
+const after = k.sent.slice(before).map((s) => { try { const m = JSON.parse(s); return `${m[3]}${m[4]?.access_token ? "(token=" + (m[4].access_token === ANON ? "anon" : dec(m[4].access_token)?.role ?? "?") + ")" : ""}`; } catch { return "?"; } });
+console.log(`logout cocina -> URL ${new URL(k.p.url()).pathname} | tramas enviadas tras el clic: ${JSON.stringify(after)}`);
+await ev({ type: "new_order", table: "Mesa 1", items: [{ name: "Provoleta", quantity: 1 }] });
+await k.p.waitForTimeout(1500);
+const back = await k.p.goto(APP + "/kitchen", { waitUntil: "load" });
+console.log(`tras logout, /kitchen -> URL ${new URL(k.p.url()).pathname} (status ${back?.status()})`);
+await browser.close();

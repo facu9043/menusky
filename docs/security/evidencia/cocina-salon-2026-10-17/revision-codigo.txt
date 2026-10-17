@@ -1,0 +1,125 @@
+# Extractos de dependencias (node_modules no está versionado). supabase-js/realtime-js 2.112.3, @supabase/ssr 0.12.4
+
+## node_modules/@supabase/supabase-js/dist/index.cjs:656-659 (Realtime usa el callback accessToken del cliente)
+			accessToken: this._getAccessToken.bind(this),
+			fetch: this.fetch
+		}, settings.realtime));
+		if (this.accessToken) Promise.resolve(this.accessToken()).then((token) => this.realtime.setAuth(token)).catch((e) => console.warn("Failed to set initial Realtime auth token:", e));
+
+## index.cjs:832-846 (TOKEN_REFRESHED/SIGNED_IN -> setAuth(token); SIGNED_OUT -> setAuth() sin token)
+	_listenForAuthEvents() {
+		return this.auth.onAuthStateChange((event, session) => {
+			this._handleTokenChanged(event, "CLIENT", session === null || session === void 0 ? void 0 : session.access_token);
+		});
+	}
+	_handleTokenChanged(event, source, token) {
+		if ((event === "TOKEN_REFRESHED" || event === "SIGNED_IN" || event === "INITIAL_SESSION") && this.changedAccessToken !== token) {
+			this.changedAccessToken = token;
+			this.realtime.setAuth(token);
+		} else if (event === "SIGNED_OUT") {
+			this.realtime.setAuth();
+			if (source == "STORAGE") this.auth.signOut();
+			this.changedAccessToken = void 0;
+		}
+	}
+
+## index.cjs:792-805 (_getSessionToken / _getAccessToken: sin sesión cae a la clave anon)
+	async _getSessionToken() {
+		var _this = this;
+		var _data$session$access_, _data$session;
+		if (_this.accessToken) return await _this.accessToken();
+		const { data } = await _this.auth.getSession();
+		return (_data$session$access_ = (_data$session = data.session) === null || _data$session === void 0 ? void 0 : _data$session.access_token) !== null && _data$session$access_ !== void 0 ? _data$session$access_ : null;
+	}
+	async _getAccessToken() {
+		var _this2 = this;
+		var _await$this$_getSessi;
+		return (_await$this$_getSessi = await _this2._getSessionToken()) !== null && _await$this$_getSessi !== void 0 ? _await$this$_getSessi : _this2.supabaseKey;
+	}
+	_initSupabaseAuthClient({ autoRefreshToken, persistSession, detectSessionInUrl, storage, userStorage, storageKey, flowType, lock, debug, throwOnError, experimental, lockAcquireTimeout, skipAutoInitialize }, headers, fetch$1) {
+		const authHeaders = {
+
+## node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js:470-517 (_performAuth: empuja access_token a los canales unidos)
+    async _performAuth(token, authGeneration) {
+        let tokenToSend;
+        let isManualToken = false;
+        if (token) {
+            tokenToSend = token;
+            // Track if this is a manually-provided token
+            isManualToken = true;
+        }
+        else if (this.accessToken) {
+            // Call the accessToken callback to get fresh token
+            try {
+                tokenToSend = await this.accessToken();
+            }
+            catch (e) {
+                this.log('error', 'Error fetching access token from callback', e);
+                // Fall back to cached value if callback fails
+                tokenToSend = this.accessTokenValue;
+            }
+        }
+        else {
+            tokenToSend = this.accessTokenValue;
+        }
+        if (authGeneration !== this._authGeneration) {
+            return;
+        }
+        // Track whether this token was manually set or fetched via callback.
+        // The callback is the source of truth for token refresh
+        if (this.accessToken) {
+            this._manuallySetToken = false;
+        }
+        else if (isManualToken) {
+            this._manuallySetToken = true;
+        }
+        if (this.accessTokenValue != tokenToSend) {
+            this.accessTokenValue = tokenToSend;
+            this.channels.forEach((channel) => {
+                const payload = {
+                    access_token: tokenToSend,
+                    version: constants_1.DEFAULT_VERSION,
+                };
+                channel.updateJoinPayload(payload);
+                if (channel.joinedOnce && channel.channelAdapter.isJoined()) {
+                    channel.channelAdapter.push(constants_1.CHANNEL_EVENTS.access_token, {
+                        access_token: tokenToSend,
+                    });
+                }
+            });
+        }
+
+## git diff master...feat/staff-redesign --stat (código)
+ app/floor/error.tsx                     |   9 +
+ app/floor/loading.tsx                   |   5 +
+ app/floor/page.tsx                      |   4 +-
+ app/globals.css                         |  17 +-
+ app/kitchen/error.tsx                   |   9 +
+ app/kitchen/loading.tsx                 |   5 +
+ app/kitchen/page.tsx                    |   6 +-
+ components/floor/FloorBoard.tsx         | 107 ++--
+ components/floor/ReadyOrderCard.tsx     |  71 ++-
+ components/floor/TableGrid.tsx          |  50 +-
+ components/floor/WaiterCallRow.tsx      |  37 +-
+ components/kitchen/KitchenEmpty.tsx     |  11 +
+ components/kitchen/OrderBoard.tsx       |  47 +-
+ components/kitchen/OrderCard.tsx        |  88 ++--
+ components/staff/AccessDenied.tsx       |  32 ++
+ components/staff/LogoutButton.tsx       |  32 +-
+ components/staff/NoStaffAccess.tsx      |  14 +-
+ components/staff/NotAdminAccess.tsx     |  15 +-
+ components/staff/OrderLines.tsx         |  31 ++
+ components/staff/StaffBrand.tsx         |  15 +
+ components/staff/StaffHeader.tsx        | 171 +++++-
+ components/staff/StaffNav.tsx           |  54 --
+ components/staff/StaffShell.tsx         |  87 ++--
+ components/staff/StaffStates.tsx        |  87 ++++
+ components/staff/staff.css              | 889 ++++++++++++++++++++++++++++++++
+ components/staff/useArrivalAnnouncer.ts |  32 ++
+ lib/admin/live/AdminLiveProvider.tsx    |   7 +-
+ lib/realtime/startChannel.ts            |  33 ++
+ lib/realtime/useOrdersBoard.ts          |   9 +-
+ lib/realtime/useStaffPendingCounts.ts   |   9 +-
+ lib/realtime/useTableTotals.ts          |   9 +-
+ lib/realtime/useWaiterCalls.ts          |   9 +-
+ 32 files changed, 1610 insertions(+), 391 deletions(-)
