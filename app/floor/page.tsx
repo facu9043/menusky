@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getStaffUser } from "@/lib/auth/getStaffUser";
+import { getCurrentStaff } from "@/components/staff/currentStaff";
 import { getFloorTables } from "@/lib/floor/getFloorTables";
 import { getFloorOrders } from "@/lib/orders/getFloorOrders";
 import { getTableTotals } from "@/lib/orders/getTableTotals";
@@ -9,7 +9,7 @@ import { NoStaffAccess } from "@/components/staff/NoStaffAccess";
 import { FloorBoard } from "@/components/floor/FloorBoard";
 
 export default async function FloorPage() {
-  const staff = await getStaffUser();
+  const staff = await getCurrentStaff();
   if (!staff) return <NoStaffAccess />;
   // R-2: cocina va a su panel; admin y mozo ven este (sin bucles).
   if (staff.role === "kitchen") redirect("/kitchen");
