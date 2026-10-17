@@ -1,0 +1,4 @@
+npx tsc --noEmit -p . (2026-10-17, fix/tu-pedido-24h)
+exit=0
+npx eslint app/m docs/design/cocina-salon/evidencia/tu-pedido-24h
+exit=0
