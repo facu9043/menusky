@@ -1,0 +1,6 @@
+     pedido 93e72329-3a72-4392-9983-a317711c3d79; se atrasó 327 min para quedar a las 15:10 de Argentina
+OK   HTML del servidor: "Hecho a las 15:xx" en 24 h, sin "a. m."/"p. m." | Hecho a las 15:09
+OK   en el navegador, al cargar: 24 h | Hecho a las 15:09
+OK   tras actualizarse el estado por sondeo (3323 ms): la hora sigue en 24 h | Hecho a las 15:09
+
+3 OK, 0 FAIL

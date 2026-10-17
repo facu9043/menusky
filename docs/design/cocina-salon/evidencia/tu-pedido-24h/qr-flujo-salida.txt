@@ -1,0 +1,33 @@
+# modo del mock: con 0004 (SEC-AF-02 aplicado)
+PASS  anon: GET /rest/v1/tables -> [] (no lista mesas ni qr_token)
+PASS  anon: filtro like sobre qr_token -> []
+PASS  anon: RPC get_table_by_token(token exacto) -> {id,label,restaurant_id}
+PASS  anon: RPC get_table_by_token('mesa-%') -> null (no enumera)
+PASS  anon: RPC get_table_by_token('%') -> null (no enumera)
+PASS  anon: RPC get_table_by_token('mesa-1') -> null (no enumera)
+PASS  anon: RPC get_table_by_token('') -> null (no enumera)
+PASS  anon: RPC get_table_by_token('zzz') -> null (no enumera)
+PASS  ataque SEC-AF-02: 0 tokens obtenidos por el anonimo
+PASS  /m/{token}: 200 y la carta se abre (restaurante, mesa y platos)
+PASS  /m/{token}: no muestra platos de otro restaurante
+PASS  /m/{token inexistente} -> 404
+PASS  /m/{token de otro restaurante} abre la carta de ESE restaurante (el token es la credencial)
+PASS  pedir: POST /api/orders (sin sesion) -> 200 { orderId }
+PASS  "Tu pedido": se ve el pedido (Provoleta) con el token de su mesa
+PASS  "Tu pedido": el estado se actualiza solo por sondeo (en preparacion) <= 6 s
+PASS  "Tu pedido" con el token de OTRA mesa -> 404
+PASS  llamar al mozo (sin sesion) -> 200 { ok } y se crea el llamado
+PASS  llamar al mozo con token inexistente -> 404 Mesa no encontrada
+PASS  llamar al mozo con motivo invalido -> 400
+PASS  limite: 10 pedidos -> 200; el 11 -> 429
+PASS  D-21: cancelar 1 pedido libera 1 lugar (el siguiente -> 200)
+PASS  D-21: y el que sigue vuelve a dar 429
+PASS  /api/qr/{token}: 200 image/png (PNG real) sin sesion, igual que hoy
+PASS  /api/qr/{token inexistente} -> 404
+PASS  admin: /admin/mesas lista sus mesas (Mesa 1, 2, 3) y no las de B
+PASS  admin: /admin -> 200
+PASS  mozo: /floor ve las mesas de su restaurante (Mesa 1, 2, 3)
+PASS  cocina: /kitchen ve los pedidos con la etiqueta de su mesa (join orders -> tables)
+PASS  admin B: /admin/mesas ve Mesa B1 y ninguna de A
+
+30/30 OK
