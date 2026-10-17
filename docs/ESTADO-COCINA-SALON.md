@@ -6,7 +6,9 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 - Sin push, sin merge a master, nada a producción. Nunca base real ni credenciales reales.
 - Contexto: el estado anterior del admin está en `docs/ESTADO-ADMIN.md` (rama feat/admin-ui @ 5b12886, solo local).
 
-## PAUSA ORDENADA (2026-10-15, el Director reinicia la PC). Retomar así:
+## Paso actual (2026-10-17): retomado tras reinicio. 1) Backend termina pruebas del arreglo de tiempo real (fix/realtime-session-token) -> 2) merge en feat/staff-redesign -> 3) Seguridad -> 4) QA -> 5) docs/releases/cocina-salon.md -> 6) pausa. Sin merge a master ni push.
+
+## PAUSA ORDENADA anterior (2026-10-15, el Director reinicia la PC):
 - Carpeta en `fix/realtime-session-token` @ b4ad11e (WIP de Backend, sale de feat/staff-redesign @ 31b017e). Construcción de Cocina y Salón HECHA en feat/staff-redesign (Frontend: e2e 53/0, calidad 136/0, axe 0, regresión admin OK).
 - Realtime tras recargar: Backend diagnosticó DEFECTO DE LA APP (no del mock), presente en producción (master d66b639): el join sale sin access_token; con la 0004 aplicada, el staff deja de recibir pedidos en vivo tras recargar. Arreglo hecho (`lib/realtime/startChannel.ts` + setAuth antes de suscribir), 6/6. FALTA: control en master, e2e del mock, admin-live-pending, test-admin-data y e2e de Cocina y Salón; conclusión con fuentes. Ver la sección "Backend: realtime tras recargar".
 - Luego: integrar fix en feat/staff-redesign, Seguridad y QA por alcance (incluida la recarga), docs/releases/cocina-salon.md. Conviene publicar el arreglo ANTES de aplicar la 0004 en producción (la 0004 sigue sin confirmar).
