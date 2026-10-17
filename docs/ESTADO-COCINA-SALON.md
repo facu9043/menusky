@@ -63,3 +63,7 @@ Las 10 de `docs/specs/cocina-salon.md` §8 y las 13 de `docs/design/cocina-salon
 - Arreglo hecho: lib/realtime/startChannel.ts (getSession + realtime.setAuth antes de suscribir) usado en useOrdersBoard, useTableTotals, useStaffPendingCounts, useWaiterCalls y AdminLiveProvider. Despues: 6/6 (con y sin recarga en /kitchen, /floor, /admin), joins con token. tsc y eslint limpios.
 - Falta: control en master (el build webpack del worktree fallo), e2e del mock, admin-live-pending-e2e, test-admin-data y e2e de Cocina y Salon del Frontend, conclusion final con fuentes. La reaccion del servidor real a un access_token posterior al join NO se pudo verificar en el repo.
 - Procesos: mock 3401, next 3402 y 3403 detenidos; netstat 3400-3419 sin LISTENING.
+
+## Backend: realtime tras recargar - CERRADO 2026-10-17
+- Defecto de la app, arreglado con lib/realtime/startChannel.ts (b4ad11e). Control master d66b639: 4/6 (falla con recarga); rama: 6/6. Conclusion y fuentes en docs/evidencia/backend/realtime-recarga-2026-10-15.txt. Desplegar antes o junto con la 0004.
+- Procesos: mock 3401, next 3402 y 3403 (master) detenidos; worktree menusky-master-tmp borrado; netstat 3400-3419 libre.
