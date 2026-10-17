@@ -1,0 +1,44 @@
+# Re-verificación SEC-CS-01 (Seguridad), feat/staff-redesign @ 0992ed2 (arreglo c376018), 2026-10-17
+# Build: NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:3451 NEXT_PUBLIC_SUPABASE_ANON_KEY=mock-anon-key NEXT_PUBLIC_SITE_URL=http://localhost:3452 npx next build (exit 0)
+# Mock: node scripts/mock-supabase/server.mjs --port 3451 (PID 23492) | App: npx next start -H 127.0.0.1 -p 3452 (PID 21524)
+# Navegador: playwright 1.64.1 de pwe2e con executablePath = ms-playwright/chromium_headless_shell-1243 (el 1248 que pide esa versión no está instalado; no se instaló nada)
+# Script: sec-cs-01-recheck.mjs.txt
+
+== 1) Carga directa (HTML) y petición RSC plana, sin seguir redirecciones
+HTML mozo     /kitchen -> 307 loc=/floor | 13121 bytes | {"datos":"no","esqueleto":false,"redirectAdentro":true,"sinAcceso":false}
+RSC  mozo     /kitchen -> 200 loc=- | 7983 bytes | {"datos":"no","esqueleto":false,"redirectAdentro":true,"sinAcceso":false}
+HTML cocina   /floor   -> 307 loc=/kitchen | 12994 bytes | {"datos":"no","esqueleto":false,"redirectAdentro":true,"sinAcceso":false}
+RSC  cocina   /floor   -> 200 loc=- | 7874 bytes | {"datos":"no","esqueleto":false,"redirectAdentro":true,"sinAcceso":false}
+HTML anon     /kitchen -> 307 loc=/login?redirect=%2Fkitchen | 26 bytes | {"datos":"no","esqueleto":false,"redirectAdentro":false,"sinAcceso":false}
+RSC  anon     /kitchen -> 307 loc=/login?redirect=%2Fkitchen | 26 bytes | {"datos":"no","esqueleto":false,"redirectAdentro":false,"sinAcceso":false}
+HTML anon     /floor   -> 307 loc=/login?redirect=%2Ffloor | 24 bytes | {"datos":"no","esqueleto":false,"redirectAdentro":false,"sinAcceso":false}
+RSC  anon     /floor   -> 307 loc=/login?redirect=%2Ffloor | 24 bytes | {"datos":"no","esqueleto":false,"redirectAdentro":false,"sinAcceso":false}
+HTML sinstaff /kitchen -> 200 loc=- | 22309 bytes | {"datos":"no","esqueleto":false,"redirectAdentro":false,"sinAcceso":true}
+RSC  sinstaff /kitchen -> 200 loc=- | 12918 bytes | {"datos":"no","esqueleto":false,"redirectAdentro":false,"sinAcceso":true}
+HTML admin    /kitchen -> 200 loc=- | 35171 bytes | {"datos":"El Buen Sabor","esqueleto":true,"redirectAdentro":false,"sinAcceso":false}
+RSC  admin    /kitchen -> 200 loc=- | 16929 bytes | {"datos":"El Buen Sabor","esqueleto":false,"redirectAdentro":false,"sinAcceso":false}
+HTML admin    /floor   -> 200 loc=- | 30008 bytes | {"datos":"El Buen Sabor","esqueleto":true,"redirectAdentro":false,"sinAcceso":false}
+RSC  admin    /floor   -> 200 loc=- | 11452 bytes | {"datos":"El Buen Sabor","esqueleto":false,"redirectAdentro":false,"sinAcceso":false}
+HTML mozo     /floor   -> 200 loc=- | 29034 bytes | {"datos":"El Buen Sabor","esqueleto":true,"redirectAdentro":false,"sinAcceso":false}
+RSC  mozo     /floor   -> 200 loc=- | 11451 bytes | {"datos":"El Buen Sabor","esqueleto":false,"redirectAdentro":false,"sinAcceso":false}
+HTML cocina   /kitchen -> 200 loc=- | 34235 bytes | {"datos":"El Buen Sabor","esqueleto":true,"redirectAdentro":false,"sinAcceso":false}
+RSC  cocina   /kitchen -> 200 loc=- | 16933 bytes | {"datos":"El Buen Sabor","esqueleto":false,"redirectAdentro":false,"sinAcceso":false}
+
+== 2) Navegación de cliente (RSC capturada al admin, repetida con otros roles)
+capturadas: /kitchen, /floor
+RSC-nav mozo    /kitchen -> 200 loc=- | 4296 bytes | {"datos":"no","esqueleto":false,"redirectAdentro":true,"sinAcceso":false} | NEXT_REDIRECT;replace;/floor;307;
+RSC-nav cocina  /floor   -> 200 loc=- | 4188 bytes | {"datos":"no","esqueleto":false,"redirectAdentro":true,"sinAcceso":false} | NEXT_REDIRECT;replace;/kitchen;307;
+RSC-nav admin   /kitchen -> 200 loc=- | 12681 bytes | {"datos":"El Buen Sabor","esqueleto":false,"redirectAdentro":false,"sinAcceso":false}
+RSC-nav admin   /floor   -> 200 loc=- | 7213 bytes | {"datos":"El Buen Sabor","esqueleto":false,"redirectAdentro":false,"sinAcceso":false}
+
+== 3) Navegador
+JS=false mozo   /kitchen -> URL final /floor | respuestas de navegación: ["307 /kitchen","200 /floor"]
+JS=false cocina /floor -> URL final /kitchen | respuestas de navegación: ["307 /floor","200 /kitchen"]
+JS=true mozo   /kitchen -> URL final /floor | respuestas de navegación: ["307 /kitchen","200 /floor"]
+JS=true cocina /floor -> URL final /kitchen | respuestas de navegación: ["307 /floor","200 /kitchen"]
+
+== 4) Concurrencia: 40 pedidos simultáneos alternando mozo/cocina/admin
+resultados incorrectos: 0 | nombre mostrado por rol: {"cocina":["Cocina Demo"],"admin":["Admin Demo"]}
+
+## Procesos detenidos (taskkill /F /T 23492 y 21524); netstat 3450-3469 LISTENING después:
+(ninguno)

@@ -86,3 +86,21 @@ No toqué 3500, 3501 ni 4317. El build reescribió `.next` (local, ignorado por 
 - `dinamico-salida.txt`: R-2 en HTML, RSC y navegador sin JS; inyección y anuncios; tokens de los `phx_join`; cierre de sesión; netstat final.
 - `cs-dinamico.mjs.txt`: script temporal de Seguridad, guardado como texto.
 - `revision-codigo.txt`: extractos de supabase-js y realtime-js (renovación y cierre de sesión) y diff de código.
+
+## Re-verificación SEC-CS-01 (2026-10-17)
+
+- **Corrección revisada:** `c376018` (merge `614dffb`), rama `feat/staff-redesign` @ `0992ed2`. `git diff 5793fb8 0992ed2` solo toca código en `app/kitchen/layout.tsx` y `app/floor/layout.tsx` (nuevos), en las dos `page.tsx` (cambian `getStaffUser` por `getCurrentStaff`) y en `components/staff/currentStaff.ts` (nuevo).
+  - **Layouts:** `getCurrentStaff()`, después `NoStaffAccess` o `redirect()` por rol, y recién entonces `children`. El layout no queda envuelto por el Suspense de su `loading.tsx`.
+  - **Páginas:** conservan el mismo chequeo como segunda barrera.
+- **`cache(getStaffUser)`:** `cache` de React memoriza por request de renderizado del servidor, no entre requests, y la función no recibe argumentos (la sesión sale de las cookies de ese request). Lo verifiqué en ejecución con 40 pedidos simultáneos a `/kitchen` alternando mozo, cocina y admin: 0 resultados incorrectos. Cada mozo recibió 307 a `/floor`, cocina vio solo "Cocina Demo" y el admin solo "Admin Demo".
+- **Resultados (build de producción + mock propio):**
+  - **Mozo en `/kitchen` y cocina en `/floor` (carga directa):** **307** a `/floor` o `/kitchen`. El cuerpo no trae ningún esqueleto ni datos del panel. En Chromium, con y sin JS, la navegación es `307 /kitchen -> 200 /floor` (y al revés).
+  - **Sin sesión:** 307 a `/login?redirect=...`, igual que antes (`proxy.ts`). Un autenticado sin fila de staff ve "sin acceso", sin datos.
+  - **Admin:** entra a los dos paneles (200 con sus datos). Mozo en `/floor` y cocina en `/kitchen` también siguen entrando.
+  - **Navegación interna (RSC), capturada al admin y repetida con mozo y cocina:** 200 con `NEXT_REDIRECT;replace;/floor;307;` (o `/kitchen`) dentro del payload, unos 4 KB, sin datos ni esqueleto del otro panel. La RSC plana da lo mismo.
+- **Clasificación del 200 en RSC:** no es hallazgo. Es como Next transporta un `redirect()` en una petición de navegación de cliente: el router lo aplica con `replace`, y no viaja nada del panel porque el layout corta antes de renderizar `children`. Eso cumple R-2 y CA-2.6 en lo que respecta a seguridad.
+- **Estado de SEC-CS-01: CERRADO.**
+- **Veredictos:** A **Apto** (sin hallazgos abiertos del alcance) y B **Apto** (sin cambios). Lo preexistente (PRE-CS-01, PRE-CS-02) sigue igual.
+- **Evidencia:** `evidencia/cocina-salon-2026-10-17/sec-cs-01-recheck.txt` (salida completa y netstat final) y `sec-cs-01-recheck.mjs.txt` (script temporal).
+- **Herramienta:** Playwright de `pwe2e` es ahora la 1.64.1, que pide un Chromium (1248) que no está instalado. Usé el `chromium_headless_shell-1243` ya presente con `executablePath`. No instalé nada.
+- **Procesos:** mock (PID 23492, puerto 3451) y app (PID 21524, puerto 3452), detenidos con `taskkill /F /T`; netstat 3450-3469 sin escuchas. No toqué 3500, 3501 ni 4317.
