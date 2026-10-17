@@ -6,7 +6,7 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 - Sin push, sin merge a master, nada a producción. Nunca base real ni credenciales reales.
 - Contexto: el estado anterior del admin está en `docs/ESTADO-ADMIN.md` (rama feat/admin-ui @ 5b12886, solo local).
 
-## Paso actual (2026-10-17): QA-CS-01 corregido (Frontend 640d0d0, 9352d28; sonda foco 13/3 -> 16/0) e integrado. En curso: re-verificación corta de QA del foco. Luego build final + release + pausa. Borrador del release en docs/releases/cocina-salon.md. Hora 12 h vs 24 h: en consulta con el Director.
+## Paso actual: PAUSA ORDENADA (2026-10-17). Release LISTO: docs/releases/cocina-salon.md (build exit 0 en 006be2c, tsc 0). Seguridad A y B Apto; QA Aprobado. Espera la autorización de salida del Director (merge de feat/staff-redesign a master + publicación, ANTES de aplicar la 0004 o cuanto antes si ya está aplicada). Pendientes del Director: hora 12 h vs 24 h, PRE-CS-01. Nada integrado en master; sin procesos del equipo.
 
 ## PAUSA ORDENADA anterior (2026-10-15, el Director reinicia la PC):
 - Carpeta en `fix/realtime-session-token` @ b4ad11e (WIP de Backend, sale de feat/staff-redesign @ 31b017e). Construcción de Cocina y Salón HECHA en feat/staff-redesign (Frontend: e2e 53/0, calidad 136/0, axe 0, regresión admin OK).
