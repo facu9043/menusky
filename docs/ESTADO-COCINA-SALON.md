@@ -6,7 +6,7 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 - Sin push, sin merge a master, nada a producción. Nunca base real ni credenciales reales.
 - Contexto: el estado anterior del admin está en `docs/ESTADO-ADMIN.md` (rama feat/admin-ui @ 5b12886, solo local).
 
-## Paso actual (2026-10-17): SEC-CS-01 corregido por Frontend (c376018, 4792b7b: layouts de /kitchen y /floor, 307 sin esqueleto, redirecciones 13/0, mock e2e 58/58, e2e staff 53/53) e integrado en feat/staff-redesign. En curso: re-verificación corta de Seguridad. Luego QA -> release -> pausa. Backlog: PRE-CS-01 (decide el Director), PRE-CS-02.
+## Paso actual (2026-10-17): Seguridad cerró SEC-CS-01 (df69cef): A Apto, B Apto. En curso: QA por alcance. Luego release -> pausa. Nota: pwe2e tiene Playwright 1.64.1 sin Chromium 1248; usar chromium_headless_shell-1243 con executablePath.
 
 ## PAUSA ORDENADA anterior (2026-10-15, el Director reinicia la PC):
 - Carpeta en `fix/realtime-session-token` @ b4ad11e (WIP de Backend, sale de feat/staff-redesign @ 31b017e). Construcción de Cocina y Salón HECHA en feat/staff-redesign (Frontend: e2e 53/0, calidad 136/0, axe 0, regresión admin OK).
