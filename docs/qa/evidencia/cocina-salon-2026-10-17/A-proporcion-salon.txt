@@ -1,0 +1,10 @@
+     Salon 1024: acciones 542 px, mesas 402 px, proporcion 1.35:1
+OK   Salon 1024: 2 columnas lado a lado, acciones a la izquierda, proporcion cercana a 1.35:1 (1.2 a 1.5) | 1.35
+     Salon 1280: acciones 680 px, mesas 504 px, proporcion 1.35:1
+OK   Salon 1280: 2 columnas lado a lado, acciones a la izquierda, proporcion cercana a 1.35:1 (1.2 a 1.5) | 1.35
+     Salon 1440: acciones 772 px, mesas 572 px, proporcion 1.35:1
+OK   Salon 1440: 2 columnas lado a lado, acciones a la izquierda, proporcion cercana a 1.35:1 (1.2 a 1.5) | 1.35
+OK   Salon 768: zonas apiladas | {"aw":720,"mw":720,"aleft":24,"mleft":24,"atop":148.078125,"mtop":626.34375}
+OK   Salon 390: zonas apiladas | {"aw":358,"mw":358,"aleft":16,"mleft":16,"atop":135,"mtop":674.5625}
+
+5 OK, 0 FAIL

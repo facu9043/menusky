@@ -1,0 +1,10 @@
+OK   CA-2.4 360x640: al final del scroll el boton de la ultima comanda se ve completo | {"top":509.84375,"bottom":565.84375,"vh":640,"n":31}
+OK   skip link 360x640: al enfocarlo con Tab se hace visible (top >= 0; excluido luego del barrido por ser el enlace que aparece al enfocar) | {"txt":"Saltar al contenido","top":8,"left":8,"h":52}
+     360x640: alto del encabezado sticky 62 px; casos de foco tapado: 38
+FAIL WCAG 2.4.11 360x640: el foco por teclado (Tab y Shift+Tab, 180 pasos) nunca queda bajo el encabezado fijo | b Tomar pedido, Mesa 2 top 26 < header 62 | b Tomar pedido, Mesa 3 top 26 < header 62 | b Tomar pedido, Mesa 1 top 26 < header 62
+OK   CA-2.4 1280x800: al final del scroll el boton de la ultima comanda se ve completo | {"top":669.96875,"bottom":725.96875,"vh":800,"n":31}
+OK   skip link 1280x800: al enfocarlo con Tab se hace visible (top >= 0; excluido luego del barrido por ser el enlace que aparece al enfocar) | {"txt":"Saltar al contenido","top":8,"left":8,"h":52}
+     1280x800: alto del encabezado sticky 64 px; casos de foco tapado: 0
+OK   WCAG 2.4.11 1280x800: el foco por teclado (Tab y Shift+Tab, 180 pasos) nunca queda bajo el encabezado fijo
+
+5 OK, 1 FAIL

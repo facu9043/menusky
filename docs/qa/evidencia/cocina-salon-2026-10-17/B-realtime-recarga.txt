@@ -1,0 +1,26 @@
+OK   B /kitchen [sin recarga]: pedido nuevo visible en Cocina <= 5 s | 163 ms
+OK   B /kitchen [sin recarga]: todos los phx_join con access_token (3 joins) | [{"topic":"realtime:staff-pending-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:kitchen-orders-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:table-totals-11111111-1111-4111-8111-111111111111","tok":true}]
+OK   B /kitchen [recarga]: pedido nuevo visible en Cocina <= 5 s | 184 ms
+OK   B /kitchen [recarga]: todos los phx_join con access_token (3 joins) | [{"topic":"realtime:staff-pending-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:kitchen-orders-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:table-totals-11111111-1111-4111-8111-111111111111","tok":true}]
+OK   B /kitchen [reapertura (storageState)]: pedido nuevo visible en Cocina <= 5 s | 31 ms
+OK   B /kitchen [reapertura (storageState)]: todos los phx_join con access_token (3 joins) | [{"topic":"realtime:staff-pending-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:kitchen-orders-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:table-totals-11111111-1111-4111-8111-111111111111","tok":true}]
+OK   B /floor [sin recarga]: llamado nuevo en Salon (toast o contador 2) <= 5 s | 27 ms
+OK   B /floor [sin recarga]: todos los phx_join con access_token (4 joins) | [{"topic":"realtime:staff-pending-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:waiter-calls-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:floor-orders-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:table-totals-11111111-1111-4111-8111-111111111111","tok":true}]
+OK   B /floor [recarga]: llamado nuevo en Salon (toast o contador 2) <= 5 s | 28 ms
+OK   B /floor [recarga]: todos los phx_join con access_token (4 joins) | [{"topic":"realtime:staff-pending-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:waiter-calls-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:floor-orders-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:table-totals-11111111-1111-4111-8111-111111111111","tok":true}]
+OK   B /floor [reapertura (storageState)]: llamado nuevo en Salon (toast o contador 2) <= 5 s | 28 ms
+OK   B /floor [reapertura (storageState)]: todos los phx_join con access_token (4 joins) | [{"topic":"realtime:staff-pending-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:waiter-calls-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:floor-orders-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:table-totals-11111111-1111-4111-8111-111111111111","tok":true}]
+OK   B /floor [sin recarga]: pedido listo nuevo en Salon (contador 2) <= 5 s | 8 ms
+OK   B /floor [sin recarga]: todos los phx_join con access_token (4 joins) | [{"topic":"realtime:staff-pending-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:waiter-calls-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:floor-orders-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:table-totals-11111111-1111-4111-8111-111111111111","tok":true}]
+OK   B /floor [recarga]: pedido listo nuevo en Salon (contador 2) <= 5 s | 8 ms
+OK   B /floor [recarga]: todos los phx_join con access_token (4 joins) | [{"topic":"realtime:staff-pending-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:waiter-calls-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:floor-orders-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:table-totals-11111111-1111-4111-8111-111111111111","tok":true}]
+OK   B /floor [reapertura (storageState)]: pedido listo nuevo en Salon (contador 2) <= 5 s | 9 ms
+OK   B /floor [reapertura (storageState)]: todos los phx_join con access_token (4 joins) | [{"topic":"realtime:staff-pending-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:waiter-calls-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:floor-orders-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:table-totals-11111111-1111-4111-8111-111111111111","tok":true}]
+OK   B /admin [sin recarga]: Pedidos de hoy 4 -> 5 en Inicio <= 5 s | 332 ms
+OK   B /admin [sin recarga]: todos los phx_join con access_token (1 joins) | [{"topic":"realtime:admin-live-11111111-1111-4111-8111-111111111111","tok":true}]
+OK   B /admin [recarga]: Pedidos de hoy 4 -> 5 en Inicio <= 5 s | 328 ms
+OK   B /admin [recarga]: todos los phx_join con access_token (2 joins) | [{"topic":"realtime:admin-live-11111111-1111-4111-8111-111111111111","tok":true},{"topic":"realtime:admin-live-11111111-1111-4111-8111-111111111111","tok":true}]
+OK   B /admin [reapertura (storageState)]: Pedidos de hoy 4 -> 5 en Inicio <= 5 s | 328 ms
+OK   B /admin [reapertura (storageState)]: todos los phx_join con access_token (1 joins) | [{"topic":"realtime:admin-live-11111111-1111-4111-8111-111111111111","tok":true}]
+
+24 OK, 0 FAIL

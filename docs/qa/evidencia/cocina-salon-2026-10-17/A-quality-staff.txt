@@ -1,0 +1,190 @@
+     == cocina ==
+OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 154 ms
+OK   cocina 1440x900: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1440/1440; fuente Geist; animaciones 0
+OK   cocina 1440x900: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa 28; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 279.78125px; textos cortados 0
+     cocina 1440x900: columnas comandas 4, mesas -, página -
+OK   cocina 1440x900: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 155 ms
+OK   cocina 1280x800: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1280/1280; fuente Geist; animaciones 0
+OK   cocina 1280x800: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa 28; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 288.1875px; textos cortados 0
+     cocina 1280x800: columnas comandas 3, mesas -, página -
+OK   cocina 1280x800: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 155 ms
+OK   cocina 1024x768: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1024/1024; fuente Geist; animaciones 0
+OK   cocina 1024x768: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa 28; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 288.1875px; textos cortados 0
+     cocina 1024x768: columnas comandas 3, mesas -, página -
+OK   cocina 1024x768: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 166 ms
+OK   cocina 768x1024: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 768/768; fuente Geist; animaciones 0
+OK   cocina 768x1024: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa 28; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 203.984375px; textos cortados 0
+     cocina 768x1024: columnas comandas 2, mesas -, página -
+OK   cocina 768x1024: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 157 ms
+OK   cocina 390x844: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 390/390; fuente Geist; animaciones 0
+OK   cocina 390x844: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa 24; renglón 18; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 183.6875px; textos cortados 0
+     cocina 390x844: columnas comandas 1, mesas -, página -
+OK   cocina 390x844: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   cocina: llegó el pedido nuevo con "Nuevo" antes de medir | 165 ms
+OK   cocina 360x640: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 360/360; fuente Geist; animaciones 0
+OK   cocina 360x640: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa 24; renglón 18; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 183.6875px; textos cortados 0
+     cocina 360x640: columnas comandas 1, mesas -, página -
+OK   cocina 360x640: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+     == cocina-vacia ==
+OK   cocina-vacia 1440x900: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1440/1440; fuente Geist; animaciones 0
+OK   cocina-vacia 1440x900: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     cocina-vacia 1440x900: columnas comandas -, mesas -, página -
+OK   cocina-vacia 1440x900: axe 0 críticos/serios | 0 violaciones (ninguna); 22 reglas pasan; 0 a revisar
+OK   cocina-vacia 1280x800: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1280/1280; fuente Geist; animaciones 0
+OK   cocina-vacia 1280x800: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     cocina-vacia 1280x800: columnas comandas -, mesas -, página -
+OK   cocina-vacia 1280x800: axe 0 críticos/serios | 0 violaciones (ninguna); 22 reglas pasan; 0 a revisar
+OK   cocina-vacia 1024x768: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1024/1024; fuente Geist; animaciones 0
+OK   cocina-vacia 1024x768: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     cocina-vacia 1024x768: columnas comandas -, mesas -, página -
+OK   cocina-vacia 1024x768: axe 0 críticos/serios | 0 violaciones (ninguna); 22 reglas pasan; 0 a revisar
+OK   cocina-vacia 768x1024: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 768/768; fuente Geist; animaciones 0
+OK   cocina-vacia 768x1024: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     cocina-vacia 768x1024: columnas comandas -, mesas -, página -
+OK   cocina-vacia 768x1024: axe 0 críticos/serios | 0 violaciones (ninguna); 22 reglas pasan; 0 a revisar
+OK   cocina-vacia 390x844: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 390/390; fuente Geist; animaciones 0
+OK   cocina-vacia 390x844: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     cocina-vacia 390x844: columnas comandas -, mesas -, página -
+OK   cocina-vacia 390x844: axe 0 críticos/serios | 0 violaciones (ninguna); 20 reglas pasan; 0 a revisar
+OK   cocina-vacia 360x640: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 360/360; fuente Geist; animaciones 0
+OK   cocina-vacia 360x640: tamaños CA-3.1/3.2 | texto mín 14px ("Cocina"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     cocina-vacia 360x640: columnas comandas -, mesas -, página -
+OK   cocina-vacia 360x640: axe 0 críticos/serios | 0 violaciones (ninguna); 20 reglas pasan; 0 a revisar
+     == salon ==
+OK   salon 1440x900: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1440/1440; fuente Geist; animaciones 0
+OK   salon 1440x900: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa 24; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa 15; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 44px; textos cortados 0
+     salon 1440x900: columnas comandas 2, mesas 3, página 2
+OK   salon 1440x900: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon 1280x800: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1280/1280; fuente Geist; animaciones 0
+OK   salon 1280x800: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa 24; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa 15; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 44px; textos cortados 0
+     salon 1280x800: columnas comandas 2, mesas 3, página 2
+OK   salon 1280x800: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon 1024x768: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1024/1024; fuente Geist; animaciones 0
+OK   salon 1024x768: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa 24; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa 15; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 44px; textos cortados 0
+     salon 1024x768: columnas comandas 2, mesas 3, página 2
+OK   salon 1024x768: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon 768x1024: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 768/768; fuente Geist; animaciones 0
+OK   salon 768x1024: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa 24; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa 15; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 44px; textos cortados 0
+     salon 768x1024: columnas comandas 2, mesas 4, página 1
+OK   salon 768x1024: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon 390x844: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 390/390; fuente Geist; animaciones 0
+OK   salon 390x844: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa 24; renglón 18; opciones/nota/hora/cuenta 16; estado de mesa 15; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 110.6875px; textos cortados 0
+     salon 390x844: columnas comandas 1, mesas 2, página 1
+OK   salon 390x844: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon 360x640: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 360/360; fuente Geist; animaciones 0
+OK   salon 360x640: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa 24; renglón 18; opciones/nota/hora/cuenta 16; estado de mesa 15; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 110.6875px; textos cortados 0
+     salon 360x640: columnas comandas 1, mesas 2, página 1
+OK   salon 360x640: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+     == salon-sin-acciones ==
+OK   salon-sin-acciones 1440x900: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1440/1440; fuente Geist; animaciones 0
+OK   salon-sin-acciones 1440x900: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa 24; renglón -; opciones/nota/hora/cuenta -; estado de mesa 15; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     salon-sin-acciones 1440x900: columnas comandas -, mesas 6, página 4
+OK   salon-sin-acciones 1440x900: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon-sin-acciones 1280x800: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1280/1280; fuente Geist; animaciones 0
+OK   salon-sin-acciones 1280x800: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa 24; renglón -; opciones/nota/hora/cuenta -; estado de mesa 15; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     salon-sin-acciones 1280x800: columnas comandas -, mesas 6, página 4
+OK   salon-sin-acciones 1280x800: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon-sin-acciones 1024x768: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1024/1024; fuente Geist; animaciones 0
+OK   salon-sin-acciones 1024x768: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa 24; renglón -; opciones/nota/hora/cuenta -; estado de mesa 15; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     salon-sin-acciones 1024x768: columnas comandas -, mesas 6, página 4
+OK   salon-sin-acciones 1024x768: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon-sin-acciones 768x1024: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 768/768; fuente Geist; animaciones 0
+OK   salon-sin-acciones 768x1024: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa 24; renglón -; opciones/nota/hora/cuenta -; estado de mesa 15; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     salon-sin-acciones 768x1024: columnas comandas -, mesas 4, página 1
+OK   salon-sin-acciones 768x1024: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon-sin-acciones 390x844: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 390/390; fuente Geist; animaciones 0
+OK   salon-sin-acciones 390x844: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa 24; renglón -; opciones/nota/hora/cuenta -; estado de mesa 15; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     salon-sin-acciones 390x844: columnas comandas -, mesas 2, página 1
+OK   salon-sin-acciones 390x844: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon-sin-acciones 360x640: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 360/360; fuente Geist; animaciones 0
+OK   salon-sin-acciones 360x640: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa 24; renglón -; opciones/nota/hora/cuenta -; estado de mesa 15; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     salon-sin-acciones 360x640: columnas comandas -, mesas 2, página 1
+OK   salon-sin-acciones 360x640: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+     == salon-sin-mesas ==
+OK   salon-sin-mesas 1440x900: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1440/1440; fuente Geist; animaciones 0
+OK   salon-sin-mesas 1440x900: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     salon-sin-mesas 1440x900: columnas comandas -, mesas -, página 4
+OK   salon-sin-mesas 1440x900: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon-sin-mesas 1280x800: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1280/1280; fuente Geist; animaciones 0
+OK   salon-sin-mesas 1280x800: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     salon-sin-mesas 1280x800: columnas comandas -, mesas -, página 4
+OK   salon-sin-mesas 1280x800: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon-sin-mesas 1024x768: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1024/1024; fuente Geist; animaciones 0
+OK   salon-sin-mesas 1024x768: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     salon-sin-mesas 1024x768: columnas comandas -, mesas -, página 4
+OK   salon-sin-mesas 1024x768: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon-sin-mesas 768x1024: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 768/768; fuente Geist; animaciones 0
+OK   salon-sin-mesas 768x1024: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     salon-sin-mesas 768x1024: columnas comandas -, mesas -, página 1
+OK   salon-sin-mesas 768x1024: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   salon-sin-mesas 390x844: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 390/390; fuente Geist; animaciones 0
+OK   salon-sin-mesas 390x844: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     salon-sin-mesas 390x844: columnas comandas -, mesas -, página 1
+OK   salon-sin-mesas 390x844: axe 0 críticos/serios | 0 violaciones (ninguna); 21 reglas pasan; 0 a revisar
+OK   salon-sin-mesas 360x640: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 360/360; fuente Geist; animaciones 0
+OK   salon-sin-mesas 360x640: tamaños CA-3.1/3.2 | texto mín 14px ("Mozo"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     salon-sin-mesas 360x640: columnas comandas -, mesas -, página 1
+OK   salon-sin-mesas 360x640: axe 0 críticos/serios | 0 violaciones (ninguna); 21 reglas pasan; 0 a revisar
+     == menu-cuenta ==
+OK   menu-cuenta 390x844: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 390/390; fuente Geist; animaciones 0
+OK   menu-cuenta 390x844: tamaños CA-3.1/3.2 | texto mín 14px ("Admin"); mesa 24; renglón 18; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 214.484375px; textos cortados 0
+     menu-cuenta 390x844: columnas comandas 1, mesas -, página -
+OK   menu-cuenta 390x844: axe 0 críticos/serios | 0 violaciones (ninguna); 27 reglas pasan; 3 a revisar
+OK   menu-cuenta 360x640: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 360/360; fuente Geist; animaciones 0
+OK   menu-cuenta 360x640: tamaños CA-3.1/3.2 | texto mín 14px ("Admin"); mesa 24; renglón 18; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones 214.484375px; textos cortados 0
+     menu-cuenta 360x640: columnas comandas 1, mesas -, página -
+OK   menu-cuenta 360x640: axe 0 críticos/serios | 0 violaciones (ninguna); 27 reglas pasan; 3 a revisar
+     == admin-cocina ==
+OK   admin-cocina 1024x768: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1024/1024; fuente Geist; animaciones 0
+OK   admin-cocina 1024x768: tamaños CA-3.1/3.2 | texto mín 14px ("Admin"); mesa 28; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     admin-cocina 1024x768: columnas comandas 3, mesas -, página -
+OK   admin-cocina 1024x768: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+OK   admin-cocina 768x1024: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 768/768; fuente Geist; animaciones 0
+OK   admin-cocina 768x1024: tamaños CA-3.1/3.2 | texto mín 14px ("Admin"); mesa 28; renglón 20; opciones/nota/hora/cuenta 16; estado de mesa -; botón acción 56px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     admin-cocina 768x1024: columnas comandas 2, mesas -, página -
+OK   admin-cocina 768x1024: axe 0 críticos/serios | 0 violaciones (ninguna); 23 reglas pasan; 0 a revisar
+     == sin-staff ==
+OK   sin-staff 1440x900: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1440/1440; fuente Geist; animaciones 0
+OK   sin-staff 1440x900: tamaños CA-3.1/3.2 | texto mín 15px ("staff_users"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     sin-staff 1440x900: columnas comandas -, mesas -, página -
+OK   sin-staff 1440x900: axe 0 críticos/serios | 0 violaciones (ninguna); 18 reglas pasan; 0 a revisar
+OK   sin-staff 1280x800: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1280/1280; fuente Geist; animaciones 0
+OK   sin-staff 1280x800: tamaños CA-3.1/3.2 | texto mín 15px ("staff_users"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     sin-staff 1280x800: columnas comandas -, mesas -, página -
+OK   sin-staff 1280x800: axe 0 críticos/serios | 0 violaciones (ninguna); 18 reglas pasan; 0 a revisar
+OK   sin-staff 1024x768: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1024/1024; fuente Geist; animaciones 0
+OK   sin-staff 1024x768: tamaños CA-3.1/3.2 | texto mín 15px ("staff_users"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     sin-staff 1024x768: columnas comandas -, mesas -, página -
+OK   sin-staff 1024x768: axe 0 críticos/serios | 0 violaciones (ninguna); 18 reglas pasan; 0 a revisar
+OK   sin-staff 768x1024: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 768/768; fuente Geist; animaciones 0
+OK   sin-staff 768x1024: tamaños CA-3.1/3.2 | texto mín 15px ("staff_users"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     sin-staff 768x1024: columnas comandas -, mesas -, página -
+OK   sin-staff 768x1024: axe 0 críticos/serios | 0 violaciones (ninguna); 18 reglas pasan; 0 a revisar
+OK   sin-staff 390x844: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 390/390; fuente Geist; animaciones 0
+OK   sin-staff 390x844: tamaños CA-3.1/3.2 | texto mín 15px ("staff_users"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     sin-staff 390x844: columnas comandas -, mesas -, página -
+OK   sin-staff 390x844: axe 0 críticos/serios | 0 violaciones (ninguna); 18 reglas pasan; 0 a revisar
+OK   sin-staff 360x640: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 360/360; fuente Geist; animaciones 0
+OK   sin-staff 360x640: tamaños CA-3.1/3.2 | texto mín 15px ("staff_users"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     sin-staff 360x640: columnas comandas -, mesas -, página -
+OK   sin-staff 360x640: axe 0 críticos/serios | 0 violaciones (ninguna); 18 reglas pasan; 0 a revisar
+     == solo-admin ==
+OK   solo-admin 1280x800: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 1280/1280; fuente Geist; animaciones 0
+OK   solo-admin 1280x800: tamaños CA-3.1/3.2 | texto mín 15px ("Cerrar sesión"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     solo-admin 1280x800: columnas comandas -, mesas -, página -
+OK   solo-admin 1280x800: axe 0 críticos/serios | 0 violaciones (ninguna); 18 reglas pasan; 0 a revisar
+OK   solo-admin 390x844: sin scroll horizontal, cuerpo Geist, 0 animaciones con reduce | ancho 390/390; fuente Geist; animaciones 0
+OK   solo-admin 390x844: tamaños CA-3.1/3.2 | texto mín 15px ("Cerrar sesión"); mesa -; renglón -; opciones/nota/hora/cuenta -; estado de mesa -; botón acción -px ancho completo true; controles < 44 px: 0; separación entre botones -px; textos cortados 0
+     solo-admin 390x844: columnas comandas -, mesas -, página -
+OK   solo-admin 390x844: axe 0 críticos/serios | 0 violaciones (ninguna); 18 reglas pasan; 0 a revisar
+     == Teclado ==
+OK   Teclado /kitchen: salto al contenido primero, todo con foco visible (contorno >= 2 px) | Saltar al contenido > MenuSky, ir a Cocina > Cocina(hay pendientes) > Cerrar sesión > Marcar listo, Mesa 2 > Tomar pedido, Mesa 1
+OK   Teclado /kitchen: "Saltar al contenido" lleva el foco a main#contenido | contenido
+OK   Teclado /floor: salto al contenido primero, todo con foco visible (contorno >= 2 px) | Saltar al contenido > MenuSky, ir a Salón > Cocina(hay pendientes) > Salón(hay pendientes) > Admin > Cerrar sesión > Atendido, Mesa 2 > Entregado, Mesa 3
+OK   Teclado /floor: "Saltar al contenido" lleva el foco a main#contenido | contenido
+
+136 OK, 0 FAIL

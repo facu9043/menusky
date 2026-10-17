@@ -1,0 +1,15 @@
+== CA-1.2: dark / color-mix / accentPrimary / Fraunces en paneles ==
+components/staff/staff.css:672:  color: var(--ms-lettuce-dark);
+== CA-1.1: HEX sueltos en staff.css (fuera de var(--...) con fallback) ==
+(0 resultados)
+== CA-7.1 dependencias nuevas vs master ==
+== CA-NR.11 archivos tocados vs master fuera de app/kitchen app/floor components/{staff,kitchen,floor} ==
+app/globals.css
+lib/admin/live/AdminLiveProvider.tsx
+lib/realtime/startChannel.ts
+lib/realtime/useOrdersBoard.ts
+lib/realtime/useStaffPendingCounts.ts
+lib/realtime/useTableTotals.ts
+lib/realtime/useWaiterCalls.ts
+== supabase/, app/api, proxy.ts, lib/orders, lib/waiterCalls tocados ==
+(ninguno)

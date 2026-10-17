@@ -1,0 +1,9 @@
+     regiones aria-live en Cocina: [{"tag":"P","cls":"sr-only","parent":"DIV.st-page","sonner":false,"attrs":"class,aria-live"},{"tag":"SECTION","cls":"","parent":"BODY.min-h-full flex flex-col","sonner":true,"attrs":"aria-label,tabindex,aria-live,aria-relevant,aria-atomic,data-react-aria-top-layer"}]
+     tarjeta Mesa 3: Mesa 101:33 p. m.Cuenta de la mesa hoy: $ 11.4001× Empanadas (x3)“Sin cebolla”Tomar pedido
+OK   plato largo completo
+OK   nota larga completa con FIN
+OK   precio de 7 cifras en la cuenta de la mesa (1.234.567 o 11.111.103) | $ 21.6002 $ 11.4001 $ 11.123.6039 $1 $1 $1 $7 $1 $7
+OK   doble toque real (dblclick): una sola actualizacion | 1 PATCH; toasts ["Pedido en preparación"]
+OK   doble toque real (tres clics espaciados 30 ms): una sola actualizacion | 1 PATCH; toasts ["Pedido en preparación"]
+
+5 OK, 0 FAIL

@@ -67,3 +67,7 @@ Las 10 de `docs/specs/cocina-salon.md` §8 y las 13 de `docs/design/cocina-salon
 ## Backend: realtime tras recargar - CERRADO 2026-10-17
 - Defecto de la app, arreglado con lib/realtime/startChannel.ts (b4ad11e). Control master d66b639: 4/6 (falla con recarga); rama: 6/6. Conclusion y fuentes en docs/evidencia/backend/realtime-recarga-2026-10-15.txt. Desplegar antes o junto con la 0004.
 - Procesos: mock 3401, next 3402 y 3403 (master) detenidos; worktree menusky-master-tmp borrado; netstat 3400-3419 libre.
+
+## QA por alcance (2026-10-17)
+- Informe: `docs/qa/cocina-salon-2026-10-17.md` (general: Aprobado con reservas; A reservas, B, C y D Aprobado). Defecto QA-CS-01 (Media, Frontend): el encabezado fijo tapa el foco de teclado a 360x640; no bloquea. Evidencia en `docs/qa/evidencia/cocina-salon-2026-10-17/`.
+- Procesos de QA (puertos 3470-3489) DETENIDOS con taskkill: next start 3470, fault-proxy 3471, mock 3472 (varias vueltas) y next start 3472 del build de login; netstat 3470-3489 sin LISTENING (`netstat-final.txt`). Un mock de QA que arrancó por error en 3401 (PID 18136, `--help`) se paró de inmediato. El 3500, 3501 y 4317 no se tocaron.
