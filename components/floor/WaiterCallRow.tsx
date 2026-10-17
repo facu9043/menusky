@@ -2,9 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { BellRing, Check } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { BellRing, Check, LoaderCircle } from "lucide-react";
 import { formatPrice } from "@/lib/format";
 import { waiterCallReasonLabel } from "@/lib/waiterCalls/reasons";
 import type { WaiterCallView } from "@/lib/waiterCalls/getPendingWaiterCalls";
@@ -12,6 +10,7 @@ import type { WaiterCallView } from "@/lib/waiterCalls/getPendingWaiterCalls";
 const timeFormatter = new Intl.DateTimeFormat("es-AR", {
   hour: "2-digit",
   minute: "2-digit",
+  hourCycle: "h23", // 24 h ("13:13"), decisión del Director 2026-10-17
 });
 
 export function WaiterCallRow({
@@ -39,25 +38,34 @@ export function WaiterCallRow({
     }
   };
 
+  const Icon = loading ? LoaderCircle : Check;
+
   return (
-    <Card className="board-card-enter flex flex-row items-center gap-3 border-destructive/40 bg-destructive/5 p-3">
-      <BellRing className="size-5 shrink-0 text-destructive" />
-      <div className="min-w-0 flex-1">
-        <p className="font-medium leading-tight">{tableLabel}</p>
-        <p className="text-xs text-muted-foreground">
+    <div className="st-call">
+      <span className="st-call__bell" aria-hidden="true">
+        <BellRing />
+      </span>
+      <div className="st-call__text">
+        <h3 className="st-call__table">{tableLabel}</h3>
+        <p className="st-call__why">
           {waiterCallReasonLabel(call.reason)} · {timeFormatter.format(new Date(call.createdAt))}
         </p>
         {call.reason === "cuenta" && (
-          <p className="text-xs text-muted-foreground">
-            Cuenta de hoy:{" "}
-            <span className="font-medium text-foreground">{formatPrice(tableTotal)}</span>
+          <p className="st-call__bill">
+            Cuenta de hoy: <b>{formatPrice(tableTotal)}</b>
           </p>
         )}
       </div>
-      <Button type="button" size="sm" variant="outline" disabled={loading} onClick={handleAttend}>
-        <Check />
+      <button
+        type="button"
+        className="adm-btn st-act"
+        disabled={loading}
+        onClick={handleAttend}
+        aria-label={`Atendido, ${tableLabel}`}
+      >
+        <Icon aria-hidden="true" className={loading ? "st-spin" : undefined} />
         Atendido
-      </Button>
-    </Card>
+      </button>
+    </div>
   );
 }

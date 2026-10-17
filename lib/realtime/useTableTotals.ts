@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { startChannel } from "@/lib/realtime/startChannel";
 
 // Snapshot inicial (server) + incremento en vivo: como los totales de un
 // pedido ya creado nunca cambian, alcanza con sumar cada INSERT nuevo — no
@@ -11,7 +12,7 @@ export function useTableTotals(restaurantId: string, initialTotals: Record<strin
 
   useEffect(() => {
     const supabase = createClient();
-    const channel = supabase
+    return startChannel(supabase, () => supabase
       .channel(`table-totals-${restaurantId}`)
       .on(
         "postgres_changes",
@@ -29,11 +30,7 @@ export function useTableTotals(restaurantId: string, initialTotals: Record<strin
           }));
         }
       )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+      .subscribe());
   }, [restaurantId]);
 
   return totals;

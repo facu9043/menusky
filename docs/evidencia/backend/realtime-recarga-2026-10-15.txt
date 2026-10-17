@@ -1,0 +1,102 @@
+Corrida 2026-10-15, mock 3401, rama fix/realtime-session-token (build de produccion, 3402). Pedido nuevo por /__mock/event 2,5 s despues de cargar.
+
+=== ANTES del arreglo (a723b60) ===
+PASS  /kitchen sin recarga  evento entregado=true (72 ms)
+        join   staff-pending-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   kitchen-orders-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   table-totals-11111111-1111-4111-8111-111111111111 token=SI(user)
+FAIL  /kitchen con recarga  evento entregado=false (>5000 ms)
+        join   staff-pending-11111111-1111-4111-8111-111111111111 token=NO
+        join   kitchen-orders-11111111-1111-4111-8111-111111111111 token=NO
+        join   table-totals-11111111-1111-4111-8111-111111111111 token=NO
+PASS  /floor   sin recarga  evento entregado=true (58 ms)
+        join   staff-pending-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   waiter-calls-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   floor-orders-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   table-totals-11111111-1111-4111-8111-111111111111 token=SI(user)
+FAIL  /floor   con recarga  evento entregado=false (>5000 ms)
+        join   staff-pending-11111111-1111-4111-8111-111111111111 token=NO
+        join   waiter-calls-11111111-1111-4111-8111-111111111111 token=NO
+        join   floor-orders-11111111-1111-4111-8111-111111111111 token=NO
+        join   table-totals-11111111-1111-4111-8111-111111111111 token=NO
+PASS  /admin   sin recarga  evento entregado=true (62 ms)
+        join   admin-live-11111111-1111-4111-8111-111111111111 token=SI(user)
+PASS  /admin   con recarga  evento entregado=true (67 ms)
+        join   admin-live-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   admin-live-11111111-1111-4111-8111-111111111111 token=SI(user)
+
+4/6 OK  (32 s)
+
+=== DESPUES del arreglo ===
+PASS  /kitchen sin recarga  evento entregado=true (58 ms)
+        join   staff-pending-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   kitchen-orders-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   table-totals-11111111-1111-4111-8111-111111111111 token=SI(user)
+PASS  /kitchen con recarga  evento entregado=true (66 ms)
+        join   staff-pending-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   kitchen-orders-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   table-totals-11111111-1111-4111-8111-111111111111 token=SI(user)
+PASS  /floor   sin recarga  evento entregado=true (63 ms)
+        join   staff-pending-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   waiter-calls-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   floor-orders-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   table-totals-11111111-1111-4111-8111-111111111111 token=SI(user)
+PASS  /floor   con recarga  evento entregado=true (59 ms)
+        join   staff-pending-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   waiter-calls-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   floor-orders-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   table-totals-11111111-1111-4111-8111-111111111111 token=SI(user)
+PASS  /admin   sin recarga  evento entregado=true (65 ms)
+        join   admin-live-11111111-1111-4111-8111-111111111111 token=SI(user)
+PASS  /admin   con recarga  evento entregado=true (64 ms)
+        join   admin-live-11111111-1111-4111-8111-111111111111 token=SI(user)
+        join   admin-live-11111111-1111-4111-8111-111111111111 token=SI(user)
+
+6/6 OK  (22 s)
+
+Control master d66b639: NO se pudo hacer (el build webpack del worktree fallo); ver realtime-recarga-salida.txt del Frontend (mismo defecto en master).
+CONCLUSION (Backend, 2026-10-17) - tiempo real tras recargar /kitchen, /floor
+
+DIAGNOSTICO: defecto de la APP (no del mock).
+- Con la sesion guardada en cookies, @supabase/ssr crea el cliente sin sesion cargada; supabase-js la lee de forma asincrona
+  (SupabaseClient._getSessionToken -> auth.getSession, supabase-js/src/SupabaseClient.ts:597-602; el token llega a realtime
+  por onAuthStateChange/INITIAL_SESSION -> realtime.setAuth, SupabaseClient.ts:662-682).
+- Los hooks suscribian de inmediato en el useEffect. channel.subscribe() arma el join con socket.accessTokenValue
+  (realtime-js/src/RealtimeChannel.ts:415-425), que todavia es null: el phx_join sale SIN access_token.
+- Cuando el token llega despues, RealtimeClient._performAuth (RealtimeClient.ts:645-668) actualiza el payload y solo empuja
+  el evento access_token si channel.joinedOnce && isJoined(); el join aun no termino, asi que no se empuja. Al terminar el
+  join, RealtimeChannel.ts:432-436 llama setAuth() de nuevo, pero accessTokenValue ya es igual y no hay cambio (sin push).
+  Resultado: el canal queda unido como anonimo para siempre (verificado: traza de frames, 0 pushes access_token).
+- Sin recarga (entrando desde /login) la sesion ya esta en memoria al montar, por eso funciona. /admin con recarga funcionaba
+  por azar de timing (otras consultas resolvian la sesion antes del join).
+- El mock imita bien al servidor: evalua RLS con el rol del join (server.mjs emit()); tambien acepta access_token posterior.
+  No se pudo verificar en este repo como reacciona el Realtime REAL a un access_token tras el join (no hay su codigo en
+  node_modules); el arreglo no depende de eso porque el join ya lleva el token.
+
+IMPACTO EN PRODUCCION
+- Sin 0004 (hoy, si no esta aplicada): "public read orders/order_items" permite al anonimo leer pedidos, asi que el canal
+  anonimo igual recibe los eventos: el defecto NO se nota. (waiter_calls: la lectura nunca fue publica; los llamados nuevos
+  por Realtime tampoco llegarian tras recargar, pero staff-pending/useWaiterCalls refrescan al montar.)
+- Con 0004 aplicada: orders/order_items/waiter_calls solo los lee el staff por RLS. Un join anonimo no recibe nada, en silencio
+  (sin error). Tras recargar, cocina y salon dejan de ver pedidos y llamados nuevos hasta volver a entrar por /login.
+  => Se debe desplegar este arreglo ANTES o junto con la 0004.
+
+QUE CORRIGE / QUE NO
+- Corrige: startChannel (lib/realtime/startChannel.ts) espera getSession y hace realtime.setAuth(token) antes de suscribir en
+  useOrdersBoard (cocina y salon), useTableTotals, useStaffPendingCounts, useWaiterCalls y AdminLiveProvider. No cambia que datos se leen.
+- No corrige: el renovado de token durante la sesion (ya lo hace supabase-js con TOKEN_REFRESHED); useOrderStatus del cliente
+  (anonimo por diseno: sondeo; su camino legado es anonimo a proposito); un join con sesion expirada irrecuperable.
+
+NUMEROS (mock + build de produccion, Playwright; un pedido nuevo 2,5 s despues de cargar, se espera <= 5 s)
+- Antes (master d66b639 y rama a723b60): 4/6. Falla /kitchen y /floor con recarga (joins token=NO). Ver abajo (control).
+- Despues (b4ad11e): 6/6, entrega en 59-66 ms con y sin recarga en /kitchen, /floor y /admin; todos los joins token=SI.
+- Suites en la rama: realtime-recarga-trace 6/6; e2e-staff Cocina y Salon (Frontend) 53/53; admin-live-pending-e2e 15/15;
+  test-admin-data 37 casos, "todo OK en 4 zonas"; browser-poll ("Tu pedido") 10/10 (no lo toca el cambio);
+  scripts/mock-supabase/e2e.mjs 56/58: los 2 FAIL ("mozo: /kitchen -> 307", "cocina: /floor -> 307") NO son de este cambio: desde el rediseno
+  (loading.tsx de /kitchen y /floor) la pagina responde 200 con redireccion en streaming en vez de 307; la navegacion por rol
+  esta cubierta y pasa en e2e-staff (navegador). A corregir en e2e.mjs por el Frontend/QA (fuera de mi alcance de hoy).
+- tsc y eslint de lib/realtime y lib/admin/live: sin salida (limpios).
+
+Archivos de evidencia: realtime-recarga-2026-10-15.txt (antes/despues del 15), realtime-recarga-master-control-2026-10-17.txt,
+realtime-recarga-rama-2026-10-17.txt, e2e-staff-realtime-, e2e-mock-realtime-, admin-live-pending-e2e-realtime-,
+admin-data-unit-realtime-, browser-poll-realtime-2026-10-17.txt; script realtime-recarga-trace.mjs.

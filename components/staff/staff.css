@@ -1,0 +1,902 @@
+/* Cocina (/kitchen) y Salón (/floor): shell y tableros de staff con la marca MenuSky.
+   Dirección de arte: maquetas aprobadas en docs/design/cocina-salon/maquetas/ (tema claro).
+   Usa los tokens --ms-* de app/brand.css y las clases adm-* de app/admin/admin.css (botones,
+   menú de cuenta, punto de pendientes, .adm-h1, Pomo); acá van solo las piezas de staff (st-*).
+   Colores: tokens --ms-* o los fondos de estado del admin (--adm-free-bg, --adm-busy-bg).
+   Movimiento: todo dentro de @media (prefers-reduced-motion: no-preference) (CA-6.2). */
+
+/* QA-CS-01 (WCAG 2.4.11): el encabezado fijo no tapa el foco. La página hace scroll en el documento, así que
+   el margen va en <html> (solo en las páginas de staff, :has). Alto del encabezado: 60 px + 2 px de borde en
+   celular, 64 px desde 768 px; más el área segura de arriba y 16 px de aire. El admin no tiene .st-root. */
+html:has(.st-root) {
+  scroll-padding-top: calc(62px + env(safe-area-inset-top, 0px) + 16px);
+  scroll-padding-bottom: 16px;
+}
+@media (min-width: 48rem) {
+  html:has(.st-root) {
+    scroll-padding-top: calc(64px + 16px);
+  }
+}
+
+.st-root {
+  --st-gap: 0.75rem;
+  --st-head-h: 64px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--ms-bun);
+  color: var(--ms-patty);
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/* ==========================================================================
+   Encabezado de staff (reemplaza StaffHeader + StaffNav)
+   Celular (< 768): como .adm-topbar (claro), logo + botón de cuenta.
+   Tablet y escritorio (>= 768): banda marrón como el menú lateral del admin.
+   ========================================================================== */
+.st-head {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 60px;
+  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
+  background: var(--ms-bun);
+  border-bottom: 2px solid var(--ms-patty);
+}
+.st-head__logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  border-radius: 10px;
+  text-decoration: none;
+}
+.st-head .ms-logo__word {
+  font-size: 1.25rem;
+}
+.st-nav,
+.st-who,
+.st-logout {
+  display: none;
+}
+.st-head .adm-account-btn {
+  margin-left: auto;
+}
+
+@media (min-width: 48rem) {
+  .st-head {
+    min-height: var(--st-head-h);
+    gap: 1rem;
+    padding: 0.5rem 1.25rem;
+    background: var(--ms-patty);
+    color: var(--ms-bun);
+    border-bottom: 0;
+  }
+  .st-head .ms-logo__word {
+    color: var(--ms-bun);
+    font-size: 1.375rem;
+  }
+  .st-head .ms-logo__sky {
+    color: var(--ms-cheddar);
+  }
+  .st-head :focus-visible {
+    outline-color: var(--ms-cheddar);
+  }
+  .st-head .adm-account-btn {
+    display: none;
+  }
+  .st-nav {
+    display: block;
+  }
+  .st-nav ul {
+    display: flex;
+    gap: 0.375rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .st-nav__link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0 1rem;
+    border: 2px solid rgba(255, 245, 225, 0.35);
+    border-radius: 999px;
+    color: var(--ms-bun);
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .st-nav__link svg {
+    display: none;
+    width: 20px;
+    height: 20px;
+    flex: none;
+  }
+  .st-nav__link:hover {
+    border-color: var(--ms-bun);
+  }
+  .st-nav__link[aria-current="page"] {
+    background: var(--ms-cheddar);
+    border-color: var(--ms-cheddar);
+    color: var(--ms-patty);
+  }
+  .st-nav__link .adm-dot {
+    box-shadow: 0 0 0 2px var(--ms-patty);
+  }
+  .st-nav__link[aria-current="page"] .adm-dot {
+    box-shadow: 0 0 0 2px var(--ms-cheddar);
+  }
+
+  .st-who {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    min-width: 0;
+    margin-left: auto;
+  }
+  .st-who__avatar {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border-radius: 999px;
+    background: var(--ms-cheddar);
+    color: var(--ms-patty);
+    font-family: var(--ms-font-display);
+    font-weight: 800;
+  }
+  .st-who__text {
+    min-width: 0;
+    line-height: 1.2;
+  }
+  .st-who__name {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 16ch;
+  }
+  .st-who__role {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--ms-toasted);
+  }
+  .st-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 0.75rem;
+    border: 2px solid rgba(255, 245, 225, 0.35);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--ms-bun);
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    cursor: pointer;
+  }
+  .st-logout:hover {
+    border-color: var(--ms-bun);
+  }
+  .st-logout svg {
+    width: 20px;
+    height: 20px;
+    flex: none;
+  }
+  /* 768-1023: botón de solo ícono (nombre accesible "Cerrar sesión", como hoy). */
+  .st-logout__text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
+@media (min-width: 64rem) {
+  .st-nav__link svg {
+    display: block;
+  }
+  .st-logout {
+    padding: 0 1rem;
+  }
+  .st-logout__text {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+  }
+}
+
+/* Menú de cuenta del celular: el mismo .adm-menu del admin (portado a <body>). */
+.st-menu {
+  width: min(300px, calc(100vw - 16px));
+}
+.st-menu .adm-menu__item[aria-current="page"] {
+  background: var(--ms-cheddar);
+}
+
+/* ==========================================================================
+   Página
+   ========================================================================== */
+.st-main {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
+}
+.st-main:focus {
+  outline: none;
+}
+.st-page {
+  width: 100%;
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 1rem;
+}
+@media (min-width: 48rem) {
+  .st-page {
+    padding: 1.5rem 1.5rem 1rem;
+  }
+}
+@media (min-width: 80rem) {
+  .st-page {
+    padding: 1.75rem 2rem 1rem;
+  }
+}
+.st-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+  margin: 0 0 1.25rem;
+}
+.st-title .adm-h1 {
+  font-size: clamp(2rem, 1.4rem + 2.2vw, 2.75rem);
+}
+.st-title__who {
+  margin: 0;
+  color: var(--ms-patty-soft);
+  font-weight: 600;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.st-h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  margin: 0 0 0.75rem;
+  font-family: var(--ms-font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.st-h2__count {
+  font-size: 1.0625rem;
+  color: var(--ms-patty-soft);
+  font-variant-numeric: tabular-nums;
+}
+.st-section + .st-section {
+  margin-top: 2rem;
+}
+
+/* ==========================================================================
+   Tarjeta de pedido (Cocina y "Listos para llevar"): una comanda
+   ========================================================================== */
+.st-orders {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 48rem) {
+  .st-orders {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem 1rem;
+  }
+}
+@media (min-width: 64rem) {
+  .st-orders {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 90rem) {
+  .st-orders {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.st-order {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: var(--adm-border);
+  border-radius: 16px;
+  background: var(--ms-paper);
+  box-shadow: var(--adm-stamp);
+}
+.st-order__head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px dashed var(--ms-patty);
+  border-radius: 14px 14px 0 0;
+  background: var(--ms-cheddar);
+}
+.st-order[data-status="in_kitchen"] .st-order__head {
+  background: var(--ms-toasted);
+}
+.st-order__table {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--ms-font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+.st-order__time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 700;
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+.st-order__time svg {
+  width: 18px;
+  height: 18px;
+}
+.st-order__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem 1rem;
+  flex: 1;
+}
+.st-order__bill {
+  margin: 0;
+  color: var(--ms-patty-soft);
+  font-size: 1rem;
+}
+.st-order__bill b {
+  color: var(--ms-patty);
+  font-family: var(--ms-font-display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.st-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.st-item__line {
+  display: block;
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.st-item__qty {
+  font-family: var(--ms-font-display);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.st-item__opts {
+  margin: 0.125rem 0 0;
+  color: var(--ms-patty-soft);
+  font-size: 1rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.st-item__note {
+  margin: 0.375rem 0 0;
+  padding: 0.375rem 0.625rem;
+  border-left: 4px solid var(--ms-patty);
+  border-radius: 4px 10px 10px 4px;
+  background: var(--adm-busy-bg);
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.st-order__foot {
+  padding: 0 1rem 1rem;
+}
+@media (min-width: 48rem) {
+  .st-order__table {
+    font-size: 1.75rem;
+  }
+  .st-item__line {
+    font-size: 1.25rem;
+  }
+}
+
+/* Píldora de estado dentro del encabezado ("En preparación"). */
+.st-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 30px;
+  padding: 0 0.625rem;
+  border: 2px solid var(--ms-patty);
+  border-radius: 999px;
+  background: var(--ms-paper);
+  font-weight: 800;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+.st-chip svg {
+  width: 16px;
+  height: 16px;
+}
+/* En preparación: la píldora va en una segunda línea, a su ancho. */
+.st-order[data-status="in_kitchen"] .st-order__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  justify-items: start;
+}
+.st-order[data-status="in_kitchen"] .st-order__time {
+  justify-self: end;
+  align-self: start;
+  padding-top: 0.25rem;
+}
+.st-order:has(.st-new) .st-order__head {
+  padding-top: 1.25rem;
+}
+.st-menu .adm-menu__meta {
+  font-size: 0.875rem;
+}
+/* Salón sin llamados ni listos (F-3): solo "Mesas", a todo el ancho. */
+.st-floor__main:empty {
+  display: none;
+}
+@media (max-width: 63.99rem) {
+  .st-floor__main:not(:empty) + .st-floor__side {
+    margin-top: 2rem;
+  }
+}
+@media (min-width: 64rem) {
+  .st-floor:has(> .st-floor__main:empty) {
+    display: block;
+  }
+  .st-floor:has(> .st-floor__main:empty) .st-tables {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+/* Marca "Nuevo": etiqueta estática (texto) + punto que late solo con movimiento permitido. */
+.st-new {
+  position: absolute;
+  top: -12px;
+  right: 12px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 28px;
+  padding: 0 0.625rem;
+  border: 2px solid var(--ms-patty);
+  border-radius: 999px;
+  background: var(--ms-tomato);
+  color: var(--ms-paper);
+  box-shadow: 0 2px 0 var(--ms-patty);
+  font-weight: 800;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  transform: rotate(-3deg);
+}
+.st-new__dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--ms-cheddar);
+}
+.st-new__dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--ms-cheddar);
+  opacity: 0;
+}
+
+/* Botón de acción de la tarjeta: ancho completo, >= 56 px (CA-3.2). */
+.st-act {
+  width: 100%;
+  min-height: 56px;
+  font-size: 1.0625rem;
+  border-radius: 14px;
+  white-space: normal;
+}
+.st-act svg {
+  width: 22px;
+  height: 22px;
+}
+.st-act:disabled {
+  /* Fondo y texto: los de .adm-btn:disabled del admin (sin HEX sueltos acá). */
+  cursor: progress;
+  box-shadow: none;
+  transform: translateY(3px);
+}
+
+/* ==========================================================================
+   Salón
+   ========================================================================== */
+@media (min-width: 64rem) {
+  .st-floor {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: 2rem;
+    align-items: start;
+  }
+  .st-floor__side {
+    position: sticky;
+    top: calc(var(--st-head-h) + 1.5rem);
+  }
+  .st-floor .st-section + .st-section {
+    margin-top: 2rem;
+  }
+  .st-floor .st-orders {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Llamados de mozo */
+.st-calls {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.st-call {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.75rem 0.875rem;
+  align-items: center;
+  padding: 0.875rem;
+  border: 2px solid var(--ms-tomato);
+  border-radius: 16px;
+  background: var(--ms-paper);
+  box-shadow: 0 3px 0 var(--ms-tomato);
+}
+.st-call__bell {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--ms-patty);
+  border-radius: 14px;
+  background: var(--ms-tomato);
+  color: var(--ms-paper);
+}
+.st-call__bell svg {
+  width: 26px;
+  height: 26px;
+}
+.st-call__text {
+  min-width: 0;
+}
+.st-call__table {
+  margin: 0;
+  font-family: var(--ms-font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+.st-call__why {
+  margin: 0.25rem 0 0;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  color: var(--ms-ketchup);
+}
+.st-call__bill {
+  margin: 0.125rem 0 0;
+  color: var(--ms-patty-soft);
+  font-size: 1rem;
+}
+.st-call__bill b {
+  color: var(--ms-patty);
+  font-family: var(--ms-font-display);
+  font-variant-numeric: tabular-nums;
+}
+.st-call .st-act {
+  grid-column: 1 / -1;
+}
+@media (min-width: 30rem) {
+  /* Fila ancha: "Atendido" a la derecha (CA-3.2, excepción). */
+  .st-call {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .st-call .st-act {
+    grid-column: auto;
+    width: auto;
+    min-width: 152px;
+  }
+}
+
+/* Grilla de mesas: 4 estados con texto + ícono + forma (CA-1.4). */
+.st-tables {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 26rem) {
+  .st-tables {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 48rem) {
+  .st-tables {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+}
+@media (min-width: 64rem) {
+  .st-floor .st-tables {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.st-table {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+  min-height: 92px;
+  padding: 0.625rem 0.75rem;
+  border: 2px solid var(--ms-patty);
+  border-radius: 14px;
+  background: var(--adm-free-bg);
+  color: var(--ms-lettuce-dark);
+}
+.st-table__name {
+  margin: 0;
+  color: var(--ms-patty);
+  font-family: var(--ms-font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+.st-table__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 800;
+  font-size: 0.9375rem;
+  line-height: 1.1;
+}
+.st-table__state svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.st-table[data-state="active"] {
+  background: var(--adm-busy-bg);
+  color: var(--ms-patty);
+}
+.st-table[data-state="ready"] {
+  background: var(--ms-cheddar);
+  color: var(--ms-patty);
+  box-shadow: var(--adm-stamp);
+}
+.st-table[data-state="calling"] {
+  background: var(--ms-tomato);
+  color: var(--ms-paper);
+  box-shadow: var(--adm-stamp);
+}
+.st-table[data-state="calling"] .st-table__name {
+  color: var(--ms-paper);
+}
+
+
+/* ==========================================================================
+   Vacío y sin acceso
+   ========================================================================== */
+.st-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+.st-empty .adm-pomo {
+  height: 140px;
+}
+.st-empty__text {
+  margin: 0;
+  font-family: var(--ms-font-display);
+  font-weight: 700;
+  font-size: clamp(1.375rem, 1.1rem + 1vw, 1.75rem);
+  letter-spacing: -0.02em;
+}
+.st-empty--small {
+  padding: 1.5rem 1rem;
+  border: 2px dashed var(--ms-patty-soft);
+  border-radius: 16px;
+}
+.st-empty--small .st-empty__text {
+  font-size: 1.25rem;
+}
+
+.st-deny {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: 1.5rem 1rem;
+}
+.st-deny__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+  width: 100%;
+  max-width: 440px;
+  padding: 1.75rem 1.25rem 1.5rem;
+  border: var(--adm-border);
+  border-radius: 20px;
+  background: var(--ms-paper);
+  box-shadow: 0 4px 0 var(--ms-patty);
+  text-align: center;
+}
+.st-deny__icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: 2px solid var(--ms-patty);
+  border-radius: 18px;
+  background: var(--ms-cheddar);
+}
+.st-deny__icon svg {
+  width: 32px;
+  height: 32px;
+}
+.st-deny__title {
+  margin: 0;
+  font-family: var(--ms-font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.st-deny__text {
+  max-width: 36ch;
+  margin: 0;
+  color: var(--ms-patty-soft);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+.st-deny__text code {
+  padding: 0.0625rem 0.375rem;
+  border-radius: 6px;
+  background: var(--ms-toasted);
+  color: var(--ms-patty);
+  font-family: var(--ms-font-mono);
+  font-size: 0.9375rem;
+}
+.st-deny .adm-btn {
+  margin-top: 0.375rem;
+  min-height: 48px;
+}
+
+/* ==========================================================================
+   Movimiento (solo con movimiento permitido; con "reduce" no queda ninguno)
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  .st-order,
+  .st-call {
+    animation: st-in var(--ms-dur) var(--ms-ease-out) both;
+  }
+  .st-new__dot::after {
+    animation: st-ping 1.4s var(--ms-ease-out) infinite;
+  }
+  .st-act,
+  .st-nav__link,
+  .st-logout {
+    transition:
+      transform var(--ms-dur-fast) var(--ms-ease-out),
+      background-color var(--ms-dur-fast) var(--ms-ease-out);
+  }
+  .st-act:disabled .st-spin {
+    animation: st-spin 0.9s linear infinite;
+  }
+}
+@keyframes st-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+@keyframes st-ping {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+@keyframes st-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ==========================================================================
+   Carga y error (loading.tsx / error.tsx de /kitchen y /floor)
+   ========================================================================== */
+.st-head--sk {
+  justify-content: flex-start;
+}
+.st-sk {
+  display: block;
+  border-radius: 16px;
+  background: var(--adm-skeleton);
+}
+.st-sk--card {
+  height: 260px;
+}
+.st-sk--title {
+  width: 180px;
+  height: 44px;
+  margin-bottom: 1.25rem;
+  border-radius: 12px;
+}
+.st-sk--table {
+  min-height: 92px;
+  border-radius: 14px;
+}
+.st-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+  max-width: 460px;
+  margin: 1rem auto 0;
+  padding: 1.75rem 1.25rem 1.5rem;
+  border: var(--adm-border);
+  border-radius: 20px;
+  background: var(--ms-paper);
+  box-shadow: 0 4px 0 var(--ms-patty);
+  text-align: center;
+}

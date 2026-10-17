@@ -1,0 +1,15 @@
+patty #2b1710 sobre paper #fffdf8: 16.76:1
+patty-soft #6a4a3c sobre paper: 7.77:1
+patty sobre cheddar #ffc21a: 10.53:1
+patty sobre toasted #f4d9a6: 12.43:1
+patty sobre busy-bg #ffe7a3: 13.96:1
+lettuce-dark #2e6b1a sobre free-bg #e4f1da: 5.53:1
+paper sobre tomato #d7261e: 4.94:1
+ketchup #a8141b sobre paper: 7.43:1
+#5e4a40 (deshabilitado) sobre #efe6d6: 6.70:1
+bun #fff5e1 sobre patty (oscuro): 15.74:1
+toasted sobre patty (oscuro): 12.43:1
+bun sobre card oscuro #3a2219: 13.64:1
+toasted sobre card oscuro #3a2219: 10.77:1
+toasted sobre deshabilitado oscuro #4a3128: 8.70:1
+cheddar (borde nota) sobre patty: 10.53:1

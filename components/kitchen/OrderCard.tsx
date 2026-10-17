@@ -2,16 +2,15 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { ChefHat, CircleCheck } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { ChefHat, CircleCheck, Clock, LoaderCircle } from "lucide-react";
+import { NewTag, OrderLines } from "@/components/staff/OrderLines";
 import { formatPrice } from "@/lib/format";
 import type { BoardOrder } from "@/lib/orders/board";
 
 const timeFormatter = new Intl.DateTimeFormat("es-AR", {
   hour: "2-digit",
   minute: "2-digit",
+  hourCycle: "h23", // 24 h ("13:13"), decisión del Director 2026-10-17
 });
 
 export function OrderCard({
@@ -40,58 +39,50 @@ export function OrderCard({
     }
   };
 
-  return (
-    <Card className="board-card-enter relative flex flex-col gap-3 p-4">
-      {isNew && (
-        <span className="absolute -top-1.5 -right-1.5 flex size-3">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-          <span className="relative inline-flex size-3 rounded-full bg-primary" />
-        </span>
-      )}
+  const received = order.status === "received";
+  const label = received ? "Tomar pedido" : "Marcar listo";
+  const ActionIcon = loading ? LoaderCircle : received ? ChefHat : CircleCheck;
+  const headingId = `pedido-${order.id}`;
 
-      <div className="flex items-center justify-between gap-2">
-        <Badge variant={order.status === "received" ? "default" : "secondary"}>
+  return (
+    <article className="st-order" data-status={order.status} aria-labelledby={headingId}>
+      {isNew && <NewTag />}
+
+      <div className="st-order__head">
+        <h2 className="st-order__table" id={headingId}>
           {order.tableLabel}
-        </Badge>
-        <span className="text-xs text-muted-foreground">
+        </h2>
+        <span className="st-order__time">
+          <Clock aria-hidden="true" />
           {timeFormatter.format(new Date(order.createdAt))}
         </span>
+        {!received && (
+          <span className="st-chip">
+            <ChefHat aria-hidden="true" />
+            En preparación
+          </span>
+        )}
       </div>
 
-      <p className="text-xs text-muted-foreground">
-        Cuenta de la mesa hoy:{" "}
-        <span className="font-medium text-foreground">{formatPrice(tableTotal)}</span>
-      </p>
+      <div className="st-order__body">
+        <p className="st-order__bill">
+          Cuenta de la mesa hoy: <b>{formatPrice(tableTotal)}</b>
+        </p>
+        <OrderLines items={order.items} withNotes />
+      </div>
 
-      <ul className="flex flex-col gap-2">
-        {order.items.map((item) => (
-          <li key={item.id} className="text-sm">
-            <span className="font-medium">
-              {item.quantity}× {item.menuItemName}
-            </span>
-            {item.selectedOptions.length > 0 && (
-              <p className="text-xs text-muted-foreground">
-                {item.selectedOptions.map((o) => o.choiceName).join(" · ")}
-              </p>
-            )}
-            {item.note && (
-              <p className="text-xs italic text-muted-foreground">
-                &ldquo;{item.note}&rdquo;
-              </p>
-            )}
-          </li>
-        ))}
-      </ul>
-
-      <Button
-        type="button"
-        variant={order.status === "received" ? "default" : "outline"}
-        disabled={loading}
-        onClick={handleAdvance}
-      >
-        {order.status === "received" ? <ChefHat /> : <CircleCheck />}
-        {order.status === "received" ? "Tomar pedido" : "Marcar listo"}
-      </Button>
-    </Card>
+      <div className="st-order__foot">
+        <button
+          type="button"
+          className={`adm-btn st-act${received ? " adm-btn--primary" : ""}`}
+          disabled={loading}
+          onClick={handleAdvance}
+          aria-label={`${label}, ${order.tableLabel}`}
+        >
+          <ActionIcon aria-hidden="true" className={loading ? "st-spin" : undefined} />
+          {label}
+        </button>
+      </div>
+    </article>
   );
 }

@@ -1,0 +1,77 @@
+OK   CA-9.1 rótulo 'Inicio' y h1 'Así viene el día'
+OK   CA-9.1 fecha de hoy en hora de Argentina, formato de la maqueta (sin coma) | sábado 17 de octubre
+OK   CA-9.2 cuatro datos con los valores del mock (4 / 3 de 3 / 1 / 1) | {"orders":"4","occ":"3 de 3","calls":"1","stock":"1"}
+OK   CA-9.2 'Pedidos de hoy' en tomate y no es enlace
+OK   CA-9.5 enlaces de los datos: ocupadas, llamando y la Carta SIN filtro (decisión 4 del Director) | {"occ":"/admin/mesas?filtro=ocupadas","calls":"/admin/mesas?filtro=llamando","stock":"/admin/menu"}
+OK   Textos de enlace 'Ver ocupadas', 'Ver mesas llamando', 'Ver en la carta'
+OK   Sin el mensaje de 'sin pedidos' cuando hay pedidos
+OK   CA-9.5 cuatro accesos con su destino y >= 44 px | Nuevo plato 72px, Nueva mesa 72px, Imprimir todos los QR 72px, Ir al Salón 72px
+OK   CA-9.4 un pedido nuevo suma 1 a 'Pedidos de hoy' sin recargar | 324 ms
+OK   CA-9.4 un llamado nuevo suma 1 a 'Llamados pendientes' | 325 ms
+OK   CA-9.4 al atenderse se resta | 324 ms
+OK   CA-9.4 marcar un plato sin stock en Carta se refleja al volver a Inicio (navegación sin recarga) | Disponible: Empanadas (x3)
+OK   ?filtro=ocupadas abre Mesas con 'Ocupadas' activa
+OK   La URL de Mesas queda limpia (recargar no repite el acceso) | http://127.0.0.1:3470/admin/mesas
+OK   ?filtro=llamando abre Mesas con 'Llamando' activa
+OK   Valores desconocidos (?filtro=xyz&imprimir=no&nueva=si) se ignoran: 'Todas', sin diálogos ni error
+OK   Valores desconocidos (?filtro=constructor&imprimir=no&nueva=si) se ignoran: 'Todas', sin diálogos ni error
+OK   Valores desconocidos (?filtro=OCUPADAS&imprimir=no&nueva=si) se ignoran: 'Todas', sin diálogos ni error
+OK   Valores desconocidos (?filtro=&imprimir=no&nueva=si) se ignoran: 'Todas', sin diálogos ni error
+OK   ?filtro=libres (sin mesas libres) muestra el vacío del filtro
+OK   Acceso 'Imprimir todos los QR' abre la vista de imprimir todos
+OK   Al cerrar la vista de impresión, la URL no la vuelve a abrir
+OK   Acceso 'Nueva mesa' abre Mesas con el alta abierta
+OK   Acceso 'Nuevo plato' abre la Carta con el alta de plato (elegir categoría, flujo de siempre) | http://127.0.0.1:3470/admin/menu
+OK   Cancelar el alta desde el acceso no crea platos
+OK   Acceso 'Ir al Salón' lleva a /floor
+OK   CA-9.7 falla la carta: 'Platos sin stock' dice 'No pudimos cargar' (role=alert) y los otros 3 siguen
+OK   'Reintentar' vuelve a leer sin recargar la página y muestra el dato | 109 ms
+OK   Falla la instantánea en vivo: sus 3 tarjetas muestran el error y 'Platos sin stock' sigue
+OK   Cada 'Reintentar' nombra su dato (Reintentar Pedidos de hoy, ...)
+OK   'Reintentar' recupera los 3 datos en vivo con sus valores | 113 ms, 3 de 3
+OK   CA-11.5 fallan las dos lecturas: 'No pudimos cargar el resumen' con Pomo 'uy' y role=alert, nunca 'sin pedidos'
+OK   El menú sigue usable durante el error
+OK   'Reintentar' del resumen vuelve a Inicio sin recargar | 112 ms
+OK   Sin errores de JavaScript en Inicio
+OK   CA-9.6 sin pedidos hoy: el dato muestra 0 y Pomo con 'Todavía no entraron pedidos hoy.'
+OK   CA-9.6 con 0 llamados: 'Sin llamados'
+OK   CA-9.8 solo datos del restaurante B (0 de 2 mesas)
+OK   Los accesos rápidos siguen bajo el vacío
+OK   Restaurante sin mesas ni platos: Inicio '0 de 0' y 0 sin stock
+OK   CA-11.1 Carta vacía con Pomo y 'Nueva categoría'
+OK   CA-11.1 Mesas vacía con Pomo y 'Nueva mesa'
+OK   ?imprimir=1 sin mesas no abre la vista de impresión
+OK   'Nuevo plato' sin categorías abre 'Nueva categoría' (mismo flujo que el botón de la Carta)
+OK   CA-10.2 rótulo 'Apariencia' y h1 'Tu carta, a tu estilo'
+OK   8 temas, MenuSky primero | MenuSky, Clásico, Glaciar, Galaxia, Madera, Neobrutalista, Neumorfismo, Claymorfismo
+OK   CA-10.2 MenuSky con 'Predeterminado' y, activo, 'Activo' + ícono + 'Tema actual' deshabilitado
+OK   Los otros 7 dicen 'Usar este tema'
+OK   CA-10.4 mientras se aplica: el elegido dice 'Aplicando...' y todos los botones de tema quedan deshabilitados
+OK   Al terminar: 'Tema aplicado' y Glaciar queda activo; MenuSky ya no
+OK   Tras aplicar Glaciar, la paleta muestra sus colores | #DCEFF6
+OK   CA-10.5 los 7 campos hex tienen <label for>
+OK   CA-10.5 cada selector de color tiene nombre accesible
+OK   El selector de color escribe el hex
+OK   Escribir el hex actualiza la muestra y la vista previa | rgb(18, 52, 86) / rgb(18, 52, 86)
+OK   Mientras se escribe (5 caracteres) el error aún no aparece, pero 'Guardar' ya se bloquea
+OK   CA-10.6 al salir del campo: error en línea, aria-invalid y aria-describedby al error
+OK   La muestra del color inválido se ve rayada (no un color falso)
+OK   Con 7 caracteres inválidos el error aparece sin salir del campo
+OK   Con un hex válido el error se va y 'Guardar' se habilita
+OK   CA-10.5 aviso de contraste como texto, en role=status y asociado a la vista previa
+OK   'Restablecer' vuelve a lo guardado (Glaciar)
+OK   Error al guardar: aviso 'No se pudo guardar la paleta' y el botón vuelve a 'Guardar'
+OK   Guardar: tras recargar se conserva el color y ningún tema queda 'Activo' (paleta propia)
+     tema guardado: {"background":"#DCEFF6","cardBackground":"#B9E4F0","textPrimary":"#0B2A3B","textSecondary":"#C9B8AE","accentPrimary":"#0EA5C9","accentSecondary":"#2563A6","waiterButton":"#FF7A59"}
+OK   El guardado conserva las claves del tema (style incluido si existía)
+OK   CA-11.5 falla la lectura del tema: Pomo 'uy', role=alert, sin editor (nunca el tema por defecto)
+OK   'Reintentar' carga el editor sin recargar la página | 110 ms
+OK   Sin errores de JavaScript en Apariencia
+OK   Inicio 390: sin scroll horizontal
+OK   Inicio 390: accesos en 2 columnas y >= 44 px | 174x100
+OK   Inicio 390: tocar 'Mesas ocupadas' filtra Mesas
+OK   CA-10.3 celular: Guardar/Restablecer en barra fija visible sobre las pestañas | barra 704-772, pestañas desde 780
+OK   CA-10.3 celular: temas en 1 columna
+OK   Apariencia 390: sin scroll horizontal
+
+74 OK, 0 FAIL

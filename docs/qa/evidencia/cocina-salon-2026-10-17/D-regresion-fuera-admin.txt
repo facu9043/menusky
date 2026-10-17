@@ -1,0 +1,40 @@
+OK   CA-3.7 login admin@demo.test sin redirect -> /admin | /admin
+OK   CA-3.7 login mozo@demo.test sin redirect -> /floor | /floor
+OK   CA-3.7 login cocina@demo.test sin redirect -> /kitchen | /kitchen
+OK   CA-3.7 login sinstaff@demo.test sin redirect -> /kitchen | /kitchen
+OK   CA-3.1 mozo@demo.test en /kitchen -> /floor | /floor
+OK   CA-3.2 cocina@demo.test en /floor -> /kitchen | /kitchen
+OK   CA-NR.01 mozo@demo.test en /admin -> /admin | /admin
+OK   CA-NR.01 mozo en /admin ve NotAdminAccess
+OK   CA-3.5 sinstaff@demo.test en /floor -> /floor | /floor
+OK   CA-3.5 sin staff ve sin acceso, sin datos | MenuSkyTu cuenta no está vinculada a ningún restaurantePedile al administrador que te agregue en la 
+OK   CA-3.7 mozo ?redirect=/kitchen termina en /floor | http://127.0.0.1:3470/floor
+OK   CA-3.7 cocina ?redirect=/floor termina en /kitchen | http://127.0.0.1:3470/kitchen
+OK   CA-3.7 mozo ?redirect=/admin ve NotAdminAccess
+OK   CA-NR.01 anonimo /kitchen -> /login?redirect | /login?redirect=%2Fkitchen
+OK   CA-NR.01 anonimo /floor -> /login?redirect | /login?redirect=%2Ffloor
+OK   CA-NR.01 anonimo /admin -> /login?redirect | /login?redirect=%2Fadmin
+OK   CA-NR.01 anonimo /admin/menu -> /login?redirect | /login?redirect=%2Fadmin%2Fmenu
+OK   CA-NR.01 anonimo /admin/mesas -> /login?redirect | /login?redirect=%2Fadmin%2Fmesas
+OK   CA-NR.01 anonimo /admin/apariencia -> /login?redirect | /login?redirect=%2Fadmin%2Fapariencia
+OK   D-19 /kitchen (cocina@demo.test): 0 textos en Times, body Geist | {"total":31,"times":0,"body":"Geist, \"Geist Fallback\""}
+OK   /kitchen (cocina@demo.test) muestra pedidos/mesas del mock | Saltar al contenidoMenuSkyCocina(hay pendientes)CDCocina DemoCocinaCerrar sesiónCocinaCocinaEl Buen Sabor · Cocina DemoMesa 201:17 p. m.En p
+OK   D-19 /floor (mozo@demo.test): 0 textos en Times, body Geist | {"total":37,"times":0,"body":"Geist, \"Geist Fallback\""}
+OK   /floor (mozo@demo.test) muestra pedidos/mesas del mock | Saltar al contenidoMenuSkySalón(hay pendientes)MDMozo DemoMozoCerrar sesiónMozoSalónEl Buen Sabor · Mozo DemoLlamados de mozo · 1Mesa 2Pide 
+OK   D-19 /kitchen (admin@demo.test): 0 textos en Times, body Geist | {"total":34,"times":0,"body":"Geist, \"Geist Fallback\""}
+OK   /kitchen (admin@demo.test) muestra pedidos/mesas del mock | Saltar al contenidoMenuSkyCocina(hay pendientes)Salón(hay pendientes)AdminADAdmin DemoAdminCerrar sesiónAdminCocinaEl Buen Sabor · Admin Dem
+OK   D-19 /floor (admin@demo.test): 0 textos en Times, body Geist | {"total":40,"times":0,"body":"Geist, \"Geist Fallback\""}
+OK   /floor (admin@demo.test) muestra pedidos/mesas del mock | Saltar al contenidoMenuSkyCocina(hay pendientes)Salón(hay pendientes)AdminADAdmin DemoAdminCerrar sesiónAdminSalónEl Buen Sabor · Admin Demo
+OK   /m carta del cliente se ve (platos del seed) | EEl Buen SaborMesa 1EntradasPlatos principalesBebidasEntradasEmpanadas (x3)Carne cortada a
+OK   /m sin textos en Times | {"total":33,"times":0,"body":"Geist, \"Geist Fallback\""}
+OK   CA-2.3 el cliente llega a 'Tu pedido' con hora y total | EEl Buen SaborMesa 1Tu pedidoHecho a las 01:30 p. m.1Recibido2En preparación3Listo4Entregado1× Provoleta$ 5.200Total$ 5.200Pedir algo másLlamar al mozoVer pedid
+OK   CA-2.6 seguimiento 'Recibido' visible
+OK   CA-2.7 'Tu pedido' refleja cancelado sin recargar en <= 5 s | 2925 ms; en preparacion visto: true (25 ms)
+OK   D-12/CA-2.7 hubo sondeo (pedidos periodicos al estado) | 1 pedidos de red observados
+OK   CA-2.6 orderId inexistente -> 404
+codigos: 200,200,200,200,200,200,200,200,200,429,429
+OK   CA-2.x 429 al pasar el limite (10/mesa/10 min) con el texto exacto | 200,200,200,200,200,200,200,200,200,429,429 | Recibimos muchos pedidos de esta mesa. Esperá unos minutos o llamá al mozo.
+FAIL 429 llega exactamente al 11.o pedido de la ventana (1 semilla + 1 UI + 8 API = 10, el siguiente 429) | primer 429 en el intento 10 de la tanda
+OK   CA-2.x el cliente ve en pantalla el texto del 429
+
+36 OK, 1 FAIL

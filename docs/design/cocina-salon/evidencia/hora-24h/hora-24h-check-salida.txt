@@ -1,0 +1,8 @@
+     /kitchen: horas en pantalla: 14:22, 14:31, 14:34
+OK   /kitchen: todas las horas en 24 h (HH:MM, sin "a. m."/"p. m."), incluida la que llegó por tiempo real | 14:22, 14:31, 14:34
+OK   /kitchen: el HTML del servidor no trae "a. m."/"p. m."
+     /floor: horas en pantalla: 14:33, 14:34, 14:09
+OK   /floor: todas las horas en 24 h (HH:MM, sin "a. m."/"p. m."), incluida la que llegó por tiempo real | 14:33, 14:34, 14:09
+OK   /floor: el HTML del servidor no trae "a. m."/"p. m."
+
+4 OK, 0 FAIL

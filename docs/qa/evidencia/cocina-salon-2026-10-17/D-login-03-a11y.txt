@@ -1,0 +1,60 @@
+PASA   CA-6.10 axe inicial 1440x900: 0 violaciones (incl. best-practice) :: {"axe":"4.13.0","violaciones":[],"pasan":38,"incompletos":[]}
+PASA   CA-6.10 axe inicial 360x640: 0 violaciones (incl. best-practice) :: {"axe":"4.13.0","violaciones":[],"pasan":38,"incompletos":[]}
+PASA   CA-6.10 axe con error de credenciales 1440x900: 0 violaciones (incl. best-practice) :: {"axe":"4.13.0","violaciones":[],"pasan":38,"incompletos":[]}
+PASA   CA-6.10 axe con error de red 360x640: 0 violaciones (incl. best-practice) :: {"axe":"4.13.0","violaciones":[],"pasan":38,"incompletos":[]}
+PASA   CA-6.10 axe inicial 768x1024: 0 violaciones (incl. best-practice) :: {"axe":"4.13.0","violaciones":[],"pasan":38,"incompletos":[]}
+ARBOL AX (no ignorados, sin generic/texto):
+  RootWebArea "Ingresar | MenuSky" focusable=true
+  main "" 
+  region "Notifications alt+T" focusable=true
+  sectionheader "" 
+  region "Ingresar" 
+  alert "" 
+  link "MenuSky, ir al inicio" focusable=true
+  paragraph "" 
+  heading "Ingresar" 
+  paragraph "" 
+  form "" 
+  LabelText "" 
+  textbox "Email" invalid=false,focusable=true,required=true
+  LabelText "" 
+  alert "" 
+  button "Entrar" invalid=false,focusable=true
+  textbox "Contraseña" invalid=false,focusable=true,required=true
+  button "Mostrar contraseña" invalid=false,focusable=true
+PASA   CA-3.6/6.11 mascota fuera del arbol AX: sin img/graphics/svg/gráfico :: []
+PASA   CA-6.3 labels: textbox 'Email' y 'Contraseña' (requeridos) :: [{"role":"textbox","name":"Email","props":"invalid=false,focusable=true,required=true"},{"role":"textbox","name":"Contraseña","props":"invalid=false,focusable=true,required=true"}]
+PASA   CA-11.1/12.1 nombres accesibles: enlace 'MenuSky, ir al inicio'; botones 'Mostrar contraseña' y 'Entrar' :: ["Entrar","Mostrar contraseña"]
+PASA   CA-6.1 landmark main y heading 1 'Ingresar' :: ok
+PASA   CA-6.6/6.14 AX: 2 nodos alert = 1 del login (dentro de main) + el route announcer de Next (vacio, solo anuncia navegaciones); sin status/log; sin aria-live con texto :: {"alertasAX":2,"announcer":true,"announcerAlertInShadow":true,"lightAlerts":1,"inMain":1,"liveConTexto":0}
+PASA   CA-6.7 label sobre tarjeta (paper) :: {"fg":[43,23,16],"bg":[255,253,248],"alpha":1,"r":16.76,"size":"15px","weight":"600","min":4.5}
+PASA   CA-6.7 h1 sobre tarjeta (texto grande >=3, medido 4,5) :: {"fg":[43,23,16],"bg":[255,253,248],"alpha":1,"r":16.76,"size":"44px","weight":"800","min":4.5}
+PASA   CA-6.7 bajada sobre tarjeta :: {"fg":[106,74,60],"bg":[255,253,248],"alpha":1,"r":7.77,"size":"15px","weight":"400","min":4.5}
+PASA   CA-6.7 texto escrito en campo vs fondo del campo :: {"fg":[43,23,16],"bg":[255,245,225],"alpha":1,"r":15.74,"size":"16px","weight":"400","min":4.5}
+PASA   CA-6.7 borde del campo vs fondo de la tarjeta (>=3) :: {"fg":[106,74,60],"bg":[255,253,248],"alpha":1,"r":7.77,"size":"16px","weight":"400","min":3}
+PASA   CA-6.7 borde del campo vs fondo del propio campo (>=3) :: {"fg":[106,74,60],"bg":[255,245,225],"alpha":1,"r":7.3,"size":"16px","weight":"400","min":3}
+PASA   CA-6.7 texto del boton (patty) sobre cheddar :: {"fg":[43,23,16],"bg":[255,194,26],"alpha":1,"r":10.53,"size":"17px","weight":"650","min":4.5}
+PASA   CA-6.7 frase del panel de marca (paper) sobre tomate :: {"fg":[255,253,248],"bg":[215,38,30],"alpha":1,"r":4.94,"size":"48.96px","weight":"800","min":4.5}
+PASA   CA-6.7 logo 'Menu' sobre fondo del panel :: {"fg":[43,23,16],"bg":[255,245,225],"alpha":1,"r":15.74,"size":"22px","weight":"800","min":4.5}
+PASA   CA-6.7 logo 'Sky' (tomate, texto grande 22px bold) sobre fondo :: {"fg":[215,38,30],"bg":[255,245,225],"alpha":1,"r":4.64,"size":"22px","weight":"800","min":3}
+PASA   CA-6.7 icono mostrar contraseña vs campo (>=3) :: {"fg":[106,74,60],"bg":[255,245,225],"alpha":1,"r":7.3,"size":"16px","weight":"400","min":3}
+PASA   CA-6.4 anillo de foco tomate >=3:1 vs paper y vs bun :: {"tomato":[215,38,30],"paper":4.94,"bun":4.64,"cheddar":3.1}
+PASA   CA-6.4 (informativo) anillo de foco tomate vs cheddar (boton, lo separa offset de 4px sobre bun) :: {"tomato":[215,38,30],"paper":4.94,"bun":4.64,"cheddar":3.1}
+PASA   CA-6.7 texto del boton en hover sobre #ffcd3f :: {"fg":[43,23,16],"bg":[255,205,63],"alpha":1,"r":11.4,"size":"17px","weight":"650","min":4.5}
+PASA   CA-6.7 texto del error (credenciales) ketchup sobre fondo de la alerta :: {"fg":[168,20,27],"bg":[255,245,225],"alpha":1,"r":6.98,"size":"15px","weight":"600","min":4.5}
+PASA   CA-6.7 icono del error (credenciales) >=3 :: {"fg":[168,20,27],"bg":[255,245,225],"alpha":1,"r":6.98,"size":"15px","weight":"600","min":3}
+PASA   CA-6.7 RNF-A10 'Entrando...' (deshabilitado) patty sobre mustard :: {"fg":[43,23,16],"bg":[227,160,8],"alpha":1,"r":7.54,"size":"17px","weight":"650","min":4.5}
+PASA   CA-6.7 texto del error (red) ketchup sobre fondo de la alerta :: {"fg":[168,20,27],"bg":[255,245,225],"alpha":1,"r":6.98,"size":"15px","weight":"600","min":4.5}
+PASA   CA-6.7 icono del error (red) >=3 :: {"fg":[168,20,27],"bg":[255,245,225],"alpha":1,"r":6.98,"size":"15px","weight":"600","min":3}
+PASA   Caso 7.12 autofill: -webkit-text-fill-color patty sobre bun (valores del CSS, mismo par que campo normal) :: patty #2b1710 sobre bun #fff5e1; ver par 'texto escrito en campo'
+PASA   CA-6.4 los 5 elementos interactivos muestran contorno >=2px solido al enfocar con teclado :: ["lg-home:3px solid rgb(215, 38, 30)","email:3px solid rgb(215, 38, 30)","password:3px solid rgb(215, 38, 30)","lg-eye:3px solid rgb(215, 38, 30)","lg-submit:3px solid rgb(215, 38, 30)"]
+PASA   CA-6.8/6.9 360x640: campos, boton y ojo >=44 px de alto; texto de campos >=16 px :: {"email":[291,48],"pass":[291,48],"eye":[44,44],"submit":[291,52],"logo":[148,44],"fs":"16px"}
+PASA   CA-2.3 h1/logo/frase en Bricolage; labels, campos y boton en Geist :: {"h1":"\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", Geist, \"Geist Fallback\", system-ui, sans-serif","logo":"\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", Geist, \"Geist Fallback\", system-ui, sans-serif","email":"Geist, \"Geist Fallback\", system-ui, sans-serif","btn":"Geist, \"Geist Fallback\", system-ui, sans-serif","label":"Geist, \"Geist Fallback\", system-ui, sans-serif","claim":"\"Bricolage Grotesque\", \"Bricolage Grotesque Fallback\", Geist, \"Geist Fallback\", system-ui, sans-serif"}
+PASA   CA-2.3 fuentes cargadas (informativo) :: ["Geist 100 900","Geist Fallback normal","Bricolage Grotesque 200 800","Bricolage Grotesque Fallback normal"]
+PASA   CA-6.5 teclado completo: escribir, Tab hasta Entrar, Enter envia; tras error foco en Entrar; Espacio reintenta; Shift+Tab vuelve al ojo :: {"f":"lg-submit","tras_error":"lg-submit","sh":"lg-eye"}
+PASA   CA-7.2/6.9 zoom 200% en 1280x720 (640x360): sin scroll horizontal, controles dentro del ancho (scroll vertical permitido) :: {"ox":0,"inside":true,"sh":597}
+PASA   CA-7.2/6.9 360 al 200% (180x320): sin scroll horizontal, controles dentro del ancho (scroll vertical permitido) :: {"ox":0,"inside":true,"sh":583}
+PASA   CA-7.2/6.9 320x256 reflow WCAG: sin scroll horizontal, controles dentro del ancho (scroll vertical permitido) :: {"ox":0,"inside":true,"sh":525}
+PASA   CA-6.9 solo texto al 200% (font-size raiz 200%, aproximacion) en 1280x720: sin desborde ni perdida :: {"ox":-15,"btn":true,"ov":false}
+
+TOTAL 39 | PASA 39 | FALLA 0

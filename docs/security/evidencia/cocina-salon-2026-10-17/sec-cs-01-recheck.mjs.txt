@@ -1,0 +1,78 @@
+// Seguridad (TEMPORAL): re-verificación SEC-CS-01, feat/staff-redesign @ 0992ed2. Mock 3451, app 3452. Datos ficticios.
+import { createRequire } from "node:module";
+const req = createRequire("C:/Users/facundo/Desktop/menusky/package.json");
+const pw = createRequire("C:/Users/facundo/AppData/Local/Temp/pwe2e/package.json")("playwright");
+const { createServerClient } = req("@supabase/ssr");
+const MOCK = "http://127.0.0.1:3451", APP = "http://127.0.0.1:3452", ANON = "mock-anon-key";
+await fetch(MOCK + "/__mock/reset", { method: "POST" });
+async function login(email) {
+  const jar = new Map();
+  const s = createServerClient(MOCK, ANON, { cookies: { getAll: () => [...jar].map(([name, value]) => ({ name, value })), setAll: (l) => l.forEach(({ name, value }) => jar.set(name, value)) } });
+  const { error } = await s.auth.signInWithPassword({ email, password: "demo-1234" });
+  if (error) throw error;
+  return [...jar];
+}
+const J = { mozo: await login("mozo@demo.test"), cocina: await login("cocina@demo.test"), admin: await login("admin@demo.test"), sinstaff: await login("sinstaff@demo.test"), anon: [] };
+const ck = (j) => j.map(([k, v]) => `${k}=${v}`).join("; ");
+// Marcadores: datos del panel, esqueleto de carga y textos de los dos paneles
+const MARK = (b) => ({
+  datos: (b.match(/Provoleta|Empanadas|Mesa \d|El Buen Sabor|st-orders__|st-table__/) || ["no"])[0],
+  esqueleto: /st-sk|Cargando los pedidos|Cargando el salón/.test(b),
+  redirectAdentro: /NEXT_REDIRECT|__next-page-redirect/.test(b),
+  sinAcceso: /no está vinculada/.test(b),
+});
+console.log("== 1) Carga directa (HTML) y petición RSC plana, sin seguir redirecciones");
+for (const [who, path] of [["mozo", "/kitchen"], ["cocina", "/floor"], ["anon", "/kitchen"], ["anon", "/floor"], ["sinstaff", "/kitchen"], ["admin", "/kitchen"], ["admin", "/floor"], ["mozo", "/floor"], ["cocina", "/kitchen"]]) {
+  for (const mode of ["HTML", "RSC"]) {
+    const h = { cookie: ck(J[who]) }; if (mode === "RSC") h.rsc = "1";
+    let r = await fetch(APP + path, { redirect: "manual", headers: h });
+    if (mode === "RSC" && r.status === 307 && /_rsc/.test(r.headers.get("location") ?? "")) r = await fetch(new URL(r.headers.get("location"), APP), { redirect: "manual", headers: h });
+    const b = await r.text();
+    console.log(`${mode.padEnd(4)} ${who.padEnd(8)} ${path.padEnd(8)} -> ${r.status} loc=${r.headers.get("location") ?? "-"} | ${b.length} bytes | ${JSON.stringify(MARK(b))}`);
+  }
+}
+// 2) Navegación interna real: se captura la petición RSC del admin (Salón -> Cocina y Cocina -> Salón) y se repite con mozo/cocina
+console.log("\n== 2) Navegación de cliente (RSC capturada al admin, repetida con otros roles)");
+const browser = await pw.chromium.launch({ executablePath: process.env.PW_EXE });
+const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+await ctx.addCookies(J.admin.map(([name, value]) => ({ name, value, domain: "127.0.0.1", path: "/" })));
+const page = await ctx.newPage();
+const cap = new Map();
+page.on("request", (r) => { const h = r.headers(); const p = new URL(r.url()).pathname; if (h["rsc"] && !h["next-router-prefetch"] && ["/kitchen", "/floor"].includes(p) && !cap.has(p)) cap.set(p, { url: r.url(), headers: h }); });
+for (const [from, to] of [["/floor", "/kitchen"], ["/kitchen", "/floor"]]) {
+  await page.goto(APP + from, { waitUntil: "networkidle" });
+  await page.evaluate((t) => [...document.querySelectorAll(`a[href="${t}"]`)].find((a) => a.offsetParent)?.click(), to);
+  await page.waitForURL((u) => u.pathname === to, { timeout: 15000 }).catch(() => {});
+  await page.waitForTimeout(800);
+}
+console.log(`capturadas: ${[...cap.keys()].join(", ")}`);
+for (const [who, path] of [["mozo", "/kitchen"], ["cocina", "/floor"], ["admin", "/kitchen"], ["admin", "/floor"]]) {
+  const c = cap.get(path); if (!c) { console.log(`sin captura para ${path}`); continue; }
+  const h = { cookie: ck(J[who]), rsc: c.headers["rsc"], "next-router-state-tree": c.headers["next-router-state-tree"] };
+  if (c.headers["next-url"]) h["next-url"] = c.headers["next-url"];
+  const r = await fetch(c.url, { redirect: "manual", headers: h });
+  const b = await r.text();
+  const m = b.match(/NEXT_REDIRECT[^"]{0,60}/);
+  console.log(`RSC-nav ${who.padEnd(7)} ${path.padEnd(8)} -> ${r.status} loc=${r.headers.get("location") ?? "-"} | ${b.length} bytes | ${JSON.stringify(MARK(b))}${m ? " | " + m[0] : ""}`);
+}
+// 3) Navegador con y sin JS: URL final y si se pinta algo del otro panel
+console.log("\n== 3) Navegador");
+for (const js of [false, true]) for (const [who, path] of [["mozo", "/kitchen"], ["cocina", "/floor"]]) {
+  const c2 = await browser.newContext({ javaScriptEnabled: js });
+  await c2.addCookies(J[who].map(([name, value]) => ({ name, value, domain: "127.0.0.1", path: "/" })));
+  const p = await c2.newPage();
+  const seen = [];
+  p.on("response", (r) => { if (r.request().isNavigationRequest()) seen.push(`${r.status()} ${new URL(r.url()).pathname}`); });
+  await p.goto(APP + path, { waitUntil: "load" });
+  await p.waitForTimeout(1500);
+  console.log(`JS=${js} ${who.padEnd(6)} ${path} -> URL final ${new URL(p.url()).pathname} | respuestas de navegación: ${JSON.stringify(seen)}`);
+  await c2.close();
+}
+// 4) cache(getStaffUser) no mezcla sesiones: pedidos concurrentes alternando roles
+console.log("\n== 4) Concurrencia: 40 pedidos simultáneos alternando mozo/cocina/admin");
+const who4 = Array.from({ length: 40 }, (_, i) => ["mozo", "cocina", "admin"][i % 3]);
+const res = await Promise.all(who4.map(async (w) => { const r = await fetch(APP + "/kitchen", { redirect: "manual", headers: { cookie: ck(J[w]) } }); const b = await r.text(); return { w, s: r.status, loc: r.headers.get("location"), who: (b.match(/El Buen Sabor<!-- --> · <!-- -->([^<]+)</) || [])[1] }; }));
+const bad = res.filter((x) => (x.w === "mozo" ? !(x.s === 307 && x.loc === "/floor") : !(x.s === 200 && x.who)));
+const names = {}; for (const x of res) if (x.who) (names[x.w] ??= new Set()).add(x.who);
+console.log(`resultados incorrectos: ${bad.length} | nombre mostrado por rol: ${JSON.stringify(Object.fromEntries(Object.entries(names).map(([k, v]) => [k, [...v]])))}`);
+await browser.close();

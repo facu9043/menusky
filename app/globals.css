@@ -87,11 +87,9 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-/* .dark: usado por los paneles de staff (cocina/salón/admin) como su
-   estética fija tipo "consola" — no tiene que ver con el theme del
-   restaurante. El único color de marca que entra ahí es --primary, que
-   StaffShell sobreescribe puntualmente con el accentPrimary de cada
-   restaurante (ver components/staff/StaffShell.tsx). */
+/* .dark: estética oscura tipo "consola" que usaban los paneles de staff.
+   Desde el rediseño (fase cocina-salón) Cocina y Salón usan la marca
+   MenuSky clara (components/staff/staff.css) y ya no aplican .dark. */
 .dark {
   --background: #111318;
   --foreground: #F2F2F0;
@@ -284,6 +282,15 @@
   .board-card-enter {
     opacity: 0;
     transform: translateY(-10px) scale(0.97);
+  }
+}
+/* Con movimiento reducido no hay entrada animada ni pulso (corrige K-14). */
+@media (prefers-reduced-motion: reduce) {
+  .board-card-enter {
+    transition: none;
+  }
+  .animate-ping {
+    animation: none;
   }
 }
 

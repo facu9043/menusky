@@ -1,33 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/client";
+import { useLogout } from "@/components/admin/shell/useLogout";
 
+// "Cerrar sesión" con texto visible (CA-8.4) en las pantallas sin permiso.
+// Misma lógica de siempre: signOut, /login y refresh (useLogout, CA-NR.02).
 export function LogoutButton() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
-  const handleLogout = async () => {
-    setLoading(true);
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push("/login");
-    router.refresh();
-  };
+  const { logout, loggingOut } = useLogout();
 
   return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon-sm"
-      disabled={loading}
-      onClick={handleLogout}
-    >
-      <LogOut />
-      <span className="sr-only">Cerrar sesión</span>
-    </Button>
+    <button type="button" className="adm-btn" disabled={loggingOut} onClick={logout}>
+      <LogOut aria-hidden="true" />
+      Cerrar sesión
+    </button>
   );
 }

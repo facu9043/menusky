@@ -1,0 +1,71 @@
+PASA   CA-1.2 sin manejadores de arrastre ni estado on :: 0 coincidencias
+PASA   CA-1.2 sin 'cadena'/'luz'/role=button :: 0 coincidencias
+PASA   CA-2.6 sin toast ni sonner en LoginForm :: 0 coincidencias
+PASA   CA-6.14 sin aria-live; 1 role=alert :: {"alert":1}
+PASA   CA-5.1 transiciones solo transform :: ["transform var(--ms-dur-fast) var(--ms-ease-out)","transform 180ms var(--ms-ease-out)","none !important"]
+PASA   CA-5.1 keyframes sin width/height/top/left/margin/box-shadow/filter/background-position :: {"keyframes":["lg-rise","lg-stage-in","m-blink","lg-lean","lg-shake-a","lg-shake-b","lg-hop"],"malos":[]}
+PASA   CA-5.2 sin blur/backdrop-filter/drop-shadow :: []
+PASA   CA-5.6/9.9 package.json y lock sin cambios (vs efbbfd5) :: diff vacio
+PASA   CA-10.11.1/10.4 rAF/setInterval/mousemove/onKey*: solo el setTimeout de seguridad de 10 s :: ["setTimeout"]
+PASA   CA-10.10a setTimeout solo es la red de seguridad (clearTimeout, 10_000) :: 1 setTimeout, 10_000 ms; la navegacion (router.push) no espera
+PASA   CA-10.10 setSucceeded(true) justo antes de router.push, sin await entre medio :: orden verificado en handleSubmit
+PASA   CA-3.12c 0 Brioche/Pollito/MascotVariant/mascota=/variant===1|2 en app/** y components/** :: []
+PASA   CA-3.12a page.tsx sin searchParams.mascota ni BORRADOR :: page.tsx lee solo redirect
+PASA   CA-3.12b components/brand/mascot solo Pomo :: ["index.tsx","MascotPomo.tsx"]
+PASA   CA-3.12d docs/design/mascota conserva historial :: 11 archivos
+FALLA  CA-3.8 mascota importada solo desde app/login (y su propio dir) :: ["app/brand.css","app/login/login.css","app/login/page.tsx","components/admin/carta/BrandPomo.tsx"]
+PASA   CA-3.2/3.5 SVG sin image/href/url()/script/foreignObject/text/filter/title :: []
+PASA   CA-3.5 <= 120 elementos SVG :: {"elementos":54}
+PASA   CA-3.6 SVG aria-hidden y sin title ni focusable :: aria-hidden=true
+PASA   CA-3.13 sin nombre 'Pomo' en pantalla/aria :: LoginForm/page sin 'Pomo'; SVG sin aria-label/alt
+PASA   CA-2.1/3.3 colores literales dentro de la paleta (+ #ffcd3f, #7ccb4e declarados) :: {"fuera":[],"usados":11}
+PASA   CA-2.1 tokens --ms-* del login == landing.css :: {"tokens":0,"distintos":[]}
+PASA   CA-2.1 naranja E8590C y fondo 170f0c ausentes :: 0 coincidencias
+FALLA  CA-4.8/2.4 sin cambios en lib, proxy, supabase, api, globals, landing, Logo, sonner, layout (vs efbbfd5) :: app/(landing)/landing.css                     |  39 +-
+ app/(landing)/layout.tsx                      |  16 +-
+ app/api/orders/route.ts                       |  73 ++-
+ app/api/qr/[qrToken]/route.ts                 |   7 +-
+ app/api/waiter-calls/route.ts                 |   7 +-
+ app/globals.css                               |  19 +-
+ components/landing/FlowDemo.tsx               |   6 +-
+ lib/admin/errors.ts                           |  21 +
+ lib/admin/getAdminMenu.ts                     |   4 +-
+ lib/admin/getAdminTables.ts                   |   4 +-
+ lib/admin/getRestaurantTheme.ts               |  14 +-
+ lib/admin/live/AdminLiveProvider.tsx          | 127 +++++
+ lib/admin/live/derive.ts                      |  44 ++
+ lib/admin/live/getAdminLiveSnapshot.ts        |   8 +
+ lib/admin/live/load.ts                        |  63 +++
+ lib/admin/live/types.ts                       |  41 ++
+ lib/admin/uploadMenuItemPhoto.ts              |  37 +-
+ lib/floor/tableStatus.ts                      |  20 +
+ lib/menu/getTableMenu.ts                      |  42 +-
+ lib/orders/getOrder.ts                        |  77 ++-
+ lib/orders/getTableTotals.ts                  |  10 +-
+ lib/realtime/startChannel.ts                  |  33 ++
+ lib/realtime/useOrderStatus.ts                | 112 ++++-
+ lib/realtime/useOrdersBoard.ts                |   9 +-
+ lib/realtime/useStaffPendingCounts.ts         |   9 +-
+ lib/realtime/useTableTotals.ts                |   9 +-
+ lib/realtime/useWaiterCalls.ts                |  25 +-
+ lib/tables/getTableByToken.ts                 |  42 ++
+ lib/theme/presets.ts                          |  28 +-
+ lib/time/today.ts                             |  55 +++
+ lib/types/database.types.ts                   |  18 +-
+ supabase/migrations/0004_role_policies.sql    | 362 ++++++++++++++
+ supabase/rollback/0004_role_policies_down.sql |  72 +++
+ supabase/tests/rls/.gitignore                 |   1 +
+ supabase/tests/rls/README.md                  |  22 +
+ supabase/tests/rls/package-lock.json          |  19 +
+ supabase/tests/rls/package.json               |   8 +
+ supabase/tests/rls/run.mjs                    | 681 ++++++++++++++++++++++++++
+ 38 files changed, 2034 insertions(+), 150 deletions(-)
+PASA   Alcance del diff (informativo) :: ["TRASPASO.md","app/(landing)/landing.css","app/(landing)/layout.tsx","app/admin/(inicio)/error.tsx","app/admin/(inicio)/loading.tsx","app/admin/(inicio)/page.tsx","app/admin/admin.css","app/admin/apariencia/error.tsx","app/admin/apariencia/loading.tsx","app/admin/apariencia/page.tsx","app/admin/layout.tsx","app/admin/menu/(lista)/loading.tsx","app/admin/menu/(lista)/page.tsx","app/admin/menu/[itemId]/page.tsx","app/admin/menu/error.tsx","app/admin/menu/page.tsx","app/admin/mesas/error.tsx","app/admin/mesas/loading.tsx","app/admin/mesas/page.tsx","app/admin/page.tsx","app/api/orders/route.ts","app/api/qr/[qrToken]/route.ts","app/api/waiter-calls/route.ts","app/brand.css","app/floor/error.tsx","app/floor/layout.tsx","app/floor/loading.tsx","app/floor/page.tsx","app/globals.css","app/kitchen/error.tsx","app/kitchen/layout.tsx","app/kitchen/loading.tsx","app/kitchen/page.tsx","app/login/layout.tsx","app/login/login.css","app/login/page.tsx","app/m/[tableId]/pedido/[orderId]/page.tsx","components/admin/AdminNav.tsx","components/admin/AppearanceEditor.tsx","components/admin/CategoryDialog.tsx","components/admin/CategoryList.tsx","components/admin/MenuItemEditForm.tsx","components/admin/MenuItemRow.tsx","components/admin/NewOptionGroupDialog.tsx","components/admin/NewTableForm.tsx","components/admin/OptionGroupCard.tsx","components/admin/OptionGroupsEditor.tsx","components/admin/TableList.tsx","components/admin/ThemeCustomEditor.tsx","components/admin/ThemeMockupCard.tsx","components/admin/ThemePresetCard.tsx","components/admin/TogglePill.tsx","components/admin/carta/BrandPomo.tsx","components/admin/carta/BrandSwitch.tsx","components/admin/carta/CategoryFormDialog.tsx","components/admin/carta/CategoryMenu.tsx","components/admin/carta/ConfirmDialog.tsx","components/admin/carta/DishItem.tsx","components/admin/carta/DishSheet.tsx","components/admin/carta/EmptyState.tsx","components/admin/carta/MenuBoard.tsx","components/admin/carta/OptionGroupsPanel.tsx","components/admin/carta/PickCategoryDialog.tsx","components/admin/carta/normalize.ts","components/admin/carta/useAvailability.ts","components/admin/inicio/HomeBoard.tsx","components/admin/mesas/NewTableDialog.tsx","components/admin/mesas/PrintView.tsx","components/admin/mesas/TableCard.tsx","components/admin/mesas/TableMenu.tsx","components/admin/mesas/TableSheet.tsx","components/admin/mesas/TablesBoard.tsx","components/admin/mesas/tableState.ts","components/admin/shell/AdminShell.tsx","components/admin/shell/OfflineNotice.tsx","components/admin/shell/nav.ts","components/admin/shell/portal.tsx","components/admin/shell/useLogout.ts","components/auth/LoginForm.tsx","components/auth/safeRedirect.ts","components/brand/fonts.ts","components/brand/mascot/MascotPomo.tsx","components/brand/mascot/index.tsx","components/client/OrderStatusTracker.tsx","components/floor/FloorBoard.tsx","components/floor/ReadyOrderCard.tsx","components/floor/TableGrid.tsx","components/floor/WaiterCallRow.tsx","components/kitchen/KitchenEmpty.tsx","components/kitchen/OrderBoard.tsx","components/kitchen/OrderCard.tsx","components/landing/FlowDemo.tsx","components/staff/AccessDenied.tsx","components/staff/LogoutButton.tsx","components/staff/NoStaffAccess.tsx","components/staff/NotAdminAccess.tsx","components/staff/OrderLines.tsx","components/staff/StaffBrand.tsx","components/staff/StaffHeader.tsx","components/staff/StaffNav.tsx","components/staff/StaffShell.tsx","components/staff/StaffStates.tsx","components/staff/currentStaff.ts","components/staff/staff.css","components/staff/useArrivalAnnouncer.ts","lib/admin/errors.ts","lib/admin/getAdminMenu.ts","lib/admin/getAdminTables.ts","lib/admin/getRestaurantTheme.ts","lib/admin/live/AdminLiveProvider.tsx","lib/admin/live/derive.ts","lib/admin/live/getAdminLiveSnapshot.ts","lib/admin/live/load.ts","lib/admin/live/types.ts","lib/admin/uploadMenuItemPhoto.ts","lib/floor/tableStatus.ts","lib/menu/getTableMenu.ts","lib/orders/getOrder.ts","lib/orders/getTableTotals.ts","lib/realtime/startChannel.ts","lib/realtime/useOrderStatus.ts","lib/realtime/useOrdersBoard.ts","lib/realtime/useStaffPendingCounts.ts","lib/realtime/useTableTotals.ts","lib/realtime/useWaiterCalls.ts","lib/tables/getTableByToken.ts","lib/theme/presets.ts","lib/time/today.ts","lib/types/database.types.ts","scripts/check-safe-redirect.mjs","scripts/measure-login-weight.mjs","scripts/mock-supabase/README.md","scripts/mock-supabase/browser-poll-check.mjs","scripts/mock-supabase/e2e.mjs","scripts/mock-supabase/server.mjs","scripts/test-admin-data.mjs","supabase/migrations/0004_role_policies.sql","supabase/rollback/0004_role_policies_down.sql","supabase/tests/rls/.gitignore","supabase/tests/rls/README.md","supabase/tests/rls/package-lock.json","supabase/tests/rls/package.json","supabase/tests/rls/run.mjs"]
+PASA   CA-3.8/CA-2.4 Logo.tsx intacto :: sin diff
+PASA   CA-3.5 peso de MascotPomo.tsx (aprox. SVG) :: {"bytes":5590,"gzip":1580}
+PASA   RNF-S2 sin placeholder/defaultValue con credenciales :: sin placeholder ni defaultValue
+PASA   CA-4.6 atributos de campos :: ok
+PASA   CA-12.1 enlace al inicio sin prefetch :: ok
+PASA   CA-12.2 sin enlaces externos/redes :: ok
+
+TOTAL 31 | PASA 29 | FALLA 2

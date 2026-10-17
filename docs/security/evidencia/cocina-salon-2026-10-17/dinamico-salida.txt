@@ -1,0 +1,36 @@
+# Auditoría Cocina/Salón + realtime (Seguridad), feat/staff-redesign @ 0ade2f4, 2026-10-17
+# Build: NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:3451 NEXT_PUBLIC_SUPABASE_ANON_KEY=mock-anon-key NEXT_PUBLIC_SITE_URL=http://localhost:3452 npx next build (exit 0)
+# Mock: node scripts/mock-supabase/server.mjs --port 3451 (PID 22832) | App: npx next start -H 127.0.0.1 -p 3452 (PID 22780)
+# Script: cs-dinamico.mjs.txt (Playwright de C:\Users\facundo\AppData\Local\Temp\pwe2e)
+
+== 1) R-2 sin JS (fetch, sin seguir redirecciones)
+HTML mozo   /kitchen -> 200 loc=- | meta-refresh=<meta id="__next-page-redirect" http-equiv="refresh" content="1;url=/floor"/> | NEXT_REDIRECT=true | datos del panel: no | 17528 bytes
+RSC  mozo   /kitchen -> 200 loc=- | meta-refresh=no | NEXT_REDIRECT=true | datos del panel: no | 8883 bytes
+HTML cocina /floor   -> 200 loc=- | meta-refresh=<meta id="__next-page-redirect" http-equiv="refresh" content="1;url=/kitchen"/> | NEXT_REDIRECT=true | datos del panel: no | 17452 bytes
+RSC  cocina /floor   -> 200 loc=- | meta-refresh=no | NEXT_REDIRECT=true | datos del panel: no | 8772 bytes
+HTML mozo   /floor   -> 200 loc=- | meta-refresh=no | NEXT_REDIRECT=false | datos del panel: El Buen Sabor | 29380 bytes
+RSC  mozo   /floor   -> 200 loc=- | meta-refresh=no | NEXT_REDIRECT=false | datos del panel: El Buen Sabor | 11720 bytes
+HTML cocina /kitchen -> 200 loc=- | meta-refresh=no | NEXT_REDIRECT=false | datos del panel: El Buen Sabor | 34581 bytes
+RSC  cocina /kitchen -> 200 loc=- | meta-refresh=no | NEXT_REDIRECT=false | datos del panel: El Buen Sabor | 17202 bytes
+HTML anon   /kitchen -> 307 loc=/login?redirect=%2Fkitchen
+
+== 2) R-2 en Chromium con JavaScript desactivado
+mozo   /kitchen -> URL final /floor | texto antes de redirigir: "MenuSky\n\nCargando los pedidos...\n\nCocina" | datos: no
+cocina /floor -> URL final /kitchen | texto antes de redirigir: "MenuSky\n\nCargando el salón...\n\nSalón" | datos: no
+
+== 3) Inyección por datos del cliente
+admin crea mesa con etiqueta HTML -> OK
+cocina: window.__xss=undefined | <img> inyectadas=0 | nota mostrada como texto=true | aria-live=["Pedido nuevo: Mesa <img src=x onerror=\"window.__xss=1\">\"'"]
+salón: window.__xss=undefined | <img> inyectadas=0 | aria-live=["Llamado de Mesa <img src=x onerror=\"window.__xss=1\">\"': Pide la cuenta","Pedido listo: Mesa <img src=x onerror=\"window.__xss=1\">\"'","Una mesa está llamando al mozo"]
+
+== 4) Realtime
+cocina joins=3 temas=["realtime:staff-pending-11111111-1111-4111-8111-111111111111","realtime:kitchen-orders-11111111-1111-4111-8111-111111111111","realtime:table-totals-11111111-1111-4111-8111-111111111111"] | token del join = JWT de cocina@demo.test (role authenticated) | correcto=true | ninguno con la clave anon=true | token en HTML=false | en consola=false | en local/sessionStorage=false | mensajes de consola=1
+mozo   joins=4 temas=["realtime:staff-pending-11111111-1111-4111-8111-111111111111","realtime:waiter-calls-11111111-1111-4111-8111-111111111111","realtime:floor-orders-11111111-1111-4111-8111-111111111111","realtime:table-totals-11111111-1111-4111-8111-111111111111"] | token del join = JWT de mozo@demo.test (role authenticated) | correcto=true | ninguno con la clave anon=true | token en HTML=false | en consola=false | en local/sessionStorage=false | mensajes de consola=1
+logout cocina -> URL /login | tramas enviadas tras el clic: ["access_token(token=anon)","access_token(token=anon)","access_token(token=anon)","phx_leave","phx_leave","phx_leave"]
+tras logout, /kitchen -> URL /login (status 200)
+
+## Control aparte: consola de /kitchen (cocina) en una carga limpia
+consola /kitchen (cocina): []
+
+## Procesos detenidos (taskkill /F /T 22832 y 22780); netstat 3450-3469 LISTENING después:
+(ninguno)

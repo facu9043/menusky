@@ -1,0 +1,36 @@
+     animaciones activas con movimiento: [{"name":"st-in","dur":280,"iter":1,"props":["transform","opacity"]},{"name":"st-in","dur":280,"iter":1,"props":["transform","opacity"]},{"name":"st-in","dur":280,"iter":1,"props":["transform","opacity"]},{"name":"st-ping","dur":1400,"iter":"inf","props":["transform","opacity"]}]
+OK   CA-6.1/12.3 ninguna animacion mueve box-shadow, filter ni backdrop-filter | []
+OK   CA-6.1 ninguna animacion finita > 400 ms | []
+OK   CA-6.3 bucles infinitos: solo el pulso del punto 'nuevo' (periodo >= 0,34 s = <= 3 Hz) | [{"name":"st-ping","dur":1400,"iter":"inf","props":["transform","opacity"]}]
+OK   CA-6.1 sin filter/backdrop-filter computado en el tablero | 0 elementos
+OK   CA-6.3/6.4/8.1 se puede tocar durante la animacion; al actuar se detiene el pulso y desaparece 'Nuevo' | infinitas 0, Nuevo 0
+FAIL CA-5.1 Cocina: 1 region aria-live=polite oculta (sr-only) | [{"live":"polite","cls":"sr-only"},{"live":"polite","cls":""}]
+     Salon: regiones aria-live = ["polite","polite","polite"] (la spec deja 'assertive solo para llamados' a confirmar por QA)
+OK   CA-5.1 Salon: regiones aria-live presentes (polite)
+OK   CA-5.4 un solo h1 y encabezados h2 en orden | ["H1:Salón","H2:Llamados de mozo · 1","H3:Mesa 2","H2:Listos para llevar · 1","H3:Mesa 3","H2:Mesas"]
+OK   casos limite Cocina 1440x900: sin scroll horizontal y nada fuera de la tarjeta | hscroll 0; []
+OK   casos limite Cocina 1280x800: sin scroll horizontal y nada fuera de la tarjeta | hscroll 0; []
+OK   casos limite Cocina 1024x768: sin scroll horizontal y nada fuera de la tarjeta | hscroll 0; []
+OK   casos limite Cocina 768x1024: sin scroll horizontal y nada fuera de la tarjeta | hscroll 0; []
+OK   casos limite Cocina 390x844: sin scroll horizontal y nada fuera de la tarjeta | hscroll 0; []
+FAIL nombre de plato de 95 car., nota de 240 car. y 'FIN' visibles completos; precio 7 cifras sin cortar
+OK   50 renglones: el boton 'Tomar pedido, Mesa 2' sigue alcanzable
+OK   etiqueta de mesa larga: nombre completo en el DOM | ["Mesa 2","Mesa 1","Mesa del fondo junto a la ventana grande 3","Mesa 2"]
+OK   casos limite Cocina 360x640: sin scroll horizontal y nada fuera de la tarjeta | hscroll 0; []
+OK   casos limite Cocina 320x568: sin scroll horizontal y nada fuera de la tarjeta | hscroll 0; []
+OK   casos limite Cocina 720x450: sin scroll horizontal y nada fuera de la tarjeta | hscroll 0; []
+OK   casos limite Salon 1280x800: sin scroll horizontal | hscroll 0
+OK   casos limite Salon 390x844: sin scroll horizontal | hscroll 0
+OK   Salon: mesa de nombre largo con su estado visible
+OK   casos limite Salon 320x568: sin scroll horizontal | hscroll 0
+OK   casos limite Salon 720x450: sin scroll horizontal | hscroll 0
+     Cocina con 32 comandas
+OK   CA-7.2 Cocina con 30+ pedidos: sin scroll horizontal
+OK   CA-7.2 el boton cambia su estado visible en <= 100 ms con 30 pedidos | 1.1 ms
+FAIL doble toque (2 clics seguidos): una sola actualizacion (PATCH) | 2 PATCH
+OK   CA-3.5 girar la pantalla conserva comandas y estado
+OK   CA-8.3 Salon con 20 llamados: titulo con contador 20 o 21 (1 semilla + 20) | Llamados de mozo · 21
+OK   CA-7.2 Salon con 40 mesas: sin scroll horizontal
+OK   Salon: las 40 mesas estan en pantalla
+
+28 OK, 3 FAIL

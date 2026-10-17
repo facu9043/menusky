@@ -1,0 +1,12 @@
+Generado 2026-10-16T01:34:16.664Z con Chrome (Playwright, channel "chrome"), file://, deviceScaleFactor 1.
+cocina 1024x768: 0 violaciones; 20 reglas pasan; 0 a revisar a mano
+cocina 390x844: 0 violaciones; 20 reglas pasan; 0 a revisar a mano
+cocina-vacia 1024x768: 0 violaciones; 19 reglas pasan; 0 a revisar a mano
+cocina-vacia 390x844: 0 violaciones; 17 reglas pasan; 0 a revisar a mano
+salon 1024x768: 0 violaciones; 20 reglas pasan; 0 a revisar a mano
+salon 390x844: 0 violaciones; 20 reglas pasan; 0 a revisar a mano
+salon-vacio 1024x768: 0 violaciones; 21 reglas pasan; 0 a revisar a mano
+salon-vacio 390x844: 0 violaciones; 21 reglas pasan; 0 a revisar a mano
+shell 1024x768: 0 violaciones; 24 reglas pasan; 0 a revisar a mano
+shell 390x844: 0 violaciones; 24 reglas pasan; 0 a revisar a mano
+cocina-oscuro 1024x768: 0 violaciones; 20 reglas pasan; 0 a revisar a mano

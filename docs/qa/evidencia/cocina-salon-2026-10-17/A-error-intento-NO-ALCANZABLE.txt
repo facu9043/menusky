@@ -1,0 +1,7 @@
+     con la base cortada: status 200 url http://127.0.0.1:3470/login?redirect=%2Fkitchen texto: MenuSkyCocina, salón y administración, en un solo lugar.IngresarAcceso para el equipo del restauranteEmailContraseñaEntrar(self.__next_f=self.__next_f||[]).push([0])self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[39756,[\"/_next/static/chunks/3fntmmi971322.js\"],\"default\"]\n3:I[37457,[\"/_next/
+FAIL error: se ve 'No pudimos cargar ...' y 'Reintentar' (no un tablero vacio)
+FAIL error: 'Puede ser la conexión o un problema del servicio.'
+OK   error: sin detalles tecnicos (message/stack/digest)
+OK   error: role=alert
+
+2 OK, 2 FAIL
