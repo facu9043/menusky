@@ -27,7 +27,7 @@ Al recargar `/kitchen`, `/floor` o `/admin` con la sesión guardada, la conexió
 ## Build verificado
 - `next build` con variables ficticias en `feat/staff-redesign` @ 006be2c: exit 0; `npx tsc --noEmit`: 0. Salida: `docs/releases/cocina-salon-build-2026-10-17.txt`.
 - Es el mismo código que aprobaron Seguridad y QA (después de 006be2c solo cambian docs).
-- master (d66b639) ya está contenido en `feat/staff-redesign`: el merge no tiene conflictos. 45+ commits sobre master.
+- master (d66b639) ya está contenido en `feat/staff-redesign`: el merge no tiene conflictos. 52 commits sobre master.
 
 ## Plan de salida (cuando el Director autorice; NADA de esto está hecho)
 1. Respaldo: anotar el commit actual de master (hoy d66b639) y el despliegue vigente en Vercel.
