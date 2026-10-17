@@ -5,6 +5,19 @@
    Colores: tokens --ms-* o los fondos de estado del admin (--adm-free-bg, --adm-busy-bg).
    Movimiento: todo dentro de @media (prefers-reduced-motion: no-preference) (CA-6.2). */
 
+/* QA-CS-01 (WCAG 2.4.11): el encabezado fijo no tapa el foco. La página hace scroll en el documento, así que
+   el margen va en <html> (solo en las páginas de staff, :has). Alto del encabezado: 60 px + 2 px de borde en
+   celular, 64 px desde 768 px; más el área segura de arriba y 16 px de aire. El admin no tiene .st-root. */
+html:has(.st-root) {
+  scroll-padding-top: calc(62px + env(safe-area-inset-top, 0px) + 16px);
+  scroll-padding-bottom: 16px;
+}
+@media (min-width: 48rem) {
+  html:has(.st-root) {
+    scroll-padding-top: calc(64px + 16px);
+  }
+}
+
 .st-root {
   --st-gap: 0.75rem;
   --st-head-h: 64px;
