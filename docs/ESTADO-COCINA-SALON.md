@@ -6,7 +6,16 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 - Sin push, sin merge a master, nada a producción. Nunca base real ni credenciales reales.
 - Contexto: el estado anterior del admin está en `docs/ESTADO-ADMIN.md` (rama feat/admin-ui @ 5b12886, solo local).
 
-## Paso actual: CONSTRUCCIÓN APROBADA (2026-10-15, tema claro). Orden: 1) PO spec v1.0 -> 2) Frontend construye en feat/staff-redesign (D-23) -> 3) Seguridad y QA por alcance -> 4) release en docs/releases/ (sin merge a master ni push). Pausa ordenada cuando la sesión principal lo indique (uso 5 h al 45%).
+## Paso actual (2026-10-17): retomado tras reinicio. 1) Backend termina pruebas del arreglo de tiempo real (fix/realtime-session-token) -> 2) merge en feat/staff-redesign -> 3) Seguridad -> 4) QA -> 5) docs/releases/cocina-salon.md -> 6) pausa. Sin merge a master ni push.
+
+## PAUSA ORDENADA anterior (2026-10-15, el Director reinicia la PC):
+- Carpeta en `fix/realtime-session-token` @ b4ad11e (WIP de Backend, sale de feat/staff-redesign @ 31b017e). Construcción de Cocina y Salón HECHA en feat/staff-redesign (Frontend: e2e 53/0, calidad 136/0, axe 0, regresión admin OK).
+- Realtime tras recargar: Backend diagnosticó DEFECTO DE LA APP (no del mock), presente en producción (master d66b639): el join sale sin access_token; con la 0004 aplicada, el staff deja de recibir pedidos en vivo tras recargar. Arreglo hecho (`lib/realtime/startChannel.ts` + setAuth antes de suscribir), 6/6. FALTA: control en master, e2e del mock, admin-live-pending, test-admin-data y e2e de Cocina y Salón; conclusión con fuentes. Ver la sección "Backend: realtime tras recargar".
+- Luego: integrar fix en feat/staff-redesign, Seguridad y QA por alcance (incluida la recarga), docs/releases/cocina-salon.md. Conviene publicar el arreglo ANTES de aplicar la 0004 en producción (la 0004 sigue sin confirmar).
+- OK DEL DIRECTOR (2026-10-15): (1) textos nuevos de carga y error ("No pudimos cargar los pedidos", "No pudimos cargar el salón", "Puede ser la conexión o un problema del servicio.", "Reintentar", "Cargando los pedidos...", "Cargando el salón..."): APROBADOS; (2) proporción de Salón 1.35:1 en lugar de 1.55:1: APROBADA.
+- Sin procesos del equipo levantados.
+
+## Anterior: CONSTRUCCIÓN APROBADA (2026-10-15, tema claro). Orden: 1) PO spec v1.0 -> 2) Frontend construye en feat/staff-redesign (D-23) -> 3) Seguridad y QA por alcance -> 4) release en docs/releases/ (sin merge a master ni push). Pausa ordenada cuando la sesión principal lo indique (uso 5 h al 45%).
 
 ## CAMBIO DEL DIRECTOR (2026-10-15, más tarde): construir TODO en TEMA CLARO, como las maquetas claras (`cocina.html`, `salon.html`, `shell.html` y vacías). La variante oscura NO se construye ahora. A futuro: una función de "tema oscuro" para TODOS los paneles (admin, Cocina y Salón) -> backlog, la decide el Director más adelante. Ya no hace falta la captura de Salón oscuro. Construcción APROBADA para empezar ahora.
 
@@ -36,6 +45,7 @@ Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada deleg
 | 3. Aprobación del Director (spec + maquetas) | HECHO: aprobadas; tema CLARO; oscuro al backlog | c933e15 |
 | 4a. Spec v1.0 (PO) | HECHO + resoluciones 11.1 del Líder (D-24) | ca0caff y este commit |
 | 4b. Construcción (Frontend) | HECHO: shell, Cocina, Salón, sin permiso, carga/error; e2e 53/53, calidad 136/136 (6 anchos), axe 42 vistas 0 violaciones, regresión admin 74/74 y 65/65, tsc y eslint limpios. Hallazgo PREEXISTENTE: tiempo real tras recargar no entrega eventos en el mock (también en master). Detalle: `docs/design/cocina-salon/evidencia/README.md` | 9a98d37..este commit |
+| 4b-bis. Hallazgo preexistente: tiempo real sin access_token tras recargar /kitchen con sesión guardada (también en master d66b639). Backend investiga y corrige en `fix/realtime-session-token` (desde feat/staff-redesign @ 31b017e) | EN CURSO | docs/design/cocina-salon/evidencia/realtime-recarga-salida.txt |
 | 4c. Seguridad (por alcance) | PENDIENTE | |
 | 4d. QA (por alcance + regresión admin, /login, /m, flujo QR) | PENDIENTE | |
 | 4e. Release `docs/releases/cocina-salon.md` | PENDIENTE | |
@@ -46,3 +56,14 @@ Las 10 de `docs/specs/cocina-salon.md` §8 y las 13 de `docs/design/cocina-salon
 ## Procesos levantados (puerto, PID, dueño)
 - Frontend: todos sus procesos PARADOS al terminar 4b (netstat 3420-3449: 0 escuchando).
 - Equipo: (ninguno más). Puertos: D-1 (Backend 3400-3419, Frontend 3420-3449, Seguridad 3450-3469, QA 3470-3489, Líder 3490-3499). No tocar 3500, 3501 ni 4317.
+
+## Backend: realtime tras recargar (fix/realtime-session-token) - PAUSA 2026-10-15
+- Diagnostico (parcial): es defecto de la APP, no del mock. Al recargar con sesion en cookies, el phx_join de los canales staff sale sin access_token (realtime-js RealtimeChannel.ts:415-417 usa socket.accessTokenValue, aun null) y la sesion llega despues (RealtimeClient.ts:645-668: no hay push si el canal aun no se unio; luego setAuth() ve el mismo token y no empuja). Traza antes: /kitchen y /floor con recarga FAIL (token=NO); /admin anda por suerte de timing.
+- Con 0004 aplicada, Realtime evalua RLS como anonimo y no entrega orders/waiter_calls al staff; sin 0004 el anonimo lee orders (public read) y el bug no se nota. El mock imita bien eso.
+- Arreglo hecho: lib/realtime/startChannel.ts (getSession + realtime.setAuth antes de suscribir) usado en useOrdersBoard, useTableTotals, useStaffPendingCounts, useWaiterCalls y AdminLiveProvider. Despues: 6/6 (con y sin recarga en /kitchen, /floor, /admin), joins con token. tsc y eslint limpios.
+- Falta: control en master (el build webpack del worktree fallo), e2e del mock, admin-live-pending-e2e, test-admin-data y e2e de Cocina y Salon del Frontend, conclusion final con fuentes. La reaccion del servidor real a un access_token posterior al join NO se pudo verificar en el repo.
+- Procesos: mock 3401, next 3402 y 3403 detenidos; netstat 3400-3419 sin LISTENING.
+
+## Backend: realtime tras recargar - CERRADO 2026-10-17
+- Defecto de la app, arreglado con lib/realtime/startChannel.ts (b4ad11e). Control master d66b639: 4/6 (falla con recarga); rama: 6/6. Conclusion y fuentes en docs/evidencia/backend/realtime-recarga-2026-10-15.txt. Desplegar antes o junto con la 0004.
+- Procesos: mock 3401, next 3402 y 3403 (master) detenidos; worktree menusky-master-tmp borrado; netstat 3400-3419 libre.

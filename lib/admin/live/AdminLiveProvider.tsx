@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { startChannel } from "@/lib/realtime/startChannel";
 import { loadAdminLiveSnapshot } from "@/lib/admin/live/load";
 import type { AdminLiveSnapshot } from "@/lib/admin/live/types";
 import { todayRangeAR } from "@/lib/time/today";
@@ -67,7 +68,7 @@ export function AdminLiveProvider({
     };
 
     // UNA sola suscripción por sesión (R-9).
-    const channel = supabase
+    const stopChannel = startChannel(supabase, () => supabase
       .channel(`admin-live-${restaurantId}`)
       .on(
         "postgres_changes",
@@ -97,7 +98,7 @@ export function AdminLiveProvider({
         // Al reconectar se pudo perder algún evento: se relee todo.
         if (ok && wasConnected) void refresh();
         if (ok) wasConnected = true;
-      });
+      }));
 
     // Al pasar la medianoche de Argentina el "hoy" cambia aunque no haya eventos.
     const msToMidnight = Math.max(1000, Date.parse(todayRangeAR().endIso) - Date.now() + 1000);
@@ -107,7 +108,7 @@ export function AdminLiveProvider({
       aliveRef.current = false;
       if (debounce) clearTimeout(debounce);
       clearTimeout(midnight);
-      void supabase.removeChannel(channel);
+      stopChannel();
     };
   }, [supabase, restaurantId, refresh]);
 

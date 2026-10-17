@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { startChannel } from "@/lib/realtime/startChannel";
 import { attendWaiterCall } from "@/lib/waiterCalls/attendWaiterCall";
 import type { WaiterCallView } from "@/lib/waiterCalls/getPendingWaiterCalls";
 import { playChime } from "@/lib/notify/playChime";
@@ -18,7 +19,7 @@ export function useWaiterCalls(
 
   useEffect(() => {
     const supabase = createClient();
-    const channel = supabase
+    return startChannel(supabase, () => supabase
       .channel(`waiter-calls-${restaurantId}`)
       .on(
         "postgres_changes",
@@ -65,11 +66,7 @@ export function useWaiterCalls(
           }
         }
       )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+      .subscribe());
   }, [restaurantId, notify]);
 
   const attend = useCallback(async (callId: string) => {
