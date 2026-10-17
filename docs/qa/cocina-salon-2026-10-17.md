@@ -177,3 +177,12 @@ node docs/qa/evidencia/cocina-salon-2026-10-17/copia-sec-af-02-qr-e2e.mjs   # co
 MOCK_URL=http://127.0.0.1:3472 node scripts/mock-supabase/e2e.mjs
 ```
 Nota: `quality-staff.mjs` sobrescribe las capturas y `axe-staff-salida.txt` del Frontend en `docs/design/cocina-salon/`; QA los restauró con `git checkout` y guardó copias en `docs/qa/capturas/cocina-salon/`. Login: build aparte con `https://example.supabase.co`, `QA_BASE=http://127.0.0.1:3472` y `node docs/qa/scripts/login/0X-*.mjs`.
+
+## Re-verificación QA-CS-01 (2026-10-17)
+
+Rama `feat/staff-redesign` @ a691e01 (arreglo en 640d0d0, merge cc65060; solo `components/staff/staff.css`). Build de producción nuevo + mi mock (3470/3471/3472). Evidencia: `R-probe-sticky.txt`, `R-quality-staff.txt`, `R-netstat-final.txt` en `docs/qa/evidencia/cocina-salon-2026-10-17/`.
+
+- **QA-CS-01: CERRADO.** `A-probe-sticky.mjs` (misma sonda; solo le agregué los anchos 390x844 y 768x1024 a la lista) con 32 pedidos, 180 pasos de Tab y Shift+Tab por ancho: **0 pasos con el foco tapado** a 360x640, 390x844, 768x1024 y 1280x800 (antes: 38 parciales y 2 totales a 360x640). Salida 16 OK / 0 FAIL, incluidos WCAG 2.4.11 (nada totalmente tapado) y 2.4.12 (nada tapado).
+- **CA-2.4:** al final del scroll el botón de la última comanda se ve completo en los 4 anchos (por ejemplo 360x640: top 510, bottom 566 de 640; 390x844: 714-770 de 844; 768x1024: 894-950 de 1024). El enlace "Saltar al contenido" se hace visible al enfocarlo (top 8 px).
+- **Regresión:** `quality-staff.mjs` (9 estados, 6 anchos, incluye axe en /kitchen y /floor a 360 y 1024): **136 OK / 0 FAIL**, igual que antes. La sonda sobrescribe las capturas y `axe-staff-salida.txt` del Frontend; los restauré con `git checkout`. No se repitió el resto de las suites (alcance acotado).
+- **Veredicto actualizado: Aprobado** (alcances A, B, C y D; sin defectos abiertos nuevos de esta fase). Siguen igual los pendientes de "Qué NO se pudo verificar" (tablet real, celulares, lector de pantalla, base real, estado de error renderizado) y lo preexistente listado arriba.

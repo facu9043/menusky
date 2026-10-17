@@ -5,7 +5,7 @@ import { launch, login, check, note, summary, resetMock, mockEvent } from "../..
 await resetMock();
 for (let i = 0; i < 30; i++) await mockEvent({ type: "new_order", table: `Mesa ${1 + (i % 3)}`, items: [{ name: "Provoleta", quantity: 1 + (i % 3) }, { name: "Empanadas (x3)", quantity: 2 }] });
 const b = await launch();
-for (const [w, h] of [[360, 640], [1280, 800]]) {
+for (const [w, h] of [[360, 640], [390, 844], [768, 1024], [1280, 800]]) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, hasTouch: w < 768, isMobile: w < 768 });
   const p = await ctx.newPage();
   await login(p, "cocina@demo.test", "/kitchen"); await p.waitForTimeout(2000);
