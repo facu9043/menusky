@@ -1,5 +1,10 @@
 # Estado de la fase COCINA Y SALÓN (para retomar si se corta la sesión)
 
+## PUBLICACIÓN (2026-10-17, autorizada por el Director)
+- Decisión del Director: hora de pedidos y llamados en 24 h. Hecho por el Frontend en fix/staff-time-24h (427d72b, 3 líneas; verificación 4/4 y e2e-staff 53/53), integrado en feat/staff-redesign (ad587e5).
+- El Director autorizó publicar. Respaldo: master anterior d66b639. La sesión principal hace el merge a master, el build, el push y la prueba de humo sin sesión.
+- Pendiente del Director: confirmar la migración 0004 en la base real ("luego veo"); prueba en tablet real a 1,5 m; recargar /kitchen y /floor con sus cuentas reales. Pregunta abierta: ¿"Tu pedido" del cliente también en 24 h? (hoy sigue en 12 h).
+
 Mantenido por el Líder Técnico. Se actualiza y se commitea ANTES de cada delegación.
 
 - Repo: `C:\Users\facundo\Desktop\menusky`, sin worktrees (D-18). Rama de la fase: `feat/staff-redesign`, desde master @ d66b639 (admin publicado).
